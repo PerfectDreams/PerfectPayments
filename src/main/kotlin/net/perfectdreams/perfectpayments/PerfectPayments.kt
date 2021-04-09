@@ -26,6 +26,7 @@ import net.perfectdreams.perfectpayments.routes.api.v1.callbacks.PostPagSeguroCa
 import net.perfectdreams.perfectpayments.routes.api.v1.callbacks.PostPayPalCallbackRoute
 import net.perfectdreams.perfectpayments.routes.api.v1.callbacks.PostPicPayCallbackRoute
 import net.perfectdreams.perfectpayments.routes.api.v1.callbacks.PostStripeCallbackRoute
+import net.perfectdreams.perfectpayments.routes.api.v1.payments.PatchChangePaymentStatusRoute
 import net.perfectdreams.perfectpayments.routes.api.v1.payments.PostCreatePaymentRoute
 import net.perfectdreams.perfectpayments.routes.api.v1.payments.PostStartPaymentRoute
 import net.perfectdreams.perfectpayments.routes.checkout.CheckoutRoute
@@ -88,6 +89,7 @@ class PerfectPayments(
         // ===[ API ]===
         PostCreatePaymentRoute(this),
         PostStartPaymentRoute(this),
+        PatchChangePaymentStatusRoute(this),
 
         // Callbacks
         PostPicPayCallbackRoute(this),

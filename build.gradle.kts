@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm") version "1.4.21"
-    kotlin("plugin.serialization") version "1.4.21"
+    kotlin("jvm") version "1.4.32"
+    kotlin("plugin.serialization") version "1.4.32"
 }
 
 group = "net.perfectdreams.perfectpayments"
@@ -15,7 +15,6 @@ repositories {
     maven("https://jcenter.bintray.com")
     maven("https://repo.perfectdreams.net/")
     maven("https://dl.bintray.com/kotlin/ktor/")
-    maven("https://repo.perfectdreams.net")
 }
 
 dependencies {
@@ -44,12 +43,15 @@ dependencies {
 
     implementation("io.github.microutils:kotlin-logging:2.0.4")
 
+    // Sequins
+    api("net.perfectdreams.sequins.ktor:base-route:1.0.2")
+
     // Ktor
-    implementation("io.ktor:ktor-client-core:1.4.3")
+    implementation("io.ktor:ktor-client-core:1.5.3")
     // We use "Apache" because "CIO", for some reason, has issues with PayPal's API
-    implementation("io.ktor:ktor-client-apache:1.4.3")
-    implementation("io.ktor:ktor-server-core:1.4.3")
-    implementation("io.ktor:ktor-server-netty:1.4.3")
+    implementation("io.ktor:ktor-client-apache:1.5.3")
+    implementation("io.ktor:ktor-server-core:1.5.3")
+    implementation("io.ktor:ktor-server-netty:1.5.3")
 }
 
 tasks {
