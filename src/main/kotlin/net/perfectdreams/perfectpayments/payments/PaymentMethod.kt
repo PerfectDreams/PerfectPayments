@@ -6,5 +6,6 @@ enum class PaymentMethod {
     PAYPAL_BALANCE,
     BRAZIL_BANK_TICKET,
     GOOGLE_PAY,
-    APPLE_PAY
+    APPLE_PAY,
+    SANDBOX
 }

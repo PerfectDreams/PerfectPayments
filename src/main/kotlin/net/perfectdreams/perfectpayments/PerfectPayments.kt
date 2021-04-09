@@ -18,6 +18,7 @@ import net.perfectdreams.perfectpayments.payments.PaymentGateway
 import net.perfectdreams.perfectpayments.processors.creators.PagSeguroPaymentCreator
 import net.perfectdreams.perfectpayments.processors.creators.PayPalPaymentCreator
 import net.perfectdreams.perfectpayments.processors.creators.PicPayPaymentCreator
+import net.perfectdreams.perfectpayments.processors.creators.SandboxPaymentCreator
 import net.perfectdreams.perfectpayments.processors.creators.StripePaymentCreator
 import net.perfectdreams.perfectpayments.routes.CancelledRoute
 import net.perfectdreams.perfectpayments.routes.HomeRoute
@@ -32,9 +33,11 @@ import net.perfectdreams.perfectpayments.routes.api.v1.payments.PostStartPayment
 import net.perfectdreams.perfectpayments.routes.checkout.CheckoutRoute
 import net.perfectdreams.perfectpayments.routes.checkout.PostCheckoutPicPayRoute
 import net.perfectdreams.perfectpayments.routes.checkout.PostCheckoutRoute
+import net.perfectdreams.perfectpayments.routes.checkout.PostCheckoutSandboxRoute
 import net.perfectdreams.perfectpayments.tables.Payments
 import net.perfectdreams.perfectpayments.utils.GatewayConfigs
 import net.perfectdreams.perfectpayments.utils.PartialPayment
+import net.perfectdreams.sequins.ktor.BaseRoute
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -75,14 +78,14 @@ class PerfectPayments(
         PaymentGateway.PICPAY to PicPayPaymentCreator(this),
         PaymentGateway.PAGSEGURO to PagSeguroPaymentCreator(this),
         PaymentGateway.STRIPE to StripePaymentCreator(this),
-        PaymentGateway.PAYPAL to PayPalPaymentCreator(this)
+        PaymentGateway.PAYPAL to PayPalPaymentCreator(this),
+        PaymentGateway.SANDBOX to SandboxPaymentCreator(this)
     )
 
-    val routes = listOf(
+    val routes = mutableListOf(
         HomeRoute(),
         CheckoutRoute(this),
         PostCheckoutRoute(this),
-        PostCheckoutPicPayRoute(this),
         SuccessRoute(this),
         CancelledRoute(this),
 
@@ -90,13 +93,28 @@ class PerfectPayments(
         PostCreatePaymentRoute(this),
         PostStartPaymentRoute(this),
         PatchChangePaymentStatusRoute(this),
+    ).also {
+        // Only register routes if gateway is enabled
+        if (config.gateways.contains(PaymentGateway.PICPAY)) {
+            it.add(PostCheckoutPicPayRoute(this))
+            it.add(PostPicPayCallbackRoute(this))
+        }
 
-        // Callbacks
-        PostPicPayCallbackRoute(this),
-        PostPagSeguroCallbackRoute(this),
-        PostStripeCallbackRoute(this),
-        PostPayPalCallbackRoute(this)
-    )
+        if (config.gateways.contains(PaymentGateway.PAGSEGURO)) {
+            it.add(PostPagSeguroCallbackRoute(this))
+        }
+
+        if (config.gateways.contains(PaymentGateway.STRIPE)) {
+            it.add(PostStripeCallbackRoute(this))
+        }
+
+        if (config.gateways.contains(PaymentGateway.PAYPAL)) {
+            it.add(PostPayPalCallbackRoute(this))
+        }
+
+        if (config.gateways.contains(PaymentGateway.SANDBOX))
+            it.add(PostCheckoutSandboxRoute(this))
+    }
 
     fun start() {
         loadLocales()

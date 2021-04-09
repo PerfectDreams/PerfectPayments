@@ -34,4 +34,10 @@ enum class PaymentGateway(val imageUrl: String, val methods: List<PaymentMethod>
             PaymentMethod.PAYPAL_BALANCE
         )
     ),
+    SANDBOX(
+        "/assets/img/gateways/paypal.svg",
+        listOf(
+            PaymentMethod.SANDBOX
+        )
+    ),
 }

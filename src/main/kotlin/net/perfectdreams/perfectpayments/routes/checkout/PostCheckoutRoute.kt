@@ -18,6 +18,7 @@ import kotlinx.serialization.json.putJsonObject
 import net.perfectdreams.perfectpayments.PerfectPayments
 import net.perfectdreams.perfectpayments.html.MissingPartialPaymentView
 import net.perfectdreams.perfectpayments.html.PicPayCheckoutView
+import net.perfectdreams.perfectpayments.html.SandboxCheckoutView
 import net.perfectdreams.perfectpayments.html.StripeCheckoutView
 import net.perfectdreams.perfectpayments.payments.PaymentGateway
 import net.perfectdreams.perfectpayments.processors.creators.PagSeguroPaymentCreator
@@ -41,7 +42,9 @@ class PostCheckoutRoute(val m: PerfectPayments) : BaseRoute("/checkout/{partialP
         val paymentMethodAsString = call.receiveParameters()["paymentMethod"]!!
         val paymentMethod = PaymentGateway.valueOf(paymentMethodAsString)
 
-        if (paymentMethod == PaymentGateway.PICPAY) {
+        if (paymentMethod == PaymentGateway.SANDBOX) {
+            call.respondText(SandboxCheckoutView(locale, partialPaymentId, partialPayment).render(), ContentType.Text.Html)
+        } else if (paymentMethod == PaymentGateway.PICPAY) {
             call.respondText(PicPayCheckoutView(locale, partialPaymentId, partialPayment).render(), ContentType.Text.Html)
         } else {
             val paymentUrl = PaymentQuery.startPayment(
