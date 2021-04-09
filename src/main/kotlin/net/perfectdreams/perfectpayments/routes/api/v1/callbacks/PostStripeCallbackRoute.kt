@@ -22,6 +22,7 @@ import net.perfectdreams.perfectpayments.PerfectPayments
 import net.perfectdreams.perfectpayments.dao.Payment
 import net.perfectdreams.perfectpayments.payments.PaymentStatus
 import net.perfectdreams.perfectpayments.utils.PaymentQuery
+import net.perfectdreams.perfectpayments.utils.extensions.receiveTextUTF8
 import net.perfectdreams.perfectpayments.utils.extensions.respondEmptyJson
 import net.perfectdreams.sequins.ktor.BaseRoute
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -32,7 +33,7 @@ class PostStripeCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
     }
 
     override suspend fun onRequest(call: ApplicationCall) {
-        val payload = call.receiveText()
+        val payload = call.receiveTextUTF8()
         val signatureHeader = call.request.header("Stripe-Signature")
         val endpointSecret = m.gateway.stripe.webhookSecret
 

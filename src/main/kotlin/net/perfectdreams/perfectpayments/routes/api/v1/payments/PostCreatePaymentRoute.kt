@@ -13,11 +13,12 @@ import kotlinx.serialization.json.put
 import net.perfectdreams.perfectpayments.PerfectPayments
 import net.perfectdreams.perfectpayments.routes.api.v1.RequiresAPIAuthenticationRoute
 import net.perfectdreams.perfectpayments.utils.PartialPayment
+import net.perfectdreams.perfectpayments.utils.extensions.receiveTextUTF8
 import java.util.*
 
 class PostCreatePaymentRoute(m: PerfectPayments) : RequiresAPIAuthenticationRoute(m, "/api/v1/payments") {
     override suspend fun onAuthenticatedRequest(call: ApplicationCall) {
-        val paymentPayload = call.receiveText()
+        val paymentPayload = call.receiveTextUTF8()
 
         val body = Json.parseToJsonElement(paymentPayload)
             .jsonObject

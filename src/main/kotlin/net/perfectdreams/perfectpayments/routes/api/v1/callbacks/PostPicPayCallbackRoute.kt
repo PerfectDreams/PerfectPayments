@@ -17,6 +17,7 @@ import net.perfectdreams.perfectpayments.PerfectPayments
 import net.perfectdreams.perfectpayments.dao.Payment
 import net.perfectdreams.perfectpayments.payments.PaymentStatus
 import net.perfectdreams.perfectpayments.utils.PaymentQuery
+import net.perfectdreams.perfectpayments.utils.extensions.receiveTextUTF8
 import net.perfectdreams.perfectpayments.utils.extensions.respondEmptyJson
 import net.perfectdreams.sequins.ktor.BaseRoute
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -35,7 +36,7 @@ class PostPicPayCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
             return
         }
 
-        val body = call.receiveText()
+        val body = call.receiveTextUTF8()
         val json = Json.parseToJsonElement(body)
                 .jsonObject
 

@@ -12,6 +12,7 @@ import net.perfectdreams.perfectpayments.dao.Payment
 import net.perfectdreams.perfectpayments.payments.PaymentStatus
 import net.perfectdreams.perfectpayments.routes.api.v1.RequiresAPIAuthenticationRoute
 import net.perfectdreams.perfectpayments.utils.PaymentQuery
+import net.perfectdreams.perfectpayments.utils.extensions.receiveTextUTF8
 import net.perfectdreams.perfectpayments.utils.extensions.respondEmptyJson
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
@@ -23,7 +24,7 @@ class PatchChangePaymentStatusRoute(m: PerfectPayments) : RequiresAPIAuthenticat
     override suspend fun onAuthenticatedRequest(call: ApplicationCall) {
         val internalTransactionId = call.parameters["internalTransactionId"]!!.toLong()
 
-        val paymentPayload = call.receiveText()
+        val paymentPayload = call.receiveTextUTF8()
 
         val body = Json.parseToJsonElement(paymentPayload)
             .jsonObject

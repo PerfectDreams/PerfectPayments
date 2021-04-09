@@ -12,6 +12,7 @@ import net.perfectdreams.perfectpayments.PerfectPayments
 import net.perfectdreams.perfectpayments.dao.Payment
 import net.perfectdreams.perfectpayments.payments.PaymentStatus
 import net.perfectdreams.perfectpayments.utils.PaymentQuery
+import net.perfectdreams.perfectpayments.utils.extensions.receiveTextUTF8
 import net.perfectdreams.perfectpayments.utils.extensions.respondEmptyJson
 import net.perfectdreams.sequins.ktor.BaseRoute
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -30,7 +31,7 @@ class PostPayPalCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
         val paypalCertUrl = call.request.header("PAYPAL-CERT-URL")
         val paypalAuthAlgo = call.request.header("PAYPAL-AUTH-ALGO")
 
-        val response = call.receiveStream().bufferedReader(charset = Charsets.UTF_8).readText()
+        val response = call.receiveTextUTF8()
 
         val webhookEvent = Json.parseToJsonElement(response)
             .jsonObject

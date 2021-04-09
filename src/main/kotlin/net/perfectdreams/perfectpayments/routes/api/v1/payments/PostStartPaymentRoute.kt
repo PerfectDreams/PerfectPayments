@@ -13,6 +13,7 @@ import net.perfectdreams.perfectpayments.routes.api.v1.RequiresAPIAuthentication
 import net.perfectdreams.perfectpayments.tables.Payments
 import net.perfectdreams.perfectpayments.utils.PartialPayment
 import net.perfectdreams.perfectpayments.utils.PaymentQuery
+import net.perfectdreams.perfectpayments.utils.extensions.receiveTextUTF8
 import net.perfectdreams.sequins.ktor.BaseRoute
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -23,7 +24,7 @@ class PostStartPaymentRoute(m: PerfectPayments) : RequiresAPIAuthenticationRoute
         val partialPaymentId = UUID.fromString(call.parameters["partialPaymentId"])
         val partialPayment = m.partialPayments[partialPaymentId] ?: throw RuntimeException("Missing partial payment")
 
-        val paymentPayload = call.receiveText()
+        val paymentPayload = call.receiveTextUTF8()
 
         val jsonBody = Json.parseToJsonElement(paymentPayload)
             .jsonObject
