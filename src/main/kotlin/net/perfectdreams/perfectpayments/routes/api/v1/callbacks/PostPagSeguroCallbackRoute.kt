@@ -63,7 +63,7 @@ class PostPagSeguroCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/ca
             val payloadAsString = httpResponse.readText()
 
             if (httpResponse.status.value != 200) {
-                logger.warn { "Weird status code while checking for PicPay's payment info: ${httpResponse.status.value}; Payload: $payloadAsString" }
+                logger.warn { "Weird status code while checking for PagSeguro's payment info: ${httpResponse.status.value}; Payload: $payloadAsString" }
                 call.respondEmptyJson()
                 return
             }
