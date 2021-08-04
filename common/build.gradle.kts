@@ -1,20 +1,17 @@
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-    id("TranslationKeysGenerator")
+    id("net.perfectdreams.i18nhelper.plugin") version "0.0.1-SNAPSHOT"
 }
 
 repositories {
     mavenCentral()
+    maven("https://repo.perfectdreams.net/")
 }
 
-translationKeysSettings {
+i18nHelper {
     generatedPackage.set("net.perfectdreams.perfectpayments.i18n")
     languageSourceFolder.set("../resources/languages/en/")
-}
-
-configure<net.perfectdreams.i18nwrapper.TranslationKeysGenPluginExtension> {
-    generatedPackage.set("net.perfectdreams.perfectpayments.i18n")
 }
 
 kotlin {
@@ -31,23 +28,15 @@ kotlin {
 
     sourceSets {
         commonMain {
-            kotlin.srcDir("build/generated/locales")
-            resources.srcDir("../locales/")
+            kotlin.srcDir("build/generated/languages")
+            resources.srcDir("../resources/")
 
             dependencies {
                 api(kotlin("stdlib-common"))
+                implementation("net.perfectdreams.i18nhelper:core:0.0.1-SNAPSHOT")
                 api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
                 api("io.github.microutils:kotlin-logging:2.0.10")
             }
         }
-    }
-}
-
-tasks {
-    // HACKY WORKAROUND!!!
-    // This makes the generateTranslationKeys task to always be ran after the compileKotlin step
-    // We need to do this (instead of using withType) because, for some reason, it doesn't work and the task isn't executed.
-    project.tasks.filter { it.name.startsWith("compileKotlin") }.forEach {
-        it.dependsOn("generateTranslationKeys")
     }
 }

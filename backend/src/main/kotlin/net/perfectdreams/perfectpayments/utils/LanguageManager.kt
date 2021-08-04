@@ -3,10 +3,11 @@ package net.perfectdreams.perfectpayments.utils
 import com.ibm.icu.text.MessagePattern
 import kotlinx.serialization.decodeFromString
 import mu.KotlinLogging
-import net.perfectdreams.i18nwrapper.I18nContext
-import net.perfectdreams.i18nwrapper.Language
-import net.perfectdreams.i18nwrapper.LanguageInfo
-import net.perfectdreams.i18nwrapper.TextBundle
+import net.perfectdreams.i18nhelper.core.I18nContext
+import net.perfectdreams.i18nhelper.core.Language
+import net.perfectdreams.i18nhelper.core.LanguageInfo
+import net.perfectdreams.i18nhelper.core.TextBundle
+import net.perfectdreams.i18nhelper.formatters.ICUFormatter
 import net.perfectdreams.perfectpayments.PerfectPayments
 import org.yaml.snakeyaml.Yaml
 import java.nio.file.FileSystemNotFoundException

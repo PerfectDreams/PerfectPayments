@@ -1,6 +1,7 @@
 package net.perfectdreams.perfectpayments.utils
 
 import mu.KotlinLogging
+import net.perfectdreams.perfectpayments.PerfectPayments
 import net.perfectdreams.perfectpayments.dao.NotaFiscal
 import net.perfectdreams.perfectpayments.dao.Payment
 import net.perfectdreams.perfectpayments.dao.PaymentPersonalInfo
@@ -8,10 +9,9 @@ import net.perfectdreams.perfectpayments.notafiscais.NotaFiscalStatus
 import net.perfectdreams.perfectpayments.tables.PaymentPersonalInfos
 import net.perfectdreams.perfectpayments.utils.focusnfe.FocusNFe
 import net.perfectdreams.perfectpayments.utils.focusnfe.NFSeCreateRequest
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.time.ZonedDateTime
 
-class NotaFiscalUtils(val focusNFe: FocusNFe, val referencePrefix: String) {
+class NotaFiscalUtils(val m: PerfectPayments, val focusNFe: FocusNFe, val referencePrefix: String) {
     companion object {
         private val logger = KotlinLogging.logger {}
     }
@@ -19,7 +19,7 @@ class NotaFiscalUtils(val focusNFe: FocusNFe, val referencePrefix: String) {
     suspend fun generateNotaFiscal(payment: Payment) {
         logger.info { "Getting Nota Fiscal information for ${payment.id}..." }
 
-        val personalInfo = newSuspendedTransaction {
+        val personalInfo = m.newSuspendedTransaction {
             PaymentPersonalInfo.find {
                 PaymentPersonalInfos.payment eq payment.id
             }.firstOrNull()
@@ -29,7 +29,7 @@ class NotaFiscalUtils(val focusNFe: FocusNFe, val referencePrefix: String) {
             logger.warn { "Payment ${payment.id} does not have any personal information associated with it! We are going to generate a Nota Fiscal without them..." }
         }
 
-        val notaFiscal = newSuspendedTransaction {
+        val notaFiscal = m.newSuspendedTransaction {
             NotaFiscal.new {
                 this.payment = payment
                 this.personalInfo = personalInfo

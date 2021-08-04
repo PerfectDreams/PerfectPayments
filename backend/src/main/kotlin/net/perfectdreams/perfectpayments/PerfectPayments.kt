@@ -12,6 +12,8 @@ import io.ktor.http.content.*
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.common.payments.PaymentGateway
 import net.perfectdreams.perfectpayments.config.AppConfig
@@ -47,9 +49,10 @@ import net.perfectdreams.perfectpayments.utils.PartialPayment
 import net.perfectdreams.perfectpayments.utils.focusnfe.FocusNFe
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.Transaction
 import org.yaml.snakeyaml.Yaml
 import java.io.File
+import java.sql.Connection
 import java.util.*
 
 class PerfectPayments(
@@ -75,7 +78,7 @@ class PerfectPayments(
 
     /**
      * Partial payment cache, this will is used when the payment does not have any gateway payment bound
-     * (user haven't selected the payment gateway well)
+     * (user haven't selected the payment gateway yet)
      */
     val partialPayments = Caffeine.newBuilder()
         .maximumSize(100_000)
@@ -95,7 +98,7 @@ class PerfectPayments(
     }
 
     val notaFiscais = focusNFeConfig?.let {
-        NotaFiscalUtils(focusNFe!!, it.referencePrefix)
+        NotaFiscalUtils(this, focusNFe!!, it.referencePrefix)
     }
 
     val routes = mutableListOf(
@@ -154,6 +157,21 @@ class PerfectPayments(
         if (config.database.password != null)
             hikariConfig.password = config.database.password
 
+        // https://github.com/JetBrains/Exposed/wiki/DSL#batch-insert
+        hikariConfig.addDataSourceProperty("reWriteBatchedInserts", "true")
+
+        // Exposed uses autoCommit = false, so we need to set this to false to avoid HikariCP resetting the connection to
+        // autoCommit = true when the transaction goes back to the pool, because resetting this has a "big performance impact"
+        // https://stackoverflow.com/a/41206003/7271796
+        hikariConfig.isAutoCommit = false
+
+        // Useful to check if a connection is not returning to the pool, will be shown in the log as "Apparent connection leak detected"
+        hikariConfig.leakDetectionThreshold = 30 * 1000
+
+        // We need to use the same transaction isolation used in Exposed, in this case, TRANSACTION_READ_COMMITED.
+        // If not HikariCP will keep resetting to the default when returning to the pool, causing performance issues.
+        hikariConfig.transactionIsolation = "TRANSACTION_REPEATABLE_READ"
+
         val ds = HikariDataSource(hikariConfig)
         Database.connect(ds)
 
@@ -205,5 +223,15 @@ class PerfectPayments(
             }
         }
         server.start(wait = true)
+    }
+
+    fun <T> transaction(repetitions: Int = 5, transactionIsolation: Int = Connection.TRANSACTION_REPEATABLE_READ, statement: Transaction.() -> T) = org.jetbrains.exposed.sql.transactions.transaction(transactionIsolation, repetitions) {
+        statement.invoke(this)
+    }
+
+    suspend fun <T> newSuspendedTransaction(repetitions: Int = 5, transactionIsolation: Int = Connection.TRANSACTION_REPEATABLE_READ, statement: Transaction.() -> T): T = withContext(Dispatchers.IO) {
+        transaction(transactionIsolation, repetitions) {
+            statement.invoke(this)
+        }
     }
 }

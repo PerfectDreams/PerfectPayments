@@ -2,7 +2,6 @@ package net.perfectdreams.perfectpayments.routes.api.v1.payments
 
 import io.ktor.application.*
 import io.ktor.http.*
-import io.ktor.request.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -14,7 +13,6 @@ import net.perfectdreams.perfectpayments.routes.api.v1.RequiresAPIAuthentication
 import net.perfectdreams.perfectpayments.utils.PaymentQuery
 import net.perfectdreams.perfectpayments.utils.extensions.receiveTextUTF8
 import net.perfectdreams.perfectpayments.utils.extensions.respondEmptyJson
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
 class PatchChangePaymentStatusRoute(m: PerfectPayments) : RequiresAPIAuthenticationRoute(m, "/api/v1/payments/{internalTransactionId}") {
     companion object {
@@ -33,7 +31,7 @@ class PatchChangePaymentStatusRoute(m: PerfectPayments) : RequiresAPIAuthenticat
 
         logger.info { "Received request to change payment $internalTransactionId status to $status" }
 
-        val internalPayment = newSuspendedTransaction {
+        val internalPayment = m.newSuspendedTransaction {
             Payment.findById(internalTransactionId)
         }
 
@@ -45,7 +43,7 @@ class PatchChangePaymentStatusRoute(m: PerfectPayments) : RequiresAPIAuthenticat
         logger.info { "Setting payment $internalTransactionId status to $status" }
 
         if (internalPayment.status != status) {
-            newSuspendedTransaction {
+            m.newSuspendedTransaction {
                 internalPayment.status = status
 
                 if (status == PaymentStatus.APPROVED)

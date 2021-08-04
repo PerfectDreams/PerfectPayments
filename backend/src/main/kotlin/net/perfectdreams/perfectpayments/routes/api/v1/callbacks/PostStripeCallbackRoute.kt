@@ -1,22 +1,11 @@
 package net.perfectdreams.perfectpayments.routes.api.v1.callbacks
 
 import com.stripe.model.Dispute
-import com.stripe.model.Event
 import com.stripe.model.PaymentIntent
-import com.stripe.model.StripeObject
 import com.stripe.net.Webhook
 import io.ktor.application.*
-import io.ktor.client.request.get
-import io.ktor.client.request.header
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.readText
-import io.ktor.http.HttpStatusCode
-import io.ktor.request.header
-import io.ktor.request.receiveText
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.contentOrNull
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
+import io.ktor.http.*
+import io.ktor.request.*
 import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.PerfectPayments
 import net.perfectdreams.perfectpayments.dao.Payment
@@ -25,7 +14,6 @@ import net.perfectdreams.perfectpayments.utils.PaymentQuery
 import net.perfectdreams.perfectpayments.utils.extensions.receiveTextUTF8
 import net.perfectdreams.perfectpayments.utils.extensions.respondEmptyJson
 import net.perfectdreams.sequins.ktor.BaseRoute
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
 class PostStripeCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callbacks/stripe") {
     companion object {
@@ -67,7 +55,7 @@ class PostStripeCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
             if (referenceId != null) {
                 val internalTransactionId = referenceId.split("-").last()
 
-                val internalPayment = newSuspendedTransaction {
+                val internalPayment = m.newSuspendedTransaction {
                     Payment.findById(internalTransactionId.toLong())
                 }
 
@@ -77,7 +65,7 @@ class PostStripeCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
                     return
                 }
 
-                newSuspendedTransaction {
+                m.newSuspendedTransaction {
                     // Pagamento aprovado!
                     internalPayment.status = PaymentStatus.CHARGED_BACK
                 }
@@ -94,7 +82,7 @@ class PostStripeCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
             if (referenceId != null) {
                 val internalTransactionId = referenceId.split("-").last()
 
-                val internalPayment = newSuspendedTransaction {
+                val internalPayment = m.newSuspendedTransaction {
                     Payment.findById(internalTransactionId.toLong())
                 }
 
@@ -112,7 +100,7 @@ class PostStripeCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
 
                 logger.info { "Setting Payment $internalTransactionId as paid! (via Stripe payment $referenceId; Payment Intent ID: ${paymentIntent.id})" }
 
-                newSuspendedTransaction {
+                m.newSuspendedTransaction {
                     // Pagamento aprovado!
                     internalPayment.paidAt = System.currentTimeMillis()
                     internalPayment.status = PaymentStatus.APPROVED

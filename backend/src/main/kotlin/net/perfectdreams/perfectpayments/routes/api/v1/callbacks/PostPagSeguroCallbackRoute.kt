@@ -1,12 +1,10 @@
 package net.perfectdreams.perfectpayments.routes.api.v1.callbacks
 
-import io.ktor.application.ApplicationCall
-import io.ktor.client.request.get
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.readText
-import io.ktor.http.HttpStatusCode
-import io.ktor.request.header
-import io.ktor.request.receiveParameters
+import io.ktor.application.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import io.ktor.request.*
 import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.PerfectPayments
 import net.perfectdreams.perfectpayments.dao.Payment
@@ -14,7 +12,6 @@ import net.perfectdreams.perfectpayments.payments.PaymentStatus
 import net.perfectdreams.perfectpayments.utils.PaymentQuery
 import net.perfectdreams.perfectpayments.utils.extensions.respondEmptyJson
 import net.perfectdreams.sequins.ktor.BaseRoute
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jsoup.Jsoup
 import java.util.*
 
@@ -79,7 +76,7 @@ class PostPagSeguroCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/ca
 
             val internalTransactionId = reference.split("-").last()
 
-            val internalPayment = newSuspendedTransaction {
+            val internalPayment = m.newSuspendedTransaction {
                 Payment.findById(internalTransactionId.toLong())
             }
 
@@ -100,7 +97,7 @@ class PostPagSeguroCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/ca
             logger.info { "PagSeguro payment $reference status is $paymentStatus" }
 
             if (paymentStatus != null) {
-                newSuspendedTransaction {
+                m.newSuspendedTransaction {
                     // https://dev.pagseguro.uol.com.br/docs/api-notificacao-v1
                     internalPayment.status = paymentStatus
                 }
@@ -115,7 +112,7 @@ class PostPagSeguroCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/ca
 
                 logger.info { "Setting Payment $internalTransactionId as paid! (via PagSeguro payment $reference)" }
 
-                newSuspendedTransaction {
+                m.newSuspendedTransaction {
                     // Pagamento aprovado!
                     internalPayment.paidAt = System.currentTimeMillis()
                 }

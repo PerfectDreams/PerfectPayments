@@ -14,7 +14,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import net.perfectdreams.i18nwrapper.I18nContext
+import net.perfectdreams.i18nhelper.core.I18nContext
+import net.perfectdreams.i18nhelper.formatters.IntlMFFormatter
 import net.perfectdreams.perfectpayments.common.data.ClientSidePartialPayment
 import net.perfectdreams.perfectpayments.common.data.PartialPaymentURL
 import net.perfectdreams.perfectpayments.common.payments.PaymentGateway

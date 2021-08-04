@@ -4,7 +4,7 @@ import kotlinx.html.DIV
 import kotlinx.html.p
 import kotlinx.html.script
 import kotlinx.html.unsafe
-import net.perfectdreams.i18nwrapper.I18nContext
+import net.perfectdreams.i18nhelper.core.I18nContext
 import net.perfectdreams.perfectpayments.utils.PartialPayment
 import java.util.*
 

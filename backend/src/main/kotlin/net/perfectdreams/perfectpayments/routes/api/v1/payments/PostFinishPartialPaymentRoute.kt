@@ -17,7 +17,6 @@ import net.perfectdreams.perfectpayments.utils.PaymentQuery
 import net.perfectdreams.perfectpayments.utils.extensions.receiveTextUTF8
 import net.perfectdreams.perfectpayments.utils.extensions.respondJson
 import net.perfectdreams.sequins.ktor.BaseRoute
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.util.*
 
 class PostFinishPartialPaymentRoute(val m: PerfectPayments) : BaseRoute("/api/v1/partial-payments/{partialPaymentId}/finish") {
@@ -45,12 +44,12 @@ class PostFinishPartialPaymentRoute(val m: PerfectPayments) : BaseRoute("/api/v1
                     buildJsonObject {}
                 )
 
-                val internalPayment = newSuspendedTransaction {
+                val internalPayment = m.newSuspendedTransaction {
                     Payment.findById(paymentId.toLong())!!
                 }
 
                 // Force the payment as complete
-                newSuspendedTransaction {
+                m.newSuspendedTransaction {
                     // Pagamento aprovado!
                     internalPayment.paidAt = System.currentTimeMillis()
                     internalPayment.status = PaymentStatus.APPROVED

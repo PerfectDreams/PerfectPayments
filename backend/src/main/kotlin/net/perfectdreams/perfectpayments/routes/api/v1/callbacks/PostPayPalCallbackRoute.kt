@@ -6,7 +6,13 @@ import io.ktor.client.statement.*
 import io.ktor.content.*
 import io.ktor.http.*
 import io.ktor.request.*
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.put
 import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.PerfectPayments
 import net.perfectdreams.perfectpayments.dao.Payment
@@ -15,7 +21,6 @@ import net.perfectdreams.perfectpayments.utils.PaymentQuery
 import net.perfectdreams.perfectpayments.utils.extensions.receiveTextUTF8
 import net.perfectdreams.perfectpayments.utils.extensions.respondEmptyJson
 import net.perfectdreams.sequins.ktor.BaseRoute
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.util.*
 
 class PostPayPalCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callbacks/paypal") {
@@ -84,7 +89,7 @@ class PostPayPalCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
                 val paymentId = customId?.substringAfterLast("-")
 
                 if (paymentId != null) {
-                    val internalPayment = newSuspendedTransaction {
+                    val internalPayment = m.newSuspendedTransaction {
                         Payment.findById(paymentId.toLong())
                     }
 
@@ -97,7 +102,7 @@ class PostPayPalCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
 
                     logger.warn { "Setting Payment ${internalPayment.id} ($captureId) as paid! (via PayPal payment $paymentId)" }
 
-                    newSuspendedTransaction {
+                    m.newSuspendedTransaction {
                         // Pagamento aprovado!
                         internalPayment.status = PaymentStatus.CHARGED_BACK
                     }
@@ -149,7 +154,7 @@ class PostPayPalCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
                         val paymentId = customId?.substringAfterLast("-")
 
                         if (paymentId != null) {
-                            val internalPayment = newSuspendedTransaction {
+                            val internalPayment = m.newSuspendedTransaction {
                                 Payment.findById(paymentId.toLong())
                             }
 
@@ -165,7 +170,7 @@ class PostPayPalCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
 
                             logger.info { "Setting Payment ${internalPayment.id} ($captureId) as paid! (via PayPal payment $paymentId)" }
 
-                            newSuspendedTransaction {
+                            m.newSuspendedTransaction {
                                 // Pagamento aprovado!
                                 internalPayment.paidAt = System.currentTimeMillis()
                                 internalPayment.status = PaymentStatus.APPROVED

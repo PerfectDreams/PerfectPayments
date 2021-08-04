@@ -1,30 +1,19 @@
 package net.perfectdreams.perfectpayments.routes.api.v1.callbacks
 
-import io.ktor.application.ApplicationCall
-import io.ktor.client.request.get
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.readText
-import io.ktor.http.HttpStatusCode
-import io.ktor.request.header
-import io.ktor.request.receiveParameters
+import io.ktor.application.*
+import io.ktor.http.*
+import io.ktor.request.*
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.decodeFromJsonElement
 import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.PerfectPayments
 import net.perfectdreams.perfectpayments.config.FocusNFeConfig
 import net.perfectdreams.perfectpayments.dao.NotaFiscal
-import net.perfectdreams.perfectpayments.dao.Payment
 import net.perfectdreams.perfectpayments.notafiscais.NotaFiscalStatus
-import net.perfectdreams.perfectpayments.payments.PaymentStatus
 import net.perfectdreams.perfectpayments.utils.Constants
-import net.perfectdreams.perfectpayments.utils.PaymentQuery
 import net.perfectdreams.perfectpayments.utils.extensions.receiveTextUTF8
 import net.perfectdreams.perfectpayments.utils.extensions.respondEmptyJson
 import net.perfectdreams.perfectpayments.utils.focusnfe.NFSeCallbackResponse
 import net.perfectdreams.sequins.ktor.BaseRoute
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.jsoup.Jsoup
-import java.util.*
 
 class PostFocusNFeCallbackRoute(val m: PerfectPayments, val focusNFeConfig: FocusNFeConfig) : BaseRoute("/api/v1/callbacks/focusnfe") {
     companion object {
@@ -51,7 +40,7 @@ class PostFocusNFeCallbackRoute(val m: PerfectPayments, val focusNFeConfig: Focu
         val theRealId = nfseCallbackResponse.ref.substringAfterLast("-")
             .toLongOrNull() ?: error("I wasn't able to process the Nota Fiscal because the reference can't be converted to a Long value!")
 
-        val notaFiscal = newSuspendedTransaction {
+        val notaFiscal = m.newSuspendedTransaction {
             NotaFiscal.findById(theRealId)
         } ?: error("I wasn't able to find a Nota Fiscal with ID $theRealId!")
 
@@ -68,7 +57,7 @@ class PostFocusNFeCallbackRoute(val m: PerfectPayments, val focusNFeConfig: Focu
 
         logger.info { "Updating Nota Fiscal $theRealId status from ${notaFiscal.status} to $newStatus..." }
 
-        newSuspendedTransaction {
+        m.newSuspendedTransaction {
             notaFiscal.status = newStatus
         }
 

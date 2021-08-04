@@ -18,7 +18,6 @@ import net.perfectdreams.perfectpayments.common.payments.PaymentGateway
 import net.perfectdreams.perfectpayments.dao.Payment
 import net.perfectdreams.perfectpayments.dao.PaymentPersonalInfo
 import net.perfectdreams.perfectpayments.payments.PaymentStatus
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.awt.Color
 import java.time.Instant
 import java.util.*
@@ -37,7 +36,7 @@ object PaymentQuery {
     ): String {
         val paymentCreator = m.paymentCreators[gateway] ?: error("Missing payment creator")
 
-        val payment = newSuspendedTransaction {
+        val payment = m.newSuspendedTransaction {
             Payment.new {
                 this.gateway = gateway
                 this.status = PaymentStatus.CREATED
@@ -52,7 +51,7 @@ object PaymentQuery {
         val paymentId = payment.id.value
 
         if (personalData != null) {
-            newSuspendedTransaction {
+            m.newSuspendedTransaction {
                 PaymentPersonalInfo.new {
                     this.payment = payment
                     this.socialNumber = personalData.socialNumber.cleanDocument
@@ -67,7 +66,7 @@ object PaymentQuery {
         // Remove the partial payment
         m.partialPayments.remove(partialPaymentId)
 
-        val paymentObject = newSuspendedTransaction { Payment.findById(paymentId) }
+        val paymentObject = m.newSuspendedTransaction { Payment.findById(paymentId) }
         if (paymentObject != null)
             sendPaymentNotification(m, paymentObject)
 

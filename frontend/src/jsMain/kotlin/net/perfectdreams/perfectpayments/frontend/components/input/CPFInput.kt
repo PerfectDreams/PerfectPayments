@@ -5,7 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import net.perfectdreams.i18nwrapper.I18nContext
+import net.perfectdreams.i18nhelper.core.I18nContext
 import net.perfectdreams.perfectpayments.common.data.CPF
 import net.perfectdreams.perfectpayments.frontend.components.TranslatedText
 import net.perfectdreams.perfectpayments.i18n.TranslationData

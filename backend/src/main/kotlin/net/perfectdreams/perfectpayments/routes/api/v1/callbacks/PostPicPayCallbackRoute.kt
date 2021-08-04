@@ -1,13 +1,10 @@
 package net.perfectdreams.perfectpayments.routes.api.v1.callbacks
 
-import io.ktor.application.ApplicationCall
-import io.ktor.client.request.get
-import io.ktor.client.request.header
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.readText
-import io.ktor.http.HttpStatusCode
-import io.ktor.request.header
-import io.ktor.request.receiveText
+import io.ktor.application.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import io.ktor.request.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
@@ -20,7 +17,6 @@ import net.perfectdreams.perfectpayments.utils.PaymentQuery
 import net.perfectdreams.perfectpayments.utils.extensions.receiveTextUTF8
 import net.perfectdreams.perfectpayments.utils.extensions.respondEmptyJson
 import net.perfectdreams.sequins.ktor.BaseRoute
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
 class PostPicPayCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callbacks/picpay") {
     companion object {
@@ -68,7 +64,7 @@ class PostPicPayCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
 
         val internalTransactionId = referenceId.split("-").last()
 
-        val internalPayment = newSuspendedTransaction {
+        val internalPayment = m.newSuspendedTransaction {
             Payment.findById(internalTransactionId.toLong())
         }
 
@@ -82,7 +78,7 @@ class PostPicPayCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
             // User charged back the payment, let's ban him!
             logger.warn { "Payment ${internalPayment.id.value} was charged back >:(" }
 
-            newSuspendedTransaction {
+            m.newSuspendedTransaction {
                 internalPayment.status = PaymentStatus.CHARGED_BACK
             }
         } else if (status == "paid" || status == "complete") {
@@ -94,7 +90,7 @@ class PostPicPayCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
 
             logger.info { "Setting Payment $internalTransactionId as paid! (via PicPay payment $referenceId)" }
 
-            newSuspendedTransaction {
+            m.newSuspendedTransaction {
                 // Pagamento aprovado!
                 internalPayment.paidAt = System.currentTimeMillis()
                 internalPayment.status = PaymentStatus.APPROVED

@@ -1,8 +1,8 @@
 package net.perfectdreams.perfectpayments.frontend.components
 
 import androidx.compose.runtime.Composable
-import net.perfectdreams.i18nwrapper.I18nContext
-import net.perfectdreams.i18nwrapper.keydata.StringTranslationData
+import net.perfectdreams.i18nhelper.core.I18nContext
+import net.perfectdreams.i18nhelper.core.keydata.StringTranslationData
 import org.jetbrains.compose.web.dom.Text
 
 @Composable

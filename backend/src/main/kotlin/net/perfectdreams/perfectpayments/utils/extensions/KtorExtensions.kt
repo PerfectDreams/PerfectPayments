@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.buildJsonObject
-import net.perfectdreams.i18nwrapper.I18nContext
+import net.perfectdreams.i18nhelper.core.I18nContext
 import net.perfectdreams.perfectpayments.PerfectPayments
 import java.util.*
 

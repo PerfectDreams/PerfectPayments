@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import net.perfectdreams.i18nwrapper.I18nContext
+import net.perfectdreams.i18nhelper.core.I18nContext
 import net.perfectdreams.perfectpayments.common.data.FilledPartialPayment
 import net.perfectdreams.perfectpayments.common.data.PaymentCreatedResponse
 import net.perfectdreams.perfectpayments.frontend.PerfectPaymentsFrontend
