@@ -8,9 +8,10 @@ import kotlinx.html.id
 import kotlinx.html.img
 import kotlinx.html.p
 import net.perfectdreams.i18nhelper.core.I18nContext
+import net.perfectdreams.perfectpayments.backend.utils.WebsiteAssetsHashManager
 import net.perfectdreams.perfectpayments.i18n.TranslationData
 
-class SuccessView(val context: I18nContext) : BaseView() {
+class SuccessView(val context: I18nContext, hashManager: WebsiteAssetsHashManager,) : BaseView(hashManager) {
     override fun HTML.generateBody() {
         body {
             div {

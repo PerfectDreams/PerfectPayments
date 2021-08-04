@@ -45,6 +45,7 @@ import net.perfectdreams.perfectpayments.backend.utils.GatewayConfigs
 import net.perfectdreams.perfectpayments.backend.utils.LanguageManager
 import net.perfectdreams.perfectpayments.backend.utils.NotaFiscalUtils
 import net.perfectdreams.perfectpayments.backend.utils.PartialPayment
+import net.perfectdreams.perfectpayments.backend.utils.WebsiteAssetsHashManager
 import net.perfectdreams.perfectpayments.backend.utils.focusnfe.FocusNFe
 import net.perfectdreams.perfectpayments.common.payments.PaymentGateway
 import org.jetbrains.exposed.sql.Database
@@ -71,6 +72,7 @@ class PerfectPayments(
     }
 
     val languageManager = LanguageManager("en", "/languages/")
+    val hashManager = WebsiteAssetsHashManager()
     val gateway = GatewayConfigs(gatewayConfigs)
     val discordWebhook = config.discordNotificationsWebhook?.let {
         WebhookClient.withUrl(it)

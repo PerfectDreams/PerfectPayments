@@ -10,8 +10,9 @@ import kotlinx.html.script
 import kotlinx.html.stream.appendHTML
 import kotlinx.html.styleLink
 import kotlinx.html.title
+import net.perfectdreams.perfectpayments.backend.utils.WebsiteAssetsHashManager
 
-abstract class BaseView {
+abstract class BaseView(internal val hashManager: WebsiteAssetsHashManager) {
     fun render(): String {
         val builder = StringBuilder()
 
@@ -19,28 +20,10 @@ abstract class BaseView {
             head {
                 title(getFullTitle())
                 meta(name = "viewport", content = "width=device-width, initial-scale=1")
-                styleLink("/assets/css/style.css?v=${System.currentTimeMillis()}") // TODO: REMOVE LATER
-                script(src = "/assets/js/frontend.js?v=${System.currentTimeMillis()}") { // TODO: REMOVE LATER
+                styleLink("/assets/css/style.css?hash=${hashManager.getAssetHash("/assets/css/style.css")}")
+                script(src = "/assets/js/frontend.js?hash=${hashManager.getAssetHash("/assets/js/frontend.js")}") {
                     defer = true // Only execute after the page has been parsed
                 }
-
-                // styleLink("https://use.fontawesome.com/releases/v5.8.1/css/all.css")
-                /* unsafe {
-                    raw("""<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>""")
-                } */
-                /* unsafe {
-                    raw("""<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-53518408-11"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-53518408-11');
-</script>
-""")
-                }
-                script(src = "/assets/js/PowerCMSJS.js") {} */
 
                 link(href = "/favicon.ico", rel = "icon", type = "image/x-icon")
                 generateMeta()

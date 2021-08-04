@@ -6,16 +6,19 @@ import kotlinx.html.script
 import kotlinx.html.unsafe
 import net.perfectdreams.i18nhelper.core.I18nContext
 import net.perfectdreams.perfectpayments.backend.utils.PartialPayment
+import net.perfectdreams.perfectpayments.backend.utils.WebsiteAssetsHashManager
 import java.util.*
 
 class StripeCheckoutView(
     locale: I18nContext,
+    hashManager: WebsiteAssetsHashManager,
     partialPayment: PartialPayment,
     val partialPaymentId: UUID,
     val publishToken: String,
     val sessionId: String
 ) : CheckoutBaseView(
     locale,
+    hashManager,
     "Stripe",
     partialPayment
 ) {

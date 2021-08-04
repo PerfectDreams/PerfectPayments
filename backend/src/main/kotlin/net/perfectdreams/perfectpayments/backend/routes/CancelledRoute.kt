@@ -11,6 +11,6 @@ import net.perfectdreams.sequins.ktor.BaseRoute
 class CancelledRoute(val m: PerfectPayments) : BaseRoute("/cancelled") {
     override suspend fun onRequest(call: ApplicationCall) {
         val locale = call.getI18nContext(m)
-        call.respondText(CancelledView(locale).render(), ContentType.Text.Html)
+        call.respondText(CancelledView(locale, m.hashManager).render(), ContentType.Text.Html)
     }
 }

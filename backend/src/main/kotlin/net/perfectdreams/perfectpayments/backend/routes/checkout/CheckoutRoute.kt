@@ -22,6 +22,6 @@ class CheckoutRoute(val m: PerfectPayments) : BaseRoute("/checkout/{partialPayme
             return
         }
 
-        call.respondText(CheckoutView().render(), ContentType.Text.Html)
+        call.respondText(CheckoutView(m.hashManager).render(), ContentType.Text.Html)
     }
 }

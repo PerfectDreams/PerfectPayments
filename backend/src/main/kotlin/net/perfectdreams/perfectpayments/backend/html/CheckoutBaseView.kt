@@ -13,12 +13,14 @@ import kotlinx.html.p
 import kotlinx.html.style
 import net.perfectdreams.i18nhelper.core.I18nContext
 import net.perfectdreams.perfectpayments.backend.utils.PartialPayment
+import net.perfectdreams.perfectpayments.backend.utils.WebsiteAssetsHashManager
 
 abstract class CheckoutBaseView(
     val locale: I18nContext,
+    hashManager: WebsiteAssetsHashManager,
     val checkoutStageTitle: String,
     val partialPayment: PartialPayment
-) : BaseView() {
+) : BaseView(hashManager) {
     override fun HTML.generateBody() {
         body {
             div {

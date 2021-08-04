@@ -11,6 +11,6 @@ import net.perfectdreams.sequins.ktor.BaseRoute
 class MissingPartialPaymentRoute(val m: PerfectPayments) : BaseRoute("/missing") {
     override suspend fun onRequest(call: ApplicationCall) {
         val locale = call.getI18nContext(m)
-        call.respondText(MissingPartialPaymentView(locale).render(), ContentType.Text.Html)
+        call.respondText(MissingPartialPaymentView(locale, m.hashManager).render(), ContentType.Text.Html)
     }
 }
