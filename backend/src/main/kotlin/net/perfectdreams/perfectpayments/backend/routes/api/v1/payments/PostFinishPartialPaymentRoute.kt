@@ -8,14 +8,14 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonObject
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
-import net.perfectdreams.perfectpayments.common.data.FilledPartialPayment
-import net.perfectdreams.perfectpayments.common.data.PaymentCreatedResponse
-import net.perfectdreams.perfectpayments.common.payments.PaymentGateway
 import net.perfectdreams.perfectpayments.backend.dao.Payment
 import net.perfectdreams.perfectpayments.backend.payments.PaymentStatus
 import net.perfectdreams.perfectpayments.backend.utils.PaymentQuery
 import net.perfectdreams.perfectpayments.backend.utils.extensions.receiveTextUTF8
 import net.perfectdreams.perfectpayments.backend.utils.extensions.respondJson
+import net.perfectdreams.perfectpayments.common.data.FilledPartialPayment
+import net.perfectdreams.perfectpayments.common.data.PaymentCreatedResponse
+import net.perfectdreams.perfectpayments.common.payments.PaymentGateway
 import net.perfectdreams.sequins.ktor.BaseRoute
 import java.util.*
 
@@ -55,6 +55,9 @@ class PostFinishPartialPaymentRoute(val m: PerfectPayments) : BaseRoute("/api/v1
                     internalPayment.status = PaymentStatus.APPROVED
                 }
 
+                // Send a update to the callback URL
+                PaymentQuery.sendPaymentNotification(m, internalPayment)
+                
                 // Generate nota fiscal
                 m.notaFiscais?.generateNotaFiscal(internalPayment)
 
