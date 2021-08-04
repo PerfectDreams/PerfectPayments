@@ -1,0 +1,188 @@
+$primary-color: #29a6fe;
+
+// Lovely Style
+@import 'lovely-style/reset';
+@import 'lovely-style/body';
+@import 'lovely-style/navigation-bar';
+@import 'lovely-style/primary-color-headings';
+@import 'lovely-style/buttons';
+@import 'lovely-style/rainbow';
+@import 'lovely-style/fancy-table';
+@import 'lovely-style/text';
+@import 'lovely-style/fonts/oswald.scss';
+@import 'lovely-style/fonts/lato.scss';
+@import 'lovely-style/fancy-hr.scss';
+
+// @import 'navigation-bar';
+// @import 'header';
+// @import 'bouncy-arrow';
+// @import 'effects';
+// @import 'buttons';
+// @import 'discord_style';
+// @import 'sidebars';
+// @import 'fan-arts';
+// @import 'dashboard';
+// @import '_fonts';
+// @import 'sponsors';
+// @import 'rainbow';
+// @import 'blog';
+// @import 'headings';
+// @import 'footer';
+// @import 'tingle.min';
+// @import 'fancy-table';
+// @import 'discord_buttons';
+// @import '/home/loritta_canary/frontend/css/_daily-shop.scss';
+
+/* latin */
+/* @font-face {
+  font-family: 'Pacifico';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap; // Logo text is a good candidate for swap since displaying a company’s name using a reasonable fallback will get the message across but you’d eventually use the official typeface.
+  src: local('Pacifico Regular'), local('Pacifico-Regular'), url(https://fonts.gstatic.com/s/pacifico/v12/FwZY7-Qmy14u9lezJ-6H6Mk.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+} */
+
+@include import-font-lato();
+// @include import-font-oswald();
+
+$min-reading-width: 1260px;
+$min-image-stacked-width: 800px;
+
+body {
+  @include lovely-body($hide-overflow-x: true);
+  display: flex; 
+  flex-direction: column;
+  height: 100vh;
+}
+
+footer {
+    margin-top: auto; 
+}
+
+@include navigation-bar();
+@include lovely-button-colors();
+
+// Colocar uma margem no li, para que não fique fei
+li {
+  margin-top: 0.7em;
+}
+
+// Links
+a {
+  background-color: transparent;
+  color: #006bf4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+input {
+    margin: 8px 0;
+    border: 1px solid
+    #c7c9cb;
+    border-radius: 4px;
+    background-color:
+    #fbfbfc;
+    padding: 8px;
+}
+
+#wrapper {
+    margin-left: auto;
+    margin-right: auto;
+    width: 80vw;
+    max-width: 50em;
+
+    &.payment-methods-menu {
+        h1 {
+            font-size: 3em;
+            text-align: center;
+        }
+    }
+}
+
+#warning-screen {
+    display: flex;
+    min-height: 100vh;
+    width: 80vw;
+    text-align: center;
+    justify-content: center;
+    align-content: center;
+    margin: auto;
+    flex-direction: column;
+
+    img {
+        width: 300px;
+        height: auto;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+#payment-header {
+    background-color: #29a6fe;
+    text-align: left;
+    padding-top: 3em;
+    padding-bottom: 3em;
+    box-shadow: 0px 0px 10px #00000059;
+    display: flex;
+    justify-content: center;
+    color: white;
+    margin-bottom: 2em;
+
+    h1, h2, h3, h4, h5 {
+        color: white;
+        margin: 0px;
+    }
+
+    .divisor {
+        width: 2px;
+        background-color: #3595ea;
+        margin-left: 1em;
+        margin-right: 1em;
+        align-self: stretch;
+    }
+}
+
+#payment-methods {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-gap: 2em;
+    margin: auto;
+    justify-content: center;
+    width: 100%;
+
+    .payment-button {
+        background-color: white;
+        padding: 8px;
+        border-radius: 10px;
+        cursor: pointer;
+        border: 1px solid #00000017;
+        transition: 0.5s;
+    
+        &:hover {
+            box-shadow: 0 0 10px $primary-color;
+            border-color: $primary-color;
+        }
+    }
+}
+
+form, button {
+    font-family: "Lato", Arial, Helvetica, sans-serif;
+}
+
+@media (min-width: 600px) {
+    #payment-methods {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 900px) {
+    #payment-methods {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+// Queremos que o tema escuro faça override de qualquer regra anterior
+// @import 'dark-theme';

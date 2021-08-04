@@ -1,0 +1,3 @@
+[submodule "resources/languages"]
+	path = resources/languages
+	url = https://github.com/PerfectDreams/PerfectPaymentsLanguages.git

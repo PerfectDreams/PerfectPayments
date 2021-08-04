@@ -10,7 +10,7 @@ local.properties
 .loadpath
 .recommenders
 
-config.json
+*.conf
 lib/
 
 # External tool builders

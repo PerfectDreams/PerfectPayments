@@ -1,0 +1,580 @@
+@charset "UTF-8";
+body {
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #29a6fe;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+button.button {
+  border: 0;
+}
+
+.button {
+  padding: 0.5em 1em;
+  box-sizing: border-box;
+  border-radius: 6px;
+  transition: 0.75s;
+  text-decoration: none;
+}
+.button.has-shadow {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+.button.is-big {
+  font-size: 1.25em;
+}
+.button.is-inline {
+  display: inline-flex;
+}
+.button:hover {
+  cursor: pointer;
+}
+.button[disabled] {
+  cursor: not-allowed;
+}
+
+.has-rainbow-text {
+  background: linear-gradient(to right, #6666ff, #0099ff, #00ff00, #ff3399, #6666ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: rainbow_animation 6s ease-in-out infinite;
+  background-size: 400% 100%;
+}
+
+@keyframes rainbow_animation {
+  0%, 100% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 100% 0;
+  }
+}
+table.fancy-table {
+  border-spacing: 0;
+}
+table.fancy-table th {
+  font-weight: 600;
+  color: #29a6fe;
+}
+table.fancy-table th, table.fancy-table td {
+  border-bottom: 1px solid #0000001a;
+  padding: 10px;
+}
+
+.centered-text {
+  text-align: center;
+}
+
+.left-aligned-text {
+  text-align: left;
+}
+
+.right-aligned-text {
+  text-align: right;
+}
+
+hr {
+  box-sizing: content-box;
+  background: rgba(0, 0, 0, 0.05);
+  border: 0;
+  height: 1px;
+}
+
+/* latin */
+/* @font-face {
+  font-family: 'Pacifico';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap; // Logo text is a good candidate for swap since displaying a company’s name using a reasonable fallback will get the message across but you’d eventually use the official typeface.
+  src: local('Pacifico Regular'), local('Pacifico-Regular'), url(https://fonts.gstatic.com/s/pacifico/v12/FwZY7-Qmy14u9lezJ-6H6Mk.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+} */
+/* latin-ext */
+@font-face {
+  font-family: "Lato";
+  font-style: normal;
+  font-weight: 100;
+  font-display: swap;
+  src: local("Lato Hairline"), local("Lato-Hairline"), url(https://fonts.gstatic.com/s/lato/v16/S6u8w4BMUTPHh30AUi-qJCY.woff2) format("woff2");
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: "Lato";
+  font-style: normal;
+  font-weight: 100;
+  font-display: swap;
+  src: local("Lato Hairline"), local("Lato-Hairline"), url(https://fonts.gstatic.com/s/lato/v16/S6u8w4BMUTPHh30AXC-q.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin-ext */
+@font-face {
+  font-family: "Lato";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: local("Lato Light"), local("Lato-Light"), url(https://fonts.gstatic.com/s/lato/v16/S6u9w4BMUTPHh7USSwaPGR_p.woff2) format("woff2");
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: "Lato";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: local("Lato Light"), local("Lato-Light"), url(https://fonts.gstatic.com/s/lato/v16/S6u9w4BMUTPHh7USSwiPGQ.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin-ext */
+@font-face {
+  font-family: "Lato";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local("Lato Regular"), local("Lato-Regular"), url(https://fonts.gstatic.com/s/lato/v16/S6uyw4BMUTPHjxAwXjeu.woff2) format("woff2");
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: "Lato";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local("Lato Regular"), local("Lato-Regular"), url(https://fonts.gstatic.com/s/lato/v16/S6uyw4BMUTPHjx4wXg.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin-ext */
+@font-face {
+  font-family: "Lato";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local("Lato Bold"), local("Lato-Bold"), url(https://fonts.gstatic.com/s/lato/v16/S6u9w4BMUTPHh6UVSwaPGR_p.woff2) format("woff2");
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: "Lato";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local("Lato Bold"), local("Lato-Bold"), url(https://fonts.gstatic.com/s/lato/v16/S6u9w4BMUTPHh6UVSwiPGQ.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin-ext */
+@font-face {
+  font-family: "Lato";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: local("Lato Black"), local("Lato-Black"), url(https://fonts.gstatic.com/s/lato/v16/S6u9w4BMUTPHh50XSwaPGR_p.woff2) format("woff2");
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: "Lato";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: local("Lato Black"), local("Lato-Black"), url(https://fonts.gstatic.com/s/lato/v16/S6u9w4BMUTPHh50XSwiPGQ.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+body {
+  font-family: "Lato", Arial, Helvetica, sans-serif;
+  background-color: #f3f3f3;
+  color: #333333;
+  overflow-x: true;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+footer {
+  margin-top: auto;
+}
+
+.dummy-navigation-bar {
+  height: 46px;
+}
+
+nav.navigation-bar {
+  top: 0px;
+  width: 100%;
+  height: 46px;
+  background-color: #29a6fe;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  text-transform: uppercase;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.2);
+  font-family: Oswald, Impact, Arial, sans-serif;
+  line-height: 1;
+  z-index: 999;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+nav.navigation-bar.fixed {
+  position: fixed;
+}
+nav.navigation-bar .entry {
+  float: left;
+  display: block;
+  color: #f2f2f2 !important;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  transition: 500ms;
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+}
+nav.navigation-bar .entry a {
+  color: #f2f2f2 !important;
+  text-decoration: none;
+}
+nav.navigation-bar .entry:hover {
+  background-color: #1aa0fe;
+}
+nav.navigation-bar .icon {
+  display: none;
+}
+nav.navigation-bar .left-side-entries {
+  display: flex;
+  flex-grow: 1;
+  flex-flow: wrap;
+  overflow: hidden;
+}
+nav.navigation-bar .right-side-entries {
+  display: flex;
+  margin-left: auto;
+  justify-content: flex-end;
+}
+nav.navigation-bar #hamburger-menu-button {
+  display: none;
+}
+nav.navigation-bar.expanded {
+  height: 100vh;
+  overflow: auto;
+}
+nav.navigation-bar.expanded .entry {
+  display: block !important;
+  float: none;
+  text-align: left;
+  height: auto;
+}
+nav.navigation-bar.expanded .left-side-entries {
+  float: none;
+}
+nav.navigation-bar.expanded .right-side-entries {
+  float: none;
+}
+nav.navigation-bar.expanded #hamburger-menu-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+@media screen and (max-width: 1366px) {
+  .navigation-bar a.icon {
+    float: right;
+    display: block;
+    padding: 14px 16px;
+  }
+}
+@media screen and (max-width: 600px) {
+  .navigation-bar .entry:not(.loritta-navbar-logo) {
+    display: none;
+  }
+
+  #hamburger-menu-button {
+    display: block !important;
+  }
+}
+@media screen and (max-width: 1366px) {
+  .navigation-bar.responsive {
+    position: relative;
+  }
+
+  .navigation-bar.responsive .icon {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  .navigation-bar.responsive .entry {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+}
+.navigation-bar.responsive {
+  height: 100vh;
+  overflow: auto;
+  position: fixed;
+  flex-direction: column;
+}
+.navigation-bar.responsive div {
+  display: flex;
+  flex-direction: column;
+}
+.navigation-bar.responsive .left-side-entries {
+  flex-direction: column;
+  flex-grow: 0;
+}
+.navigation-bar.responsive .left-side-entries .entry {
+  display: block;
+}
+.navigation-bar.responsive .right-side-entries {
+  flex-direction: column;
+  margin-left: unset;
+}
+
+@media screen and (max-width: 1366px) {
+  .navigation-bar.expanded {
+    position: relative;
+  }
+
+  .navigation-bar.expanded .icon {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  .navigation-bar.expanded .entry {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+}
+.navigation-bar.expanded {
+  height: 100vh;
+  overflow: auto;
+  position: fixed;
+  flex-direction: column;
+}
+.navigation-bar.expanded div {
+  display: flex;
+  flex-direction: column;
+}
+.navigation-bar.expanded .left-side-entries {
+  flex-direction: column;
+  flex-grow: 0;
+}
+.navigation-bar.expanded .left-side-entries .entry {
+  display: block;
+}
+.navigation-bar.expanded .right-side-entries {
+  flex-direction: column;
+  margin-left: unset;
+}
+
+#languages {
+  position: absolute;
+  background-color: white;
+  left: 0;
+  top: 100%;
+  display: none;
+  text-align: left;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  padding: 4px;
+  min-width: 100%;
+  border-radius: 0px 0px 7px 7px;
+  box-sizing: border-box;
+  z-index: 100;
+}
+
+#languages a {
+  width: 100%;
+  font-family: Lato, Helvetica Neue, Helvetica, Arial, sans-serif;
+  color: #4f545c !important;
+  font-weight: 500;
+  text-transform: none;
+  padding: 0px;
+}
+#languages a:hover {
+  color: #00b0f4 !important;
+}
+
+#locale-changer-button:hover #languages {
+  display: block;
+}
+
+.button.primary {
+  background-color: #29a6fe;
+  color: white;
+}
+.button.primary:hover {
+  background-color: #018ff3;
+}
+.button.primary.has-shadow:hover {
+  box-shadow: 0 0 15px #29a6fe, 0 0 15px #29a6fe, 0 0 15px #29a6fe;
+}
+
+.button.red {
+  background-color: red;
+  color: white;
+}
+.button.red:hover {
+  background-color: #cc0000;
+}
+.button.red.has-shadow:hover {
+  box-shadow: 0 0 15px red, 0 0 15px red, 0 0 15px red;
+}
+
+.button.pink {
+  background-color: #fe29a6;
+  color: white;
+}
+.button.pink:hover {
+  background-color: #f3018f;
+}
+.button.pink.has-shadow:hover {
+  box-shadow: 0 0 15px #fe29a6, 0 0 15px #fe29a6, 0 0 15px #fe29a6;
+}
+
+.button.light-green {
+  background-color: #37ef8d;
+  color: white;
+}
+.button.light-green:hover {
+  background-color: #12e173;
+}
+.button.light-green.has-shadow:hover {
+  box-shadow: 0 0 15px #37ef8d, 0 0 15px #37ef8d, 0 0 15px #37ef8d;
+}
+
+.button.purple {
+  background-color: #8d37ef;
+  color: white;
+}
+.button.purple:hover {
+  background-color: #7312e1;
+}
+.button.purple.has-shadow:hover {
+  box-shadow: 0 0 15px #8d37ef, 0 0 15px #8d37ef, 0 0 15px #8d37ef;
+}
+
+li {
+  margin-top: 0.7em;
+}
+
+a {
+  background-color: transparent;
+  color: #006bf4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+input {
+  margin: 8px 0;
+  border: 1px solid #c7c9cb;
+  border-radius: 4px;
+  background-color: #fbfbfc;
+  padding: 8px;
+}
+
+#wrapper {
+  margin-left: auto;
+  margin-right: auto;
+  width: 80vw;
+  max-width: 50em;
+}
+#wrapper.payment-methods-menu h1 {
+  font-size: 3em;
+  text-align: center;
+}
+
+#warning-screen {
+  display: flex;
+  min-height: 100vh;
+  width: 80vw;
+  text-align: center;
+  justify-content: center;
+  align-content: center;
+  margin: auto;
+  flex-direction: column;
+}
+#warning-screen img {
+  width: 300px;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#payment-header {
+  background-color: #29a6fe;
+  text-align: left;
+  padding-top: 3em;
+  padding-bottom: 3em;
+  box-shadow: 0px 0px 10px #00000059;
+  display: flex;
+  justify-content: center;
+  color: white;
+  margin-bottom: 2em;
+}
+#payment-header h1, #payment-header h2, #payment-header h3, #payment-header h4, #payment-header h5 {
+  color: white;
+  margin: 0px;
+}
+#payment-header .divisor {
+  width: 2px;
+  background-color: #3595ea;
+  margin-left: 1em;
+  margin-right: 1em;
+  align-self: stretch;
+}
+
+#payment-methods {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-gap: 2em;
+  margin: auto;
+  justify-content: center;
+  width: 100%;
+}
+#payment-methods .payment-button {
+  background-color: white;
+  padding: 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid #00000017;
+  transition: 0.5s;
+}
+#payment-methods .payment-button:hover {
+  box-shadow: 0 0 10px #29a6fe;
+  border-color: #29a6fe;
+}
+
+form, button {
+  font-family: "Lato", Arial, Helvetica, sans-serif;
+}
+
+@media (min-width: 600px) {
+  #payment-methods {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 900px) {
+  #payment-methods {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/*# sourceMappingURL=style.css.map */
