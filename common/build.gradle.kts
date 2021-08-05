@@ -29,8 +29,6 @@ kotlin {
     sourceSets {
         commonMain {
             kotlin.srcDir("build/generated/languages")
-            resources.srcDir("../resources/")
-
             dependencies {
                 api(kotlin("stdlib-common"))
                 implementation("net.perfectdreams.i18nhelper:core:0.0.1-SNAPSHOT")

@@ -1,7 +1,7 @@
 // Add compose gradle plugin
 plugins {
     kotlin("multiplatform")
-    id("org.jetbrains.compose") version "1.0.0-alpha1-rc2"
+    id("org.jetbrains.compose") version "1.0.0-alpha2"
 }
 
 // Add maven repositories

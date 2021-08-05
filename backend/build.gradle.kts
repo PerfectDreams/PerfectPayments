@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
+    id("com.google.cloud.tools.jib") version "3.1.2"
 }
 
 group = "net.perfectdreams.perfectpayments"
@@ -57,6 +58,21 @@ dependencies {
     implementation("io.ktor:ktor-client-apache:1.5.3")
     implementation("io.ktor:ktor-server-core:1.5.3")
     implementation("io.ktor:ktor-server-netty:1.5.3")
+}
+
+jib {
+    to {
+        image = "ghcr.io/perfectdreams/perfectpayments"
+
+        auth {
+            username = System.getProperty("DOCKER_USERNAME") ?: System.getenv("DOCKER_USERNAME")
+            password = System.getProperty("DOCKER_PASSWORD") ?: System.getenv("DOCKER_PASSWORD")
+        }
+    }
+
+    from {
+        image = "openjdk:15.0.2-slim-buster"
+    }
 }
 
 val jsBrowserProductionWebpack = tasks.getByPath(":frontend:jsBrowserProductionWebpack") as org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
