@@ -32,7 +32,14 @@ fun NotaFiscalRequest(m: PerfectPaymentsFrontend, i18nContext: I18nContext, part
         Div({ style { textAlign("center") }}) {
             Img(
                 src = "${window.location.origin}/assets/img/lori_nota_fiscal.png",
-                attrs = { style { width(300.px); maxWidth(100.percent) }})
+                attrs = {
+                    style {
+                        width(300.px)
+                        maxWidth(100.percent)
+                        property("aspect-ratio", "300/334") // Used to avoid content shifting due to image load
+                    }
+                }
+            )
         }
         i18nContext.get(TranslationKeys.TaxInvoice.Description).forEach {
             P {
