@@ -62,6 +62,14 @@ dependencies {
 val jsBrowserProductionWebpack = tasks.getByPath(":frontend:jsBrowserProductionWebpack") as org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 
 tasks {
+    val runnableJar = runnableJarTask(
+        DEFAULT_SHADED_WITHIN_JAR_LIBRARIES,
+        configurations.runtimeClasspath.get(),
+        jar.get(),
+        "net.perfectdreams.perfectpayments.backend.PerfectPaymentsLauncher",
+        mapOf()
+    )
+
     val sass = sassTask("style.scss")
 
     processResources {
@@ -80,6 +88,11 @@ tasks {
         from(File(buildDir, "sass")) {
             into("static/assets/css/")
         }
+    }
+
+    "build" {
+        // This should be ran BEFORE the JAR is compiled!
+        dependsOn(runnableJar)
     }
 }
 
