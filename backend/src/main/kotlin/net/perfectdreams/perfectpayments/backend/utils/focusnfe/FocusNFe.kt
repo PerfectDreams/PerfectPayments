@@ -4,6 +4,7 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.content.*
 import io.ktor.http.*
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
@@ -17,6 +18,9 @@ import java.util.*
 class FocusNFe(private val config: FocusNFeConfig) {
     companion object {
         private val logger = KotlinLogging.logger {}
+        private val json = Json {
+            ignoreUnknownKeys = true
+        }
     }
 
     // We send NFSe because infoproducts are considered "services", this is confused as heck.
@@ -80,5 +84,23 @@ class FocusNFe(private val config: FocusNFeConfig) {
                 logger.warn { "Something went wrong while trying to register a nota fiscal! Retrying again after ${it}ms"}
             }
         )
+    }
+
+    suspend fun cancelNFSe(
+        ref: String
+    ): NFSeCancellationResponse {
+        val request = NFSeCancellationRequest(ref)
+
+        val result = PerfectPayments.http.delete<HttpResponse>("${config.url.removeSuffix("/")}/v2/nfse?ref=$ref") {
+            val auth = Base64.getEncoder().encodeToString("${config.token}:".toByteArray(Charsets.UTF_8)) // The password is always empty
+            header("Authorization", "Basic $auth")
+
+            body = TextContent(
+                Json.encodeToString(request),
+                ContentType.Application.Json
+            )
+        }
+
+        return json.decodeFromString(result.readText(Charsets.UTF_8))
     }
 }

@@ -122,6 +122,11 @@ class PostPagSeguroCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/ca
 
             // Send a update to the callback URL
             PaymentQuery.sendPaymentNotification(m, internalPayment)
+
+            // Cancel notas fiscais if the payment was charged back
+            if (paymentStatus == PaymentStatus.CHARGED_BACK) {
+                m.notaFiscais?.cancelNotaFiscais(internalPayment)
+            }
         }
 
         call.respondEmptyJson()

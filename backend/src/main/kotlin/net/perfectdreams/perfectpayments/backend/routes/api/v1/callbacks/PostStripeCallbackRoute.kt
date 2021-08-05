@@ -72,6 +72,11 @@ class PostStripeCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
 
                 // Send a update to the callback URL
                 PaymentQuery.sendPaymentNotification(m, internalPayment)
+
+                // Cancel notas fiscais if the payment was charged back
+                if (internalPayment.status == PaymentStatus.CHARGED_BACK) {
+                    m.notaFiscais?.cancelNotaFiscais(internalPayment)
+                }
             }
         }
         if (event.type == "payment_intent.succeeded") {

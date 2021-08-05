@@ -6,6 +6,7 @@ import net.perfectdreams.perfectpayments.backend.dao.NotaFiscal
 import net.perfectdreams.perfectpayments.backend.dao.Payment
 import net.perfectdreams.perfectpayments.backend.dao.PaymentPersonalInfo
 import net.perfectdreams.perfectpayments.backend.notafiscais.NotaFiscalStatus
+import net.perfectdreams.perfectpayments.backend.tables.NotaFiscais
 import net.perfectdreams.perfectpayments.backend.tables.PaymentPersonalInfos
 import net.perfectdreams.perfectpayments.backend.utils.focusnfe.FocusNFe
 import net.perfectdreams.perfectpayments.backend.utils.focusnfe.NFSeCreateRequest
@@ -58,5 +59,24 @@ class NotaFiscalUtils(val m: PerfectPayments, val focusNFe: FocusNFe, val refere
             "Liberação de serviço \"${payment.title}\" para o usuário",
             tomador
         )
+    }
+
+    suspend fun cancelNotaFiscais(payment: Payment) {
+        logger.info { "Cancelling Nota Fiscal for ${payment.id}..." }
+
+        val generatedNotasFiscais = m.newSuspendedTransaction {
+            NotaFiscal.find {
+                NotaFiscais.payment eq payment.id
+            }.toList()
+        }
+
+        // A payment may have multiple notas fiscais
+        logger.info { "There are ${generatedNotasFiscais.size} notas fiscais generated that we need to cancel!" }
+
+        generatedNotasFiscais.forEach {
+            logger.info { "Cancelling Nota Fiscal ${referencePrefix}${it.id}..." }
+            val result = focusNFe.cancelNFSe("${referencePrefix}${it.id}")
+            logger.info { "Nota Fiscal ${referencePrefix}${it.id} cancellation result: ${result.status} ${result.erros}" }
+        }
     }
 }

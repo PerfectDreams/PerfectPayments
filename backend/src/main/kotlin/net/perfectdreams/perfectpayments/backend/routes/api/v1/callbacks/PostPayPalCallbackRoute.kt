@@ -103,12 +103,17 @@ class PostPayPalCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
                     logger.warn { "Setting Payment ${internalPayment.id} ($captureId) as paid! (via PayPal payment $paymentId)" }
 
                     m.newSuspendedTransaction {
-                        // Pagamento aprovado!
+                        // Pagamento foi cancelado!
                         internalPayment.status = PaymentStatus.CHARGED_BACK
                     }
 
                     // Send a update to the callback URL
                     PaymentQuery.sendPaymentNotification(m, internalPayment)
+
+                    // Cancel notas fiscais if the payment was charged back
+                    if (internalPayment.status == PaymentStatus.CHARGED_BACK) {
+                        m.notaFiscais?.cancelNotaFiscais(internalPayment)
+                    }
                 }
             }
         } else if (eventType == "CHECKOUT.ORDER.APPROVED") {
