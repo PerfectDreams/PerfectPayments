@@ -137,12 +137,39 @@ input {
         margin: 0px;
     }
 
+    h1 {
+        // Fix alignment of the h1 to make it look prettier if the line doesn't fit on screen
+        text-align: right;
+    }
+
     .divisor {
         width: 2px;
         background-color: #3595ea;
         margin-left: 1em;
         margin-right: 1em;
         align-self: stretch;
+    }
+}
+
+// If the screen is too small...
+@media (max-width: 520px) {
+    #payment-header {
+        flex-direction: column; // Make the payment header a column!
+        padding: 1em; // Add a padding
+
+        h1 {
+            text-align: center; // Make it centered
+        }
+
+        .divisor {
+            // Flip the divisor to be horizontal
+            width: 100%;
+            height: 2px;
+            margin-left: 0em;
+            margin-right: 0em;
+            margin-top: 1em;
+            margin-bottom: 1em;
+        }
     }
 }
 
