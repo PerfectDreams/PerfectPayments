@@ -15,8 +15,10 @@ import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.border
 import org.jetbrains.compose.web.css.color
 import org.jetbrains.compose.web.css.fontWeight
+import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.rgb
+import org.jetbrains.compose.web.css.width
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Input
 
@@ -37,8 +39,10 @@ fun LastNameInput(i18nContext: I18nContext, onInput: (LastName?) -> (Unit)) {
             value = new
         }
 
-        if (value == null) {
-            style {
+        style {
+            width(100.percent)
+
+            if (value == null) {
                 border {
                     color = rgb(255, 0, 0)
                     style = LineStyle.Solid
