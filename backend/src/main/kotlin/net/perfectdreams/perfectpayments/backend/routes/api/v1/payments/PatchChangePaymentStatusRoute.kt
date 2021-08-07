@@ -51,9 +51,13 @@ class PatchChangePaymentStatusRoute(m: PerfectPayments) : RequiresAPIAuthenticat
             }
         }
 
-        // Same status, just ignore it
         // Send a update to the callback URL
         PaymentQuery.sendPaymentNotification(m, internalPayment)
+
+        if (status == PaymentStatus.APPROVED) {
+            // Generate nota fiscal
+            m.notaFiscais?.generateNotaFiscal(internalPayment)
+        }
 
         call.respondEmptyJson()
     }
