@@ -9,7 +9,7 @@ import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.dao.Payment
 import net.perfectdreams.perfectpayments.backend.payments.PaymentStatus
-import net.perfectdreams.perfectpayments.backend.utils.PaymentQuery
+import net.perfectdreams.perfectpayments.backend.utils.PaymentUtils
 import net.perfectdreams.perfectpayments.backend.utils.extensions.respondEmptyJson
 import net.perfectdreams.sequins.ktor.BaseRoute
 import org.jsoup.Jsoup
@@ -97,35 +97,11 @@ class PostPagSeguroCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/ca
             logger.info { "PagSeguro payment $reference status is $paymentStatus" }
 
             if (paymentStatus != null) {
-                m.newSuspendedTransaction {
-                    // https://dev.pagseguro.uol.com.br/docs/api-notificacao-v1
-                    internalPayment.status = paymentStatus
-                }
-            }
-
-            if (paymentStatus == PaymentStatus.APPROVED) {
-                if (internalPayment.paidAt != null) {
-                    logger.warn { "PagSeguro Payment with Reference ID: $reference ($internalTransactionId) is already paid! Ignoring..." }
-                    call.respondEmptyJson()
-                    return
-                }
-
-                logger.info { "Setting Payment $internalTransactionId as paid! (via PagSeguro payment $reference)" }
-
-                m.newSuspendedTransaction {
-                    // Pagamento aprovado!
-                    internalPayment.paidAt = System.currentTimeMillis()
-                }
-
-                m.notaFiscais?.generateNotaFiscal(internalPayment)
-            }
-
-            // Send a update to the callback URL
-            PaymentQuery.sendPaymentNotification(m, internalPayment)
-
-            // Cancel notas fiscais if the payment was charged back
-            if (paymentStatus == PaymentStatus.CHARGED_BACK) {
-                m.notaFiscais?.cancelNotaFiscais(internalPayment)
+                PaymentUtils.updatePaymentStatus(
+                    m,
+                    internalPayment,
+                    paymentStatus
+                )
             }
         }
 

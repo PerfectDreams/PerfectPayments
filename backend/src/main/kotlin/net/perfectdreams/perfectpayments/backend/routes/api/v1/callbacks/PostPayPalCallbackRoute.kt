@@ -18,6 +18,7 @@ import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.dao.Payment
 import net.perfectdreams.perfectpayments.backend.payments.PaymentStatus
 import net.perfectdreams.perfectpayments.backend.utils.PaymentQuery
+import net.perfectdreams.perfectpayments.backend.utils.PaymentUtils
 import net.perfectdreams.perfectpayments.backend.utils.extensions.receiveTextUTF8
 import net.perfectdreams.perfectpayments.backend.utils.extensions.respondEmptyJson
 import net.perfectdreams.sequins.ktor.BaseRoute
@@ -100,20 +101,11 @@ class PostPayPalCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
 
                     logger.warn { "PayPal Payment ${internalPayment.id.value} was charged back >:(" }
 
-                    logger.warn { "Setting Payment ${internalPayment.id} ($captureId) as paid! (via PayPal payment $paymentId)" }
-
-                    m.newSuspendedTransaction {
-                        // Pagamento foi cancelado!
-                        internalPayment.status = PaymentStatus.CHARGED_BACK
-                    }
-
-                    // Send a update to the callback URL
-                    PaymentQuery.sendPaymentNotification(m, internalPayment)
-
-                    // Cancel notas fiscais if the payment was charged back
-                    if (internalPayment.status == PaymentStatus.CHARGED_BACK) {
-                        m.notaFiscais?.cancelNotaFiscais(internalPayment)
-                    }
+                    PaymentUtils.updatePaymentStatus(
+                        m,
+                        internalPayment,
+                        PaymentStatus.CHARGED_BACK
+                    )
                 }
             }
         } else if (eventType == "CHECKOUT.ORDER.APPROVED") {
@@ -175,16 +167,11 @@ class PostPayPalCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
 
                             logger.info { "Setting Payment ${internalPayment.id} ($captureId) as paid! (via PayPal payment $paymentId)" }
 
-                            m.newSuspendedTransaction {
-                                // Pagamento aprovado!
-                                internalPayment.paidAt = System.currentTimeMillis()
-                                internalPayment.status = PaymentStatus.APPROVED
-                            }
-
-                            // Send a update to the callback URL
-                            PaymentQuery.sendPaymentNotification(m, internalPayment)
-
-                            m.notaFiscais?.generateNotaFiscal(internalPayment)
+                            PaymentUtils.updatePaymentStatus(
+                                m,
+                                internalPayment,
+                                PaymentStatus.APPROVED
+                            )
                         }
                     }
                 }

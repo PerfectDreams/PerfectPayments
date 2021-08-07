@@ -14,6 +14,7 @@ import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.dao.Payment
 import net.perfectdreams.perfectpayments.backend.payments.PaymentStatus
 import net.perfectdreams.perfectpayments.backend.utils.PaymentQuery
+import net.perfectdreams.perfectpayments.backend.utils.PaymentUtils
 import net.perfectdreams.perfectpayments.backend.utils.extensions.receiveTextUTF8
 import net.perfectdreams.perfectpayments.backend.utils.extensions.respondEmptyJson
 import net.perfectdreams.sequins.ktor.BaseRoute
@@ -79,9 +80,11 @@ class PostPicPayCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
             // User charged back the payment, let's ban him!
             logger.warn { "Payment ${internalPayment.id.value} was charged back >:(" }
 
-            m.newSuspendedTransaction {
-                internalPayment.status = PaymentStatus.CHARGED_BACK
-            }
+            PaymentUtils.updatePaymentStatus(
+                m,
+                internalPayment,
+                PaymentStatus.CHARGED_BACK
+            )
         } else if (status == "paid" || status == "complete") {
             if (internalPayment.paidAt != null) {
                 logger.warn { "PicPay Payment with Reference ID: $referenceId ($internalTransactionId) is already paid! Ignoring..." }
@@ -91,21 +94,11 @@ class PostPicPayCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
 
             logger.info { "Setting Payment $internalTransactionId as paid! (via PicPay payment $referenceId)" }
 
-            m.newSuspendedTransaction {
-                // Pagamento aprovado!
-                internalPayment.paidAt = System.currentTimeMillis()
-                internalPayment.status = PaymentStatus.APPROVED
-            }
-
-            m.notaFiscais?.generateNotaFiscal(internalPayment)
-        }
-
-        // Send a update to the callback URL
-        PaymentQuery.sendPaymentNotification(m, internalPayment)
-
-        // Cancel notas fiscais if the payment was charged back
-        if (internalPayment.status == PaymentStatus.CHARGED_BACK) {
-            m.notaFiscais?.cancelNotaFiscais(internalPayment)
+            PaymentUtils.updatePaymentStatus(
+                m,
+                internalPayment,
+                PaymentStatus.APPROVED
+            )
         }
 
         call.respondEmptyJson()

@@ -10,7 +10,7 @@ import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.dao.Payment
 import net.perfectdreams.perfectpayments.backend.payments.PaymentStatus
 import net.perfectdreams.perfectpayments.backend.routes.api.v1.RequiresAPIAuthenticationRoute
-import net.perfectdreams.perfectpayments.backend.utils.PaymentQuery
+import net.perfectdreams.perfectpayments.backend.utils.PaymentUtils
 import net.perfectdreams.perfectpayments.backend.utils.extensions.receiveTextUTF8
 import net.perfectdreams.perfectpayments.backend.utils.extensions.respondEmptyJson
 
@@ -41,24 +41,12 @@ class PatchChangePaymentStatusRoute(m: PerfectPayments) : RequiresAPIAuthenticat
         }
 
         logger.info { "Setting payment $internalTransactionId status to $status" }
-
-        if (internalPayment.status != status) {
-            m.newSuspendedTransaction {
-                internalPayment.status = status
-
-                if (status == PaymentStatus.APPROVED)
-                    internalPayment.paidAt = System.currentTimeMillis()
-            }
-        }
-
-        // Send a update to the callback URL
-        PaymentQuery.sendPaymentNotification(m, internalPayment)
-
-        if (status == PaymentStatus.APPROVED) {
-            // Generate nota fiscal
-            m.notaFiscais?.generateNotaFiscal(internalPayment)
-        }
-
+        PaymentUtils.updatePaymentStatus(
+            m,
+            internalPayment,
+            PaymentStatus.APPROVED
+        )
+        
         call.respondEmptyJson()
     }
 }
