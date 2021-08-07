@@ -32,7 +32,7 @@ class PostFocusNFeCallbackRoute(val m: PerfectPayments, val focusNFeConfig: Focu
         }
 
         val response = call.receiveTextUTF8()
-
+        logger.info { "FocusNFe Received Body: $response" }
         val nfseCallbackResponse = Constants.jsonIgnoreUnknownKeys.decodeFromString<NFSeCallbackResponse>(response)
 
         logger.info { "Received Nota Fiscal Update for Reference ID ${nfseCallbackResponse.ref}" }

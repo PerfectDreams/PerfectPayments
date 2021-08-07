@@ -35,6 +35,7 @@ class PostPicPayCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
         }
 
         val body = call.receiveTextUTF8()
+        logger.info { "PicPay Received Body: $body" }
         val json = Json.parseToJsonElement(body)
                 .jsonObject
 

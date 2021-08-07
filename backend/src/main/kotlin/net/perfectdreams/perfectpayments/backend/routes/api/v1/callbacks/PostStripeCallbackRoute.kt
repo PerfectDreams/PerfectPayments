@@ -24,6 +24,7 @@ class PostStripeCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
         logger.info { "Received Stripe Webhook Request" }
 
         val payload = call.receiveTextUTF8()
+        logger.info { "Stripe Received Body: $payload" }
         val signatureHeader = call.request.header("Stripe-Signature")
         val endpointSecret = m.gateway.stripe.webhookSecret
 

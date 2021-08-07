@@ -38,7 +38,7 @@ class PostPayPalCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
         val paypalAuthAlgo = call.request.header("PAYPAL-AUTH-ALGO")
 
         val response = call.receiveTextUTF8()
-
+        logger.info { "PayPal Received Body: $response" }
         val webhookEvent = Json.parseToJsonElement(response)
             .jsonObject
 
