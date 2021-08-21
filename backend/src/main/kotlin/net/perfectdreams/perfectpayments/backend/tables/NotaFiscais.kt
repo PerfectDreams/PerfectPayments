@@ -7,4 +7,5 @@ object NotaFiscais : LongIdTable() {
     val payment = reference("payment", Payments)
     val personalInfo = optReference("personal_info", PaymentPersonalInfos)
     val status = enumeration("status", NotaFiscalStatus::class)
+    val url = text("url").nullable()
 }

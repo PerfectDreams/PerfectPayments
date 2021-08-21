@@ -38,6 +38,7 @@ import net.perfectdreams.perfectpayments.backend.routes.api.v1.payments.PatchCha
 import net.perfectdreams.perfectpayments.backend.routes.api.v1.payments.PostCreatePaymentRoute
 import net.perfectdreams.perfectpayments.backend.routes.api.v1.payments.PostFinishPartialPaymentRoute
 import net.perfectdreams.perfectpayments.backend.routes.checkout.CheckoutRoute
+import net.perfectdreams.perfectpayments.backend.tables.FocusNFeEvents
 import net.perfectdreams.perfectpayments.backend.tables.NotaFiscais
 import net.perfectdreams.perfectpayments.backend.tables.PaymentPersonalInfos
 import net.perfectdreams.perfectpayments.backend.tables.Payments
@@ -179,7 +180,8 @@ class PerfectPayments(
             SchemaUtils.createMissingTablesAndColumns(
                 Payments,
                 PaymentPersonalInfos,
-                NotaFiscais
+                NotaFiscais,
+                FocusNFeEvents
             )
         }
 

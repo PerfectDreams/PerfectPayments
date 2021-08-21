@@ -11,4 +11,5 @@ class NotaFiscal(id: EntityID<Long>) : LongEntity(id) {
     var payment by Payment referencedOn NotaFiscais.payment
     var personalInfo by PaymentPersonalInfo optionalReferencedOn NotaFiscais.personalInfo
     var status by NotaFiscais.status
+    var url by NotaFiscais.url
 }

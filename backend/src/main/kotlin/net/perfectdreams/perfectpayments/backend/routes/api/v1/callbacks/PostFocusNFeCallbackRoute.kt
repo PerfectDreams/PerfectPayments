@@ -9,11 +9,13 @@ import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.config.FocusNFeConfig
 import net.perfectdreams.perfectpayments.backend.dao.NotaFiscal
 import net.perfectdreams.perfectpayments.backend.notafiscais.NotaFiscalStatus
+import net.perfectdreams.perfectpayments.backend.tables.FocusNFeEvents
 import net.perfectdreams.perfectpayments.backend.utils.Constants
 import net.perfectdreams.perfectpayments.backend.utils.extensions.receiveTextUTF8
 import net.perfectdreams.perfectpayments.backend.utils.extensions.respondEmptyJson
 import net.perfectdreams.perfectpayments.backend.utils.focusnfe.NFSeCallbackResponse
 import net.perfectdreams.sequins.ktor.BaseRoute
+import org.jetbrains.exposed.sql.insert
 
 class PostFocusNFeCallbackRoute(val m: PerfectPayments, val focusNFeConfig: FocusNFeConfig) : BaseRoute("/api/v1/callbacks/focusnfe") {
     companion object {
@@ -55,10 +57,20 @@ class PostFocusNFeCallbackRoute(val m: PerfectPayments, val focusNFeConfig: Focu
             }
         }
 
+        val url = nfseCallbackResponse.url
+
         logger.info { "Updating Nota Fiscal $theRealId status from ${notaFiscal.status} to $newStatus..." }
 
         m.newSuspendedTransaction {
+            // Store the received FocusNFe event in the database, useful for debugging
+            FocusNFeEvents.insert {
+                it[event] = response
+            }
+
             notaFiscal.status = newStatus
+
+            if (url != null)
+                notaFiscal.url = url // Store the Nota Fiscal URL
         }
 
         call.respondEmptyJson()
