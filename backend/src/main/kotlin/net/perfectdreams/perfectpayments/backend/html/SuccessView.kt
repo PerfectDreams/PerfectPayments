@@ -9,7 +9,7 @@ import kotlinx.html.img
 import kotlinx.html.p
 import net.perfectdreams.i18nhelper.core.I18nContext
 import net.perfectdreams.perfectpayments.backend.utils.WebsiteAssetsHashManager
-import net.perfectdreams.perfectpayments.i18n.TranslationData
+import net.perfectdreams.perfectpayments.i18n.I18nKeysData
 
 class SuccessView(val context: I18nContext, hashManager: WebsiteAssetsHashManager,) : BaseView(hashManager) {
     override fun HTML.generateBody() {
@@ -20,10 +20,10 @@ class SuccessView(val context: I18nContext, hashManager: WebsiteAssetsHashManage
                 img(src = "/assets/img/lori_support.png")
 
                 h1 {
-                    + context.get(TranslationData.PaymentSuccess.Title)
+                    + context.get(I18nKeysData.PaymentSuccess.Title)
                 }
 
-                for (str in context.get(TranslationData.PaymentSuccess.Description)) {
+                for (str in context.get(I18nKeysData.PaymentSuccess.Description)) {
                     p {
                         + str
                     }

@@ -8,7 +8,7 @@ import androidx.compose.runtime.setValue
 import net.perfectdreams.i18nhelper.core.I18nContext
 import net.perfectdreams.perfectpayments.common.data.Email
 import net.perfectdreams.perfectpayments.frontend.components.TranslatedText
-import net.perfectdreams.perfectpayments.i18n.TranslationData
+import net.perfectdreams.perfectpayments.i18n.I18nKeysData
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.LineStyle
@@ -27,7 +27,7 @@ fun EmailInput(i18nContext: I18nContext, onInput: (Email?) -> (Unit)) {
     var value by remember { mutableStateOf<Email?>(null) }
 
     Div(attrs = { style { fontWeight("bold") }}) {
-        TranslatedText(i18nContext, TranslationData.PersonalData.Email)
+        TranslatedText(i18nContext, I18nKeysData.PersonalData.Email)
     }
     Input(InputType.Text) {
         placeholder("me@loritta.website")
@@ -56,7 +56,7 @@ fun EmailInput(i18nContext: I18nContext, onInput: (Email?) -> (Unit)) {
         Div(attrs = { style { color(rgb(255, 0, 0)) }}) {
             TranslatedText(
                 i18nContext,
-                TranslationData.InvalidPersonalData.InvalidEmail
+                I18nKeysData.InvalidPersonalData.InvalidEmail
             )
         }
     }

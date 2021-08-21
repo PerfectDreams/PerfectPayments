@@ -46,7 +46,7 @@ class PatchChangePaymentStatusRoute(m: PerfectPayments) : RequiresAPIAuthenticat
             internalPayment,
             PaymentStatus.APPROVED
         )
-        
+
         call.respondEmptyJson()
     }
 }

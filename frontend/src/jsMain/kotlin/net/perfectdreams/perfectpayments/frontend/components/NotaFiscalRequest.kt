@@ -7,7 +7,7 @@ import net.perfectdreams.perfectpayments.common.data.ClientSidePartialPayment
 import net.perfectdreams.perfectpayments.common.payments.PaymentGateway
 import net.perfectdreams.perfectpayments.frontend.PerfectPaymentsFrontend
 import net.perfectdreams.perfectpayments.frontend.screen.Screen
-import net.perfectdreams.perfectpayments.i18n.TranslationKeys
+import net.perfectdreams.perfectpayments.i18n.I18nKeys
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.display
 import org.jetbrains.compose.web.css.em
@@ -26,7 +26,7 @@ import org.jetbrains.compose.web.dom.Text
 
 @Composable
 fun NotaFiscalRequest(m: PerfectPaymentsFrontend, i18nContext: I18nContext, partialPaymentData: ClientSidePartialPayment, screen: Screen.NotaFiscalRequest) {
-    PaymentHeader(i18nContext, i18nContext.get(TranslationKeys.TaxInvoice.Title), partialPaymentData)
+    PaymentHeader(i18nContext, i18nContext.get(I18nKeys.TaxInvoice.Title), partialPaymentData)
 
     Div({ id("wrapper") }) {
         Div({ style { textAlign("center") }}) {
@@ -41,7 +41,7 @@ fun NotaFiscalRequest(m: PerfectPaymentsFrontend, i18nContext: I18nContext, part
                 }
             )
         }
-        i18nContext.get(TranslationKeys.TaxInvoice.Description).forEach {
+        i18nContext.get(I18nKeys.TaxInvoice.Description).forEach {
             P {
                 Text(it)
             }
@@ -65,7 +65,7 @@ fun NotaFiscalRequest(m: PerfectPaymentsFrontend, i18nContext: I18nContext, part
                     }
                 }
             }) {
-                Text(i18nContext.get(TranslationKeys.TaxInvoice.DoNotInclude))
+                Text(i18nContext.get(I18nKeys.TaxInvoice.DoNotInclude))
             }
 
             Button(attrs = {
@@ -76,7 +76,7 @@ fun NotaFiscalRequest(m: PerfectPaymentsFrontend, i18nContext: I18nContext, part
                     m.delegatedScreenState = Screen.NotaFiscalDataCollectRequest(screen.gateway)
                 }
             }) {
-                Text(i18nContext.get(TranslationKeys.TaxInvoice.Include))
+                Text(i18nContext.get(I18nKeys.TaxInvoice.Include))
             }
         }
     }

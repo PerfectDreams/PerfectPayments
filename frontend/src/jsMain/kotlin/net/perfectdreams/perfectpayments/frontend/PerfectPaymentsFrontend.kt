@@ -25,7 +25,7 @@ import net.perfectdreams.perfectpayments.frontend.components.NotaFiscalRequest
 import net.perfectdreams.perfectpayments.frontend.components.PicPayDataCollectRequest
 import net.perfectdreams.perfectpayments.frontend.components.SelectGateway
 import net.perfectdreams.perfectpayments.frontend.screen.Screen
-import net.perfectdreams.perfectpayments.i18n.TranslationKeys
+import net.perfectdreams.perfectpayments.i18n.I18nKeys
 import org.jetbrains.compose.web.css.textAlign
 import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Footer
@@ -137,12 +137,12 @@ class PerfectPaymentsFrontend {
                     P {
                         // TODO: Fix this workaround when the compiler bug is fixed
                         // Workaround for now
-                        val footerText = i18nContext.language.textBundle.strings[TranslationKeys.Footer.Text.key]!!
+                        val footerText = i18nContext.language.textBundle.strings[I18nKeys.Footer.Text.key]!!
                         val splitted = footerText.split("{clickHere}")
-
+                        
                         Text(splitted[0])
                         A(href = "https://loritta.website/support") {
-                            Text(i18nContext.get(TranslationKeys.Footer.ClickHere))
+                            Text(i18nContext.get(I18nKeys.Footer.ClickHere))
                         }
                         Text(splitted[1])
                     }

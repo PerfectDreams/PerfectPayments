@@ -66,8 +66,6 @@ class PerfectPayments(
             expectSuccess = false
         }
         const val USER_AGENT = "PerfectPayments"
-        const val DEFAULT_LOCALE_ID = "default"
-        val YAML = Yaml()
         private val logger = KotlinLogging.logger {}
     }
 

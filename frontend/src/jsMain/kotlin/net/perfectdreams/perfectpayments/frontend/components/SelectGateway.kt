@@ -4,12 +4,12 @@ import androidx.compose.runtime.Composable
 import net.perfectdreams.i18nhelper.core.I18nContext
 import net.perfectdreams.perfectpayments.common.data.ClientSidePartialPayment
 import net.perfectdreams.perfectpayments.frontend.PerfectPaymentsFrontend
-import net.perfectdreams.perfectpayments.i18n.TranslationKeys
+import net.perfectdreams.perfectpayments.i18n.I18nKeys
 import org.jetbrains.compose.web.dom.Div
 
 @Composable
 fun SelectGateway(m: PerfectPaymentsFrontend, i18nContext: I18nContext, partialPaymentData: ClientSidePartialPayment) {
-    PaymentHeader(i18nContext, i18nContext.get(TranslationKeys.SelectPaymentGateway.Title), partialPaymentData)
+    PaymentHeader(i18nContext, i18nContext.get(I18nKeys.SelectPaymentGateway.Title), partialPaymentData)
 
     Div({ id("wrapper") }) {
         Div({ id("payment-methods") }) {

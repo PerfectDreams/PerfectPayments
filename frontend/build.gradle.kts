@@ -29,7 +29,7 @@ kotlin {
                 // Locales
                 implementation(npm("intl-messageformat", "9.8.1"))
                 implementation("net.perfectdreams.i18nhelper:core:0.0.1-SNAPSHOT")
-                implementation("net.perfectdreams.i18nhelper.formatters:intl-messageformat-js:0.0.1-SNAPSHOT")
+                implementation("net.perfectdreams.i18nhelper.formatters:intl-messageformat-js:0.0.2-SNAPSHOT")
             }
         }
     }

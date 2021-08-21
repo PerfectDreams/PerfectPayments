@@ -3,7 +3,7 @@ package net.perfectdreams.perfectpayments.frontend.components
 import androidx.compose.runtime.Composable
 import net.perfectdreams.i18nhelper.core.I18nContext
 import net.perfectdreams.perfectpayments.common.data.ClientSidePartialPayment
-import net.perfectdreams.perfectpayments.i18n.TranslationKeys
+import net.perfectdreams.perfectpayments.i18n.I18nKeys
 import org.jetbrains.compose.web.dom.B
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H1
@@ -27,7 +27,7 @@ fun PaymentHeader(
         Div {
             Div {
                 B {
-                    Text("${i18nContext.get(TranslationKeys.Header.Product)}: ")
+                    Text("${i18nContext.get(I18nKeys.Header.Product)}: ")
                 }
 
                 Text(payment.title)
@@ -35,7 +35,7 @@ fun PaymentHeader(
 
             Div {
                 B {
-                    Text("${i18nContext.get(TranslationKeys.Header.Value)}: ")
+                    Text("${i18nContext.get(I18nKeys.Header.Value)}: ")
                 }
 
                 Text("${payment.amount.toDouble() / 100} ${payment.currencyId}")

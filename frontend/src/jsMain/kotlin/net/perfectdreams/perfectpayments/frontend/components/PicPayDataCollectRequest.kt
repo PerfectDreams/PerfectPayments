@@ -20,8 +20,8 @@ import net.perfectdreams.perfectpayments.frontend.components.input.FirstNameInpu
 import net.perfectdreams.perfectpayments.frontend.components.input.LastNameInput
 import net.perfectdreams.perfectpayments.frontend.components.input.PhoneInput
 import net.perfectdreams.perfectpayments.frontend.screen.Screen
-import net.perfectdreams.perfectpayments.i18n.TranslationData
-import net.perfectdreams.perfectpayments.i18n.TranslationKeys
+import net.perfectdreams.perfectpayments.i18n.I18nKeysData
+import net.perfectdreams.perfectpayments.i18n.I18nKeys
 import org.jetbrains.compose.web.attributes.disabled
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.width
@@ -37,7 +37,7 @@ fun PicPayDataCollectRequest(
     partialPaymentData: ClientSidePartialPayment,
     screen: Screen.PicPayDataCollectRequest
 ) {
-    PaymentHeader(i18nContext, i18nContext.get(TranslationKeys.TaxInvoice.FillYourPersonalData), partialPaymentData)
+    PaymentHeader(i18nContext, i18nContext.get(I18nKeys.TaxInvoice.FillYourPersonalData), partialPaymentData)
 
     Div({ id("wrapper") }) {
         var firstName by remember { mutableStateOf<FirstName?>(null) }
@@ -67,7 +67,7 @@ fun PicPayDataCollectRequest(
         }
 
         P {
-            TranslatedText(i18nContext, TranslationData.Gateways.Picpay.DataWarning)
+            TranslatedText(i18nContext, I18nKeysData.Gateways.Picpay.DataWarning)
         }
 
         Hr {}
@@ -95,7 +95,7 @@ fun PicPayDataCollectRequest(
             if (!everythingIsFilled)
                 disabled()
         }) {
-            TranslatedText(i18nContext, TranslationData.ContinueToPayment)
+            TranslatedText(i18nContext, I18nKeysData.ContinueToPayment)
         }
     }
 }

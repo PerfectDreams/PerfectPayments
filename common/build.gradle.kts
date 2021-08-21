@@ -1,7 +1,7 @@
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-    id("net.perfectdreams.i18nhelper.plugin") version "0.0.1-SNAPSHOT"
+    id("net.perfectdreams.i18nhelper.plugin") version "0.0.2-SNAPSHOT"
 }
 
 repositories {
@@ -31,7 +31,7 @@ kotlin {
             kotlin.srcDir("build/generated/languages")
             dependencies {
                 api(kotlin("stdlib-common"))
-                implementation("net.perfectdreams.i18nhelper:core:0.0.1-SNAPSHOT")
+                implementation("net.perfectdreams.i18nhelper:core:0.0.2-SNAPSHOT")
                 api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
                 api("io.github.microutils:kotlin-logging:2.0.10")
             }

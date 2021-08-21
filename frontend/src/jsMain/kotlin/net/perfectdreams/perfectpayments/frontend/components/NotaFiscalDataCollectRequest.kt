@@ -17,8 +17,8 @@ import net.perfectdreams.perfectpayments.frontend.components.input.CPFInput
 import net.perfectdreams.perfectpayments.frontend.components.input.EmailInput
 import net.perfectdreams.perfectpayments.frontend.components.input.LegalNameInput
 import net.perfectdreams.perfectpayments.frontend.screen.Screen
-import net.perfectdreams.perfectpayments.i18n.TranslationData
-import net.perfectdreams.perfectpayments.i18n.TranslationKeys
+import net.perfectdreams.perfectpayments.i18n.I18nKeysData
+import net.perfectdreams.perfectpayments.i18n.I18nKeys
 import org.jetbrains.compose.web.attributes.disabled
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.width
@@ -28,7 +28,7 @@ import org.jetbrains.compose.web.dom.Hr
 
 @Composable
 fun NotaFiscalDataCollectRequest(m: PerfectPaymentsFrontend, i18nContext: I18nContext, partialPaymentData: ClientSidePartialPayment, screen: Screen.NotaFiscalDataCollectRequest) {
-    PaymentHeader(i18nContext, i18nContext.get(TranslationKeys.TaxInvoice.FillYourPersonalData), partialPaymentData)
+    PaymentHeader(i18nContext, i18nContext.get(I18nKeys.TaxInvoice.FillYourPersonalData), partialPaymentData)
 
     Div({ id("wrapper") }) {
         var name by remember { mutableStateOf<LegalName?>(null) }
@@ -81,7 +81,7 @@ fun NotaFiscalDataCollectRequest(m: PerfectPaymentsFrontend, i18nContext: I18nCo
             if (!everythingIsFilled)
                 disabled()
         }) {
-            TranslatedText(i18nContext, TranslationData.ContinueToPayment)
+            TranslatedText(i18nContext, I18nKeysData.ContinueToPayment)
         }
     }
 }

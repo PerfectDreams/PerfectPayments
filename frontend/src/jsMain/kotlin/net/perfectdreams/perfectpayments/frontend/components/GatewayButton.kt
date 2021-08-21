@@ -6,7 +6,7 @@ import net.perfectdreams.i18nhelper.core.I18nContext
 import net.perfectdreams.perfectpayments.common.payments.PaymentGateway
 import net.perfectdreams.perfectpayments.frontend.PerfectPaymentsFrontend
 import net.perfectdreams.perfectpayments.frontend.screen.Screen
-import net.perfectdreams.perfectpayments.i18n.TranslationData
+import net.perfectdreams.perfectpayments.i18n.I18nKeysData
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.display
 import org.jetbrains.compose.web.css.maxHeight
@@ -41,7 +41,7 @@ fun GatewayButton(
 
         Span(attrs = { style { display(DisplayStyle.Block) } }) {
             B {
-                TranslatedText(i18nContext, TranslationData.SelectPaymentGateway.Accepts)
+                TranslatedText(i18nContext, I18nKeysData.SelectPaymentGateway.Accepts)
                 Text(":")
             }
 

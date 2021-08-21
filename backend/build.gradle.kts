@@ -38,7 +38,7 @@ dependencies {
     implementation("org.yaml:snakeyaml:1.29")
     implementation("com.charleskorn.kaml:kaml:0.35.0")
     implementation("net.perfectdreams.i18nhelper:core:0.0.1-SNAPSHOT")
-    implementation("net.perfectdreams.i18nhelper.formatters:icu-messageformat-jvm:0.0.1-SNAPSHOT")
+    implementation("net.perfectdreams.i18nhelper.formatters:icu-messageformat-jvm:0.0.2-SNAPSHOT")
 
     implementation("com.github.ben-manes.caffeine:caffeine:2.8.8")
     implementation("org.jsoup:jsoup:1.13.1")
