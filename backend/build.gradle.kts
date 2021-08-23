@@ -62,7 +62,7 @@ dependencies {
 
 jib {
     to {
-        image = "ghcr.io/perfectdreams/perfectpayments"
+        image = "ghcr.io/perfectdreams/perfectpayments-backend"
 
         auth {
             username = System.getProperty("DOCKER_USERNAME") ?: System.getenv("DOCKER_USERNAME")
