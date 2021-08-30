@@ -29,12 +29,14 @@ fun GatewayButton(
             classes("payment-button")
 
             onClick {
+                println("[DEBUG] Clicked a a gateway button!") // TODO: Remove later
+
                 m.delegatedScreenState = Screen.NotaFiscalRequest(gateway)
             }
         },
     ) {
         Img(
-            src = "${window.location.origin}/${gateway.imageUrl}", // TODO: Fix
+            src = "${window.location.origin}/${gateway.imageUrl}",
             alt = "gateways.${gateway.name.lowercase()}.name",
             attrs = { style { width(100.percent); maxHeight("80px") } }
         )

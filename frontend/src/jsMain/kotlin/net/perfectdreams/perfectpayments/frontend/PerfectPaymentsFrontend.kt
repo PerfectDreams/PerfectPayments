@@ -47,6 +47,8 @@ class PerfectPaymentsFrontend {
     var availableGateways by mutableStateOf<List<PaymentGateway>?>(null)
 
     fun start() {
+        println("[DEBUG] Starting PerfectPayments...") // TODO: Remove this
+
         val partialPaymentURL = try {
             PartialPaymentURL.fromString(window.location.pathname)
         } catch (e: IllegalArgumentException) {
