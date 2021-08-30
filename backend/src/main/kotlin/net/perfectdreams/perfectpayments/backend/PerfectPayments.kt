@@ -52,10 +52,10 @@ import net.perfectdreams.perfectpayments.common.payments.PaymentGateway
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Transaction
-import org.yaml.snakeyaml.Yaml
 import java.io.File
 import java.sql.Connection
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class PerfectPayments(
     val config: AppConfig,
@@ -225,6 +225,13 @@ class PerfectPayments(
             }
         }
         server.start(wait = true)
+
+        Runtime.getRuntime().addShutdownHook(
+            Thread {
+                // Wait until the requests are processed before shutting down the server
+                server.stop(5, 25, TimeUnit.SECONDS)
+            }
+        )
     }
 
     fun <T> transaction(repetitions: Int = 5, transactionIsolation: Int = Connection.TRANSACTION_REPEATABLE_READ, statement: Transaction.() -> T) = org.jetbrains.exposed.sql.transactions.transaction(transactionIsolation, repetitions) {
