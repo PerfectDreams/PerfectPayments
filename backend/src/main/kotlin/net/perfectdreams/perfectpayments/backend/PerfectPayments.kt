@@ -228,6 +228,8 @@ class PerfectPayments(
 
         Runtime.getRuntime().addShutdownHook(
             Thread {
+                logger.info { "Shutting down PerfectPayments..." }
+
                 // Wait until the requests are processed before shutting down the server
                 server.stop(5, 25, TimeUnit.SECONDS)
             }
