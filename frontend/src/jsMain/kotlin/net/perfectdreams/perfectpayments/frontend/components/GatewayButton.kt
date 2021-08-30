@@ -6,6 +6,7 @@ import net.perfectdreams.i18nhelper.core.I18nContext
 import net.perfectdreams.perfectpayments.common.payments.PaymentGateway
 import net.perfectdreams.perfectpayments.frontend.PerfectPaymentsFrontend
 import net.perfectdreams.perfectpayments.frontend.screen.Screen
+import net.perfectdreams.perfectpayments.frontend.utils.onClickSafariWorkaround
 import net.perfectdreams.perfectpayments.i18n.I18nKeysData
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.display
@@ -28,7 +29,7 @@ fun GatewayButton(
         {
             classes("payment-button")
 
-            onClick {
+            onClickSafariWorkaround {
                 println("[DEBUG] Clicked a a gateway button!") // TODO: Remove later
 
                 m.delegatedScreenState = Screen.NotaFiscalRequest(gateway)

@@ -20,8 +20,9 @@ import net.perfectdreams.perfectpayments.frontend.components.input.FirstNameInpu
 import net.perfectdreams.perfectpayments.frontend.components.input.LastNameInput
 import net.perfectdreams.perfectpayments.frontend.components.input.PhoneInput
 import net.perfectdreams.perfectpayments.frontend.screen.Screen
-import net.perfectdreams.perfectpayments.i18n.I18nKeysData
+import net.perfectdreams.perfectpayments.frontend.utils.onClickSafariWorkaround
 import net.perfectdreams.perfectpayments.i18n.I18nKeys
+import net.perfectdreams.perfectpayments.i18n.I18nKeysData
 import org.jetbrains.compose.web.attributes.disabled
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.width
@@ -77,7 +78,7 @@ fun PicPayDataCollectRequest(
             classes("button", "primary")
             style { width(100.percent) }
 
-            onClick {
+            onClickSafariWorkaround {
                 if (everythingIsFilled)
                     m.delegatedScreenState = Screen.DataCollected(
                         screen.gateway,
