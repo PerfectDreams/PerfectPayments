@@ -21,6 +21,11 @@ class FocusNFe(private val config: FocusNFeConfig) {
         private val json = Json {
             ignoreUnknownKeys = true
         }
+
+        /**
+         * Characters allowed in an nota fiscal "reason" section
+         */
+        private val reasonFilterRegex = Regex("[^\\w0-9 ]")
     }
 
     // We send NFSe because infoproducts are considered "services", this is confused as heck.
@@ -53,7 +58,7 @@ class FocusNFe(private val config: FocusNFeConfig) {
             tomador,
             servico = NFSeCreateRequest.Servico(
                 0.0, // 0, pois o tributo é coletado pelo SEBRAE
-                description,
+                description.replace(reasonFilterRegex, ""),
                 false,
                 "2800", // Precisa verificar na tabela de 2021
                 "0105", // Precisa retirar os pontos do número, de https://conube.com.br/blog/tabela-iss-sp/
