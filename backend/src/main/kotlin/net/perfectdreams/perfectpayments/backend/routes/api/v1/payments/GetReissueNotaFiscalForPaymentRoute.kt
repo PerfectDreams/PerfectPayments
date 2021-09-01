@@ -11,7 +11,7 @@ import net.perfectdreams.perfectpayments.backend.routes.api.v1.RequiresAPIAuthen
 import net.perfectdreams.perfectpayments.backend.utils.extensions.respondEmptyJson
 import net.perfectdreams.perfectpayments.backend.utils.extensions.respondJson
 
-class GetReissueNotaFiscalForPaymentRoute(m: PerfectPayments) : RequiresAPIAuthenticationRoute(m, "/api/v1/payments/{internalTransactionId}/nota-fiscal/reissue") {
+class GetReissueNotaFiscalForPaymentRoute(m: PerfectPayments) : RequiresAPIAuthenticationRoute(m, "/api/v1/payments/{internalTransactionId}/nota-fiscais/reissue") {
     override suspend fun onAuthenticatedRequest(call: ApplicationCall) {
         val internalTransactionId = call.parameters["internalTransactionId"]!!.toLong()
 
