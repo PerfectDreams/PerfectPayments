@@ -34,5 +34,7 @@ class GetReissueNotaFiscalForPaymentRoute(m: PerfectPayments) : RequiresAPIAuthe
 
         // Issue notas fiscais if the payment was approved
         m.notaFiscais?.generateNotaFiscal(internalPayment)
+
+        call.respondEmptyJson(HttpStatusCode.OK)
     }
 }
