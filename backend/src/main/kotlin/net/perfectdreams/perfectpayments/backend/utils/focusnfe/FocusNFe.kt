@@ -36,7 +36,7 @@ class FocusNFe(private val config: FocusNFeConfig) {
         tomador: NFSeCreateRequest.Tomador?
     ) {
         val request = NFSeCreateRequest(
-            date.format(DateTimeFormatter.ISO_INSTANT),
+            date.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
             // 1: Microempresa municipal;
             // 2: Estimativa;
             // 3: Sociedade de profissionais;
