@@ -52,12 +52,12 @@ dependencies {
     api("net.perfectdreams.sequins.ktor:base-route:1.0.2")
 
     // Ktor
-    implementation("io.ktor:ktor-client-core:1.5.3")
+    implementation("io.ktor:ktor-client-core:${Versions.KTOR}")
 
     // We use "Apache" because "CIO", for some reason, has issues with PayPal's API
-    implementation("io.ktor:ktor-client-apache:1.5.3")
-    implementation("io.ktor:ktor-server-core:1.5.3")
-    implementation("io.ktor:ktor-server-netty:1.5.3")
+    implementation("io.ktor:ktor-client-apache:${Versions.KTOR}")
+    implementation("io.ktor:ktor-server-core:${Versions.KTOR}")
+    implementation("io.ktor:ktor-server-netty:${Versions.KTOR}")
 }
 
 jib {
@@ -78,14 +78,6 @@ jib {
 val jsBrowserProductionWebpack = tasks.getByPath(":frontend:jsBrowserProductionWebpack") as org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 
 tasks {
-    val runnableJar = runnableJarTask(
-        DEFAULT_SHADED_WITHIN_JAR_LIBRARIES,
-        configurations.runtimeClasspath.get(),
-        jar.get(),
-        "net.perfectdreams.perfectpayments.backend.PerfectPaymentsLauncher",
-        mapOf()
-    )
-
     val sass = sassTask("style.scss")
 
     processResources {
@@ -104,11 +96,6 @@ tasks {
         from(File(buildDir, "sass")) {
             into("static/assets/css/")
         }
-    }
-
-    "build" {
-        // This should be ran BEFORE the JAR is compiled!
-        dependsOn(runnableJar)
     }
 }
 

@@ -24,7 +24,7 @@ kotlin {
                 implementation(compose.web.core)
                 implementation(compose.runtime)
                 implementation(project(":common"))
-                implementation("io.ktor:ktor-client-js:1.6.2")
+                implementation("io.ktor:ktor-client-js:${Versions.KTOR}")
 
                 // Locales
                 implementation(npm("intl-messageformat", "9.8.1"))
