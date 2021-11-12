@@ -13,7 +13,6 @@ import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.dao.Payment
 import net.perfectdreams.perfectpayments.backend.payments.PaymentStatus
-import net.perfectdreams.perfectpayments.backend.utils.PaymentQuery
 import net.perfectdreams.perfectpayments.backend.utils.PaymentUtils
 import net.perfectdreams.perfectpayments.backend.utils.extensions.receiveTextUTF8
 import net.perfectdreams.perfectpayments.backend.utils.extensions.respondEmptyJson
@@ -41,6 +40,12 @@ class PostPicPayCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
                 .jsonObject
 
         val referenceId = json["referenceId"]!!.jsonPrimitive.content
+        if (!json.containsKey("authorizationId")) {
+            logger.info { "Received PicPay callback: Payment generated for $referenceId" }
+            call.respondEmptyJson()
+            return
+        }
+
         val authorizationId = json["authorizationId"]!!.jsonPrimitive.contentOrNull
 
         logger.info { "Received PicPay callback: Reference ID: $referenceId; Authorization ID: $authorizationId" }
