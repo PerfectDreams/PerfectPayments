@@ -5,23 +5,19 @@ import club.minnced.discord.webhook.send.WebhookEmbedBuilder
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
-import net.perfectdreams.perfectpayments.common.data.PersonalData
-import net.perfectdreams.perfectpayments.common.payments.PaymentGateway
 import net.perfectdreams.perfectpayments.backend.dao.Payment
 import net.perfectdreams.perfectpayments.backend.dao.PaymentPersonalInfo
 import net.perfectdreams.perfectpayments.backend.payments.PaymentStatus
+import net.perfectdreams.perfectpayments.common.data.PersonalData
+import net.perfectdreams.perfectpayments.common.payments.PaymentGateway
 import java.awt.Color
 import java.time.Instant
 import java.util.*
-import kotlin.math.pow
 
 object PaymentQuery {
     private val logger = KotlinLogging.logger {}
@@ -90,82 +86,65 @@ object PaymentQuery {
             }
 
             val embed = WebhookEmbedBuilder()
-                    .setTitle(WebhookEmbed.EmbedTitle("$emoji Payment ${payment.id.value}", null))
-                    .addField(
-                            WebhookEmbed.EmbedField(
-                                    true,
-                                    "\uD83C\uDFF7️ Title",
-                                    "`${payment.title}`"
-                            )
+                .setTitle(WebhookEmbed.EmbedTitle("$emoji Payment ${payment.id.value}", null))
+                .addField(
+                    WebhookEmbed.EmbedField(
+                        true,
+                        "\uD83C\uDFF7️ Title",
+                        "`${payment.title}`"
                     )
-                    .addField(
-                            WebhookEmbed.EmbedField(
-                                    true,
-                                    "\uD83D\uDCB8 Amount",
-                                    "`${payment.amount} ${payment.currencyId}`"
-                            )
+                )
+                .addField(
+                    WebhookEmbed.EmbedField(
+                        true,
+                        "\uD83D\uDCB8 Amount",
+                        "`${payment.amount} ${payment.currencyId}`"
                     )
-                    .addField(
-                            WebhookEmbed.EmbedField(
-                                    true,
-                                    "<:lori_rica:593979718919913474> Status",
-                                    "`${payment.status.name}`"
-                            )
+                )
+                .addField(
+                    WebhookEmbed.EmbedField(
+                        true,
+                        "<:lori_rica:593979718919913474> Status",
+                        "`${payment.status.name}`"
                     )
-                    .addField(
-                            WebhookEmbed.EmbedField(
-                                    true,
-                                    "\uD83D\uDCB3 Gateway",
-                                    "`${payment.gateway.name}`"
-                            )
+                )
+                .addField(
+                    WebhookEmbed.EmbedField(
+                        true,
+                        "\uD83D\uDCB3 Gateway",
+                        "`${payment.gateway.name}`"
                     )
-                    .setColor(color?.rgb)
-                    .setFooter(WebhookEmbed.EmbedFooter("Reference ID: ${payment.referenceId}", null))
-                    .setTimestamp(Instant.now())
-                    .build()
+                )
+                .setColor(color?.rgb)
+                .setFooter(WebhookEmbed.EmbedFooter("Reference ID: ${payment.referenceId}", null))
+                .setTimestamp(Instant.now())
+                .build()
             it.send(embed)
         }
 
-        GlobalScope.launch {
-            var requestsMade = 0
 
-            while (true) {
-                logger.info { "Trying to notify \"${payment.callbackUrl}\" for payment ${payment.id.value}..." }
+        callbackWithBackoff({
+            logger.info { "Trying to notify \"${payment.callbackUrl}\" for payment ${payment.id.value}..." }
 
-                val response = try {
-                    PerfectPayments.http.post<HttpResponse>(payment.callbackUrl) {
-                        header("Authorization", m.config.notificationToken)
-                        userAgent(PerfectPayments.USER_AGENT)
+            val response = PerfectPayments.http.post<HttpResponse>(payment.callbackUrl) {
+                header("Authorization", m.config.notificationToken)
+                userAgent(PerfectPayments.USER_AGENT)
 
-                        body = buildJsonObject {
-                            put("referenceId", payment.referenceId.toString())
-                            put("amount", payment.amount)
-                            put("status", payment.status.toString())
-                            put("gateway", payment.gateway.toString())
-                            put("paidAt", payment.paidAt)
-                            put("createdAt", payment.createdAt)
-                        }.toString()
-                    }
-                } catch (e: Exception) {
-                    logger.warn(e) { "Exception while trying to send a notification about payment ${payment.id.value} to \"${payment.callbackUrl}\"!" }
-                    null
-                }
-
-                if (response != null)
-                    if (response.status.value in 200..299) {
-                        logger.info { "Notification for payment ${payment.id.value} was successfully sent to \"${payment.callbackUrl}\"! Status code: ${response.status}"}
-                        return@launch
-                    }
-
-                requestsMade++
-                val waitTime = requestsMade.toDouble()
-                        .pow(2)
-                        .toLong() * 1000
-
-                logger.warn { "Something went wrong while trying to send a notification about payment ${payment.id.value} to \"${payment.callbackUrl}\"! Status code: ${response?.status}; Retrying again after ${waitTime}ms"}
-
-                delay(waitTime)
+                body = buildJsonObject {
+                    put("referenceId", payment.referenceId.toString())
+                    put("amount", payment.amount)
+                    put("status", payment.status.toString())
+                    put("gateway", payment.gateway.toString())
+                    put("paidAt", payment.paidAt)
+                    put("createdAt", payment.createdAt)
+                }.toString()
             }
+
+            response.status.isSuccess()
+        }, { throwable, waitTime ->
+            logger.warn(throwable) { "Something went wrong while trying to send a notification about payment ${payment.id.value} to \"${payment.callbackUrl}\"! Retrying again after ${waitTime}ms"}
+        }) {
+            logger.info { "Notification for payment ${payment.id.value} was successfully sent to \"${payment.callbackUrl}\"!"}
         }
     }
 }

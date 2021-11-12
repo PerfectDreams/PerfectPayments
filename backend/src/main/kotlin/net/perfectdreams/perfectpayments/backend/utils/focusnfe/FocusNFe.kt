@@ -69,7 +69,7 @@ class FocusNFe(private val config: FocusNFeConfig) {
             )
         )
 
-        val callbackWithBackoff = callbackWithBackoff(
+        callbackWithBackoff(
             {
                 val result = PerfectPayments.http.post<HttpResponse>("${config.url.removeSuffix("/")}/v2/nfse?ref=$ref") {
                     val auth = Base64.getEncoder().encodeToString("${config.token}:".toByteArray(Charsets.UTF_8)) // The password is always empty
@@ -85,10 +85,12 @@ class FocusNFe(private val config: FocusNFeConfig) {
 
                 result.status.isSuccess()
             },
-            {
-                logger.warn { "Something went wrong while trying to register a nota fiscal! Retrying again after ${it}ms"}
+            { throwable, waitTime ->
+                logger.warn(throwable) { "Something went wrong while trying to register a nota fiscal for $ref! Retrying again after ${waitTime}ms"}
             }
-        )
+        ) {
+            logger.info { "Successfully registered a nota fiscal for $ref!" }
+        }
     }
 
     suspend fun cancelNFSe(
