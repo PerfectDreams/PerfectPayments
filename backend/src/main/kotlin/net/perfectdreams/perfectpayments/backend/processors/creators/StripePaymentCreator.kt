@@ -2,12 +2,12 @@ package net.perfectdreams.perfectpayments.backend.processors.creators
 
 import com.stripe.model.checkout.Session
 import com.stripe.param.checkout.SessionCreateParams
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.JsonObject
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.utils.PartialPayment
 
 class StripePaymentCreator(val m: PerfectPayments) : PaymentCreator {
-    override suspend fun createPayment(paymentId: Long, partialPayment: PartialPayment, data: JsonObject): String {
+    override suspend fun createPayment(paymentId: Long, partialPayment: PartialPayment, data: JsonObject): CreatedPaymentInfo {
         // Watch out! Stripe Payment creator returns a session ID instead of a payment URL!
         // This is required due to the way Stripe payment works!!
         val params: SessionCreateParams = SessionCreateParams.builder()
@@ -40,6 +40,6 @@ class StripePaymentCreator(val m: PerfectPayments) : PaymentCreator {
 
         val session = Session.create(params)
 
-        return session.id
+        return TODO()
     }
 }

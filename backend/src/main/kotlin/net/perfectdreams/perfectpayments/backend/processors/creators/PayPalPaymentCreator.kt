@@ -3,13 +3,22 @@ package net.perfectdreams.perfectpayments.backend.processors.creators
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.addJsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.put
+import kotlinx.serialization.json.putJsonArray
+import kotlinx.serialization.json.putJsonObject
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.utils.PartialPayment
 import java.util.*
 
 class PayPalPaymentCreator(val m: PerfectPayments) : PaymentCreator {
-    override suspend fun createPayment(paymentId: Long, partialPayment: PartialPayment, data: JsonObject): String {
+    override suspend fun createPayment(paymentId: Long, partialPayment: PartialPayment, data: JsonObject): CreatedPaymentInfo {
         val payload = PerfectPayments.http.post<HttpResponse>(m.gateway.payPal.getBaseUrl() + "/v2/checkout/orders") {
             contentType(ContentType.Application.Json)
             header("Authorization", "Basic ${Base64.getEncoder().encodeToString("${m.gateway.payPal.clientId}:${m.gateway.payPal.clientSecret}".toByteArray())}")
@@ -44,6 +53,9 @@ class PayPalPaymentCreator(val m: PerfectPayments) : PaymentCreator {
         val link = links.first { it.jsonObject["rel"]!!.jsonPrimitive.content == "approve" }
             .jsonObject["href"]!!.jsonPrimitive.content
 
-        return link
+        return CreatedPayPalPaymentInfo(
+            element["id"]!!.jsonPrimitive.content,
+            link
+        )
     }
 }

@@ -6,11 +6,11 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.encodeToJsonElement
-import kotlinx.serialization.json.put
-import kotlinx.serialization.json.putJsonObject
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.dao.Payment
 import net.perfectdreams.perfectpayments.backend.payments.PaymentStatus
+import net.perfectdreams.perfectpayments.backend.processors.creators.CreatedPaymentInfoWithUrl
+import net.perfectdreams.perfectpayments.backend.processors.creators.CreatedSandboxPaymentInfo
 import net.perfectdreams.perfectpayments.backend.utils.PaymentQuery
 import net.perfectdreams.perfectpayments.backend.utils.extensions.receiveTextUTF8
 import net.perfectdreams.perfectpayments.backend.utils.extensions.respondJson
@@ -36,17 +36,17 @@ class PostFinishPartialPaymentRoute(val m: PerfectPayments) : BaseRoute("/api/v1
             PaymentGateway.SANDBOX -> {
                 // SANDBOX MODE!
                 // Start the payment
-                val paymentId = PaymentQuery.startPayment(
+                val createdPaymentData = PaymentQuery.startPayment(
                     m,
                     partialPaymentId,
                     partialPayment,
                     filledPartialPayment.gateway,
                     filledPartialPayment.personalData,
                     buildJsonObject {}
-                )
+                ) as CreatedSandboxPaymentInfo
 
                 val internalPayment = m.newSuspendedTransaction {
-                    Payment.findById(paymentId.toLong())!!
+                    Payment.findById(createdPaymentData.id.toLong())!!
                 }
 
                 // Force the payment as complete
@@ -68,7 +68,8 @@ class PostFinishPartialPaymentRoute(val m: PerfectPayments) : BaseRoute("/api/v1
                 )
             }
             PaymentGateway.PICPAY -> {
-                val picPayPersonalData = filledPartialPayment.picPayPersonalData!!
+                TODO()
+                /* val picPayPersonalData = filledPartialPayment.picPayPersonalData!!
 
                 val paymentUrl = PaymentQuery.startPayment(
                     m,
@@ -89,10 +90,10 @@ class PostFinishPartialPaymentRoute(val m: PerfectPayments) : BaseRoute("/api/v1
 
                 call.respondJson(
                     Json.encodeToJsonElement(PaymentCreatedResponse(paymentUrl))
-                )
+                ) */
             }
             else -> {
-                val paymentUrl = PaymentQuery.startPayment(
+                val createdPaymentData = PaymentQuery.startPayment(
                     m,
                     partialPaymentId,
                     partialPayment,
@@ -101,8 +102,11 @@ class PostFinishPartialPaymentRoute(val m: PerfectPayments) : BaseRoute("/api/v1
                     buildJsonObject {}
                 )
 
+                if (createdPaymentData !is CreatedPaymentInfoWithUrl)
+                    error("I don't know how to handle $createdPaymentData!")
+
                 call.respondJson(
-                    Json.encodeToJsonElement(PaymentCreatedResponse(paymentUrl))
+                    Json.encodeToJsonElement(PaymentCreatedResponse(createdPaymentData.url))
                 )
             }
         }

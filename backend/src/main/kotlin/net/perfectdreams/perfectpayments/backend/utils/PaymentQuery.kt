@@ -14,6 +14,7 @@ import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.dao.Payment
 import net.perfectdreams.perfectpayments.backend.dao.PaymentPersonalInfo
 import net.perfectdreams.perfectpayments.backend.payments.PaymentStatus
+import net.perfectdreams.perfectpayments.backend.processors.creators.CreatedPaymentInfo
 import net.perfectdreams.perfectpayments.common.data.PersonalData
 import net.perfectdreams.perfectpayments.common.payments.PaymentGateway
 import java.awt.Color
@@ -30,7 +31,7 @@ object PaymentQuery {
         gateway: PaymentGateway,
         personalData: PersonalData?,
         data: JsonObject
-    ): String {
+    ): CreatedPaymentInfo {
         val paymentCreator = m.paymentCreators[gateway] ?: error("Missing payment creator")
 
         val payment = m.newSuspendedTransaction {
@@ -59,14 +60,14 @@ object PaymentQuery {
         }
         val paymentId = payment.id.value
 
-        val url = paymentCreator.createPayment(paymentId, partialPayment, data)
+        val createdPaymentInfo = paymentCreator.createPayment(paymentId, partialPayment, data)
 
         // Remove the partial payment
         m.partialPayments.remove(partialPaymentId)
 
         sendPaymentNotification(m, payment)
 
-        return url
+        return createdPaymentInfo
     }
 
     fun sendPaymentNotification(m: PerfectPayments, payment: Payment) {

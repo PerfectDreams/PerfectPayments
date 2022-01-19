@@ -1,17 +1,20 @@
 package net.perfectdreams.perfectpayments.backend.processors.creators
 
-import io.ktor.client.request.header
-import io.ktor.client.request.post
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.readText
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import kotlinx.serialization.json.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.put
+import kotlinx.serialization.json.putJsonObject
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.utils.PartialPayment
 
 class PicPayPaymentCreator(val m: PerfectPayments) : PaymentCreator {
-    override suspend fun createPayment(paymentId: Long, partialPayment: PartialPayment, data: JsonObject): String {
+    override suspend fun createPayment(paymentId: Long, partialPayment: PartialPayment, data: JsonObject): CreatedPaymentInfo {
         val buyer = data["buyer"]!!.jsonObject
 
         val firstName = buyer["firstName"]!!.jsonPrimitive.content
@@ -49,6 +52,7 @@ class PicPayPaymentCreator(val m: PerfectPayments) : PaymentCreator {
         val picPayJson = Json.parseToJsonElement(payload)
             .jsonObject
 
-        return picPayJson["paymentUrl"]!!.jsonPrimitive.content
+        return TODO()
+        // return picPayJson["paymentUrl"]!!.jsonPrimitive.content
     }
 }

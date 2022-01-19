@@ -1,16 +1,15 @@
 package net.perfectdreams.perfectpayments.backend.processors.creators
 
+import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
-import io.ktor.client.request.post
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.readText
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.serialization.json.JsonObject
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.utils.PartialPayment
 
 class PagSeguroPaymentCreator(val m: PerfectPayments) : PaymentCreator {
-    override suspend fun createPayment(paymentId: Long, partialPayment: PartialPayment, data: JsonObject): String {
+    override suspend fun createPayment(paymentId: Long, partialPayment: PartialPayment, data: JsonObject): CreatedPagSeguroPaymentInfo {
         val httpResponse = PerfectPayments.http.post<HttpResponse>("https://ws.pagseguro.uol.com.br/v2/checkout?email=${m.gateway.pagSeguro.email}&token=${m.gateway.pagSeguro.token}") {
             // Yes, it is also in the parameters, not sure why
             body = FormDataContent(Parameters.build {
@@ -34,6 +33,9 @@ class PagSeguroPaymentCreator(val m: PerfectPayments) : PaymentCreator {
         // ewwww, but it works!
         val code = payload.substringAfter("<code>").substringBefore("</code>")
 
-        return "https://pagseguro.uol.com.br/v2/checkout/payment.html?code=$code"
+        return CreatedPagSeguroPaymentInfo(
+            code,
+            "https://pagseguro.uol.com.br/v2/checkout/payment.html?code=$code"
+        )
     }
 }
