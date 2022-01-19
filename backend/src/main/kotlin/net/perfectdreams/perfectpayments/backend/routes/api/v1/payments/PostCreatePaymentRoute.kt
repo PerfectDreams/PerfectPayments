@@ -3,30 +3,28 @@ package net.perfectdreams.perfectpayments.backend.routes.api.v1.payments
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.response.*
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.serialization.json.long
-import kotlinx.serialization.json.put
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.routes.api.v1.RequiresAPIAuthenticationRoute
 import net.perfectdreams.perfectpayments.backend.utils.PartialPayment
 import net.perfectdreams.perfectpayments.backend.utils.extensions.receiveTextUTF8
+import net.perfectdreams.perfectpayments.common.data.api.CreatePaymentRequest
+import net.perfectdreams.perfectpayments.common.data.api.CreatePaymentResponse
 import java.util.*
 
 class PostCreatePaymentRoute(m: PerfectPayments) : RequiresAPIAuthenticationRoute(m, "/api/v1/payments") {
     override suspend fun onAuthenticatedRequest(call: ApplicationCall) {
         val paymentPayload = call.receiveTextUTF8()
 
-        val body = Json.parseToJsonElement(paymentPayload)
-            .jsonObject
+        val request = Json.decodeFromString<CreatePaymentRequest>(paymentPayload)
 
-        val paymentTitle = body["title"]!!.jsonPrimitive.content
-        val currencyId = body["currencyId"]!!.jsonPrimitive.content
-        val amount = body["amount"]!!.jsonPrimitive.long
-        val callbackUrl = body["callbackUrl"]!!.jsonPrimitive.content
-        val externalReference = body["externalReference"]!!.jsonPrimitive.content
+        val paymentTitle = request.title
+        val currencyId = request.currencyId
+        val amount = request.amount
+        val callbackUrl = request.callbackUrl
+        val externalReference = request.externalReference
 
         val partialPaymentId = UUID.randomUUID()
         val partialPayment = PartialPayment(
@@ -41,13 +39,12 @@ class PostCreatePaymentRoute(m: PerfectPayments) : RequiresAPIAuthenticationRout
 
         // After generating the payment, we will return the UUID of the payment + payment URL
         call.respondText(
-            buildJsonObject {
-                put("id", partialPaymentId.toString())
-                put(
-                    "paymentUrl",
+            Json.encodeToString(
+                CreatePaymentResponse(
+                    partialPaymentId.toString(),
                     "${m.config.website.url}/checkout/$partialPaymentId"
                 )
-            }.toString(),
+            ),
             ContentType.Application.Json
         )
     }
