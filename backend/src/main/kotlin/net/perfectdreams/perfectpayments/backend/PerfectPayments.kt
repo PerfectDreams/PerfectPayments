@@ -6,6 +6,7 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.application.*
 import io.ktor.client.*
+import io.ktor.client.features.*
 import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.http.content.*
@@ -66,6 +67,9 @@ class PerfectPayments(
     companion object {
         val http = HttpClient {
             expectSuccess = false
+            install(HttpTimeout) {
+                requestTimeoutMillis = 1000
+            }
         }
         const val USER_AGENT = "PerfectPayments"
         private val logger = KotlinLogging.logger {}

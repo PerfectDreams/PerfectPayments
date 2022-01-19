@@ -37,8 +37,8 @@ dependencies {
     // Used for Locales
     implementation("org.yaml:snakeyaml:1.29")
     implementation("com.charleskorn.kaml:kaml:0.35.0")
-    implementation("net.perfectdreams.i18nhelper:core:0.0.1-SNAPSHOT")
-    implementation("net.perfectdreams.i18nhelper.formatters:icu-messageformat-jvm:0.0.2-SNAPSHOT")
+    implementation("net.perfectdreams.i18nhelper:core:${libs.versions.i18nhelper.get()}")
+    implementation("net.perfectdreams.i18nhelper.formatters:icu-messageformat-jvm:${libs.versions.i18nhelper.get()}")
 
     implementation("com.github.ben-manes.caffeine:caffeine:2.8.8")
     implementation("org.jsoup:jsoup:1.13.1")
@@ -52,12 +52,12 @@ dependencies {
     api("net.perfectdreams.sequins.ktor:base-route:1.0.2")
 
     // Ktor
-    implementation("io.ktor:ktor-client-core:${Versions.KTOR}")
+    implementation("io.ktor:ktor-client-core:${libs.versions.ktor.get()}")
 
     // We use "Apache" because "CIO", for some reason, has issues with PayPal's API
-    implementation("io.ktor:ktor-client-apache:${Versions.KTOR}")
-    implementation("io.ktor:ktor-server-core:${Versions.KTOR}")
-    implementation("io.ktor:ktor-server-netty:${Versions.KTOR}")
+    implementation("io.ktor:ktor-client-apache:${libs.versions.ktor.get()}")
+    implementation("io.ktor:ktor-server-core:${libs.versions.ktor.get()}")
+    implementation("io.ktor:ktor-server-netty:${libs.versions.ktor.get()}")
 }
 
 jib {
