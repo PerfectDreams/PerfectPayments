@@ -1,7 +1,7 @@
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-    id("net.perfectdreams.i18nhelper.plugin") version "0.0.2-SNAPSHOT"
+    id("net.perfectdreams.i18nhelper.plugin") version "0.0.3-SNAPSHOT"
 }
 
 repositories {
