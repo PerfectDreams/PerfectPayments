@@ -32,8 +32,8 @@ kotlin {
             dependencies {
                 api(kotlin("stdlib-common"))
                 implementation("net.perfectdreams.i18nhelper:core:${libs.versions.i18nhelper.get()}")
-                api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
-                api("io.github.microutils:kotlin-logging:2.0.10")
+                api("org.jetbrains.kotlinx:kotlinx-serialization-json:${libs.versions.kotlinx.serialization.get()}")
+                api(libs.kotlin.logging)
             }
         }
     }

@@ -17,36 +17,36 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(project(":common"))
 
-    implementation("ch.qos.logback:logback-classic:1.3.0-alpha5")
-    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.2")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-hocon:1.0.1")
+    implementation("ch.qos.logback:logback-classic:1.3.0-alpha12")
+    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:${libs.versions.kotlinx.serialization.get()}")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinx.serialization.get()}")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${libs.versions.kotlinx.serialization.get()}")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-hocon:${libs.versions.kotlinx.serialization.get()}")
 
     // Database
-    implementation("org.postgresql:postgresql:42.2.18")
-    implementation("com.zaxxer:HikariCP:3.4.5")
-    implementation("org.jetbrains.exposed:exposed-core:0.32.1")
-    implementation("org.jetbrains.exposed:exposed-dao:0.32.1")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.32.1")
+    implementation("org.postgresql:postgresql:42.3.1")
+    implementation("com.zaxxer:HikariCP:5.0.1")
+    implementation("org.jetbrains.exposed:exposed-core:0.37.3")
+    implementation("org.jetbrains.exposed:exposed-dao:0.37.3")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.37.3")
 
     // ICU4J
-    implementation("com.ibm.icu:icu4j:69.1")
+    implementation("com.ibm.icu:icu4j:70.1")
 
     // Used for Locales
     implementation("org.yaml:snakeyaml:1.29")
-    implementation("com.charleskorn.kaml:kaml:0.35.0")
+    implementation("com.charleskorn.kaml:kaml:0.38.0")
     implementation("net.perfectdreams.i18nhelper:core:${libs.versions.i18nhelper.get()}")
     implementation("net.perfectdreams.i18nhelper.formatters:icu-messageformat-jvm:${libs.versions.i18nhelper.get()}")
 
-    implementation("com.github.ben-manes.caffeine:caffeine:2.8.8")
-    implementation("org.jsoup:jsoup:1.13.1")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.0.5")
+    implementation("org.jsoup:jsoup:1.14.3")
     implementation("com.stripe:stripe-java:20.3.0")
-    implementation("com.paypal.sdk:checkout-sdk:1.0.2")
-    implementation("club.minnced:discord-webhooks:0.5.4")
+    implementation("com.paypal.sdk:checkout-sdk:1.0.5")
+    implementation("club.minnced:discord-webhooks:0.7.5")
 
-    implementation("io.github.microutils:kotlin-logging:2.0.4")
+    implementation(libs.kotlin.logging)
 
     // Sequins
     api("net.perfectdreams.sequins.ktor:base-route:1.0.2")

@@ -22,6 +22,8 @@ dependencyResolutionManagement {
             version("compose", "1.0.1")
             version("ktor", "1.6.7")
             version("i18nhelper", "0.0.3-SNAPSHOT")
+            version("kotlinx.serialization", "1.3.2")
+            alias("kotlin-logging").to("io.github.microutils:kotlin-logging:2.1.21")
         }
     }
 }
