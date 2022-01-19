@@ -17,4 +17,5 @@ class Payment(id: EntityID<Long>) : LongEntity(id) {
     var amount by Payments.amount
     var title by Payments.title
     var currencyId by Payments.currencyId
+    var externalReferenceFormat by Payments.externalReferenceFormat
 }

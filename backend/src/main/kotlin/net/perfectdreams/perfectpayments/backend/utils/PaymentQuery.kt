@@ -34,7 +34,7 @@ object PaymentQuery {
         val paymentCreator = m.paymentCreators[gateway] ?: error("Missing payment creator")
 
         val payment = m.newSuspendedTransaction {
-            Payment.new {
+            val payment = Payment.new {
                 this.gateway = gateway
                 this.status = PaymentStatus.CREATED
                 this.referenceId = partialPaymentId
@@ -43,12 +43,10 @@ object PaymentQuery {
                 this.currencyId = partialPayment.currencyId
                 this.callbackUrl = partialPayment.callbackUrl
                 this.createdAt = Clock.System.now()
+                this.externalReferenceFormat = partialPayment.externalReference
             }
-        }
-        val paymentId = payment.id.value
 
-        if (personalData != null) {
-            m.newSuspendedTransaction {
+            if (personalData != null) {
                 PaymentPersonalInfo.new {
                     this.payment = payment
                     this.socialNumber = personalData.socialNumber.cleanDocument
@@ -56,16 +54,17 @@ object PaymentQuery {
                     this.email = personalData.email.buildEmailAddress()
                 }
             }
+
+            payment
         }
+        val paymentId = payment.id.value
 
         val url = paymentCreator.createPayment(paymentId, partialPayment, data)
 
         // Remove the partial payment
         m.partialPayments.remove(partialPaymentId)
 
-        val paymentObject = m.newSuspendedTransaction { Payment.findById(paymentId) }
-        if (paymentObject != null)
-            sendPaymentNotification(m, paymentObject)
+        sendPaymentNotification(m, payment)
 
         return url
     }

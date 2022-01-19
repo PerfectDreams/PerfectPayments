@@ -15,4 +15,5 @@ object Payments : LongIdTable() {
     val callbackUrl = text("callback_url")
     val createdAt = timestamp("created_at")
     val paidAt = timestamp("paid_at").nullable()
+    val externalReferenceFormat = text("external_reference").nullable()
 }
