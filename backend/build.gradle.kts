@@ -30,6 +30,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-core:0.37.3")
     implementation("org.jetbrains.exposed:exposed-dao:0.37.3")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.37.3")
+    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.37.3")
 
     // ICU4J
     implementation("com.ibm.icu:icu4j:70.1")

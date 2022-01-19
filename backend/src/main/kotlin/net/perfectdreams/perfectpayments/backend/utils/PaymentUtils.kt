@@ -1,5 +1,6 @@
 package net.perfectdreams.perfectpayments.backend.utils
 
+import kotlinx.datetime.Clock
 import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.dao.Payment
@@ -28,7 +29,7 @@ object PaymentUtils {
         m.newSuspendedTransaction {
             // Update the status
             if (status == PaymentStatus.APPROVED)
-                payment.paidAt = System.currentTimeMillis()
+                payment.paidAt = Clock.System.now()
             payment.status = status
         }
 

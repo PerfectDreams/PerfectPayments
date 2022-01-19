@@ -5,6 +5,7 @@ import club.minnced.discord.webhook.send.WebhookEmbedBuilder
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import kotlinx.datetime.Clock
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
@@ -41,7 +42,7 @@ object PaymentQuery {
                 this.amount = partialPayment.amount
                 this.currencyId = partialPayment.currencyId
                 this.callbackUrl = partialPayment.callbackUrl
-                this.createdAt = System.currentTimeMillis()
+                this.createdAt = Clock.System.now()
             }
         }
         val paymentId = payment.id.value
@@ -135,8 +136,8 @@ object PaymentQuery {
                     put("amount", payment.amount)
                     put("status", payment.status.toString())
                     put("gateway", payment.gateway.toString())
-                    put("paidAt", payment.paidAt)
-                    put("createdAt", payment.createdAt)
+                    put("paidAt", payment.paidAt?.toEpochMilliseconds())
+                    put("createdAt", payment.createdAt.toEpochMilliseconds())
                 }.toString()
             }
 

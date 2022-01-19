@@ -1,6 +1,7 @@
 package net.perfectdreams.perfectpayments.backend.routes.api.v1.payments
 
 import io.ktor.application.*
+import kotlinx.datetime.Clock
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
@@ -51,7 +52,7 @@ class PostFinishPartialPaymentRoute(val m: PerfectPayments) : BaseRoute("/api/v1
                 // Force the payment as complete
                 m.newSuspendedTransaction {
                     // Pagamento aprovado!
-                    internalPayment.paidAt = System.currentTimeMillis()
+                    internalPayment.paidAt = Clock.System.now()
                     internalPayment.status = PaymentStatus.APPROVED
                 }
 
