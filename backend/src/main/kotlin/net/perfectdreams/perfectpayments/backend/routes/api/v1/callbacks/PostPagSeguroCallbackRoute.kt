@@ -69,8 +69,8 @@ class PostPagSeguroCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/ca
 
             val jsoup = Jsoup.parse(payloadAsString)
 
-            val reference = jsoup.getElementsByTag("reference").first().text()
-            val status = jsoup.getElementsByTag("status").first().text()
+            val reference = jsoup.getElementsByTag("reference").first()!!.text()
+            val status = jsoup.getElementsByTag("status").first()!!.text()
 
             logger.info { "PagSeguro payment $reference status is $status" }
 
