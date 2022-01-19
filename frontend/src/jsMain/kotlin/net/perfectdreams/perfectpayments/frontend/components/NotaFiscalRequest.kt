@@ -7,7 +7,6 @@ import net.perfectdreams.perfectpayments.common.data.ClientSidePartialPayment
 import net.perfectdreams.perfectpayments.common.payments.PaymentGateway
 import net.perfectdreams.perfectpayments.frontend.PerfectPaymentsFrontend
 import net.perfectdreams.perfectpayments.frontend.screen.Screen
-import net.perfectdreams.perfectpayments.frontend.utils.onClickSafariWorkaround
 import net.perfectdreams.perfectpayments.i18n.I18nKeys
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.display
@@ -55,7 +54,7 @@ fun NotaFiscalRequest(m: PerfectPaymentsFrontend, i18nContext: I18nContext, part
                 classes("button", "red")
                 style { width(100.percent) }
 
-                onClickSafariWorkaround {
+                onClick {
                     m.delegatedScreenState = if (screen.gateway == PaymentGateway.PICPAY) {
                         Screen.PicPayDataCollectRequest(
                             screen.gateway,
@@ -73,7 +72,7 @@ fun NotaFiscalRequest(m: PerfectPaymentsFrontend, i18nContext: I18nContext, part
                 classes("button", "primary")
                 style { width(100.percent) }
 
-                onClickSafariWorkaround {
+                onClick {
                     m.delegatedScreenState = Screen.NotaFiscalDataCollectRequest(screen.gateway)
                 }
             }) {

@@ -17,7 +17,6 @@ import net.perfectdreams.perfectpayments.frontend.components.input.CPFInput
 import net.perfectdreams.perfectpayments.frontend.components.input.EmailInput
 import net.perfectdreams.perfectpayments.frontend.components.input.LegalNameInput
 import net.perfectdreams.perfectpayments.frontend.screen.Screen
-import net.perfectdreams.perfectpayments.frontend.utils.onClickSafariWorkaround
 import net.perfectdreams.perfectpayments.i18n.I18nKeys
 import net.perfectdreams.perfectpayments.i18n.I18nKeysData
 import org.jetbrains.compose.web.attributes.disabled
@@ -56,7 +55,7 @@ fun NotaFiscalDataCollectRequest(m: PerfectPaymentsFrontend, i18nContext: I18nCo
             classes("button", "primary")
             style { width(100.percent) }
 
-            onClickSafariWorkaround {
+            onClick {
                 if (everythingIsFilled)
                     if (screen.gateway == PaymentGateway.PICPAY) {
                         m.delegatedScreenState = Screen.PicPayDataCollectRequest(
