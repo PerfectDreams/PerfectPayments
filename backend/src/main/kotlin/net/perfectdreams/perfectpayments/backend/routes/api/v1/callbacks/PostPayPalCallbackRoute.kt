@@ -140,6 +140,7 @@ class PostPayPalCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
 
             logger.info { "Tried capturing PayPal payment, status: $status; order already captured? $orderAlreadyCaptured" }
 
+            // TODO: The "orderAlreadyCaptured" check doesn't work because it doesn't provide the info that we need, this needs to be fixed!
             if (status == "COMPLETED" || orderAlreadyCaptured == true) {
                 val purchaseUnits = capturePayment["purchase_units"]!!.jsonArray
 
