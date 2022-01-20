@@ -17,7 +17,6 @@ import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.dao.Payment
 import net.perfectdreams.perfectpayments.backend.payments.PaymentStatus
-import net.perfectdreams.perfectpayments.backend.utils.PaymentQuery
 import net.perfectdreams.perfectpayments.backend.utils.PaymentUtils
 import net.perfectdreams.perfectpayments.backend.utils.extensions.receiveTextUTF8
 import net.perfectdreams.perfectpayments.backend.utils.extensions.respondEmptyJson
@@ -135,7 +134,12 @@ class PostPayPalCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
 
             val status = capturePayment["status"]?.jsonPrimitive?.content
 
-            if (status == "COMPLETED") {
+            val orderAlreadyCaptured = capturePayment["issues"]?.jsonArray
+                ?.all { it.jsonObject["issue"]?.jsonPrimitive?.content == "ORDER_ALREADY_CAPTURED" }
+
+            logger.info { "Tried capturing PayPal payment, status: $status; order already captured? $orderAlreadyCaptured" }
+
+            if (status == "COMPLETED" || orderAlreadyCaptured == true) {
                 val purchaseUnits = capturePayment["purchase_units"]!!.jsonArray
 
                 for (purchaseUnit in purchaseUnits) {
