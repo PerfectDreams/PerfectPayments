@@ -135,7 +135,7 @@ class PostPayPalCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
             val status = capturePayment["status"]?.jsonPrimitive?.content
             
             // {"name":"UNPROCESSABLE_ENTITY","details":[{"issue":"ORDER_ALREADY_CAPTURED","description":"Order already captured.If 'intent=CAPTURE' only one capture per order is allowed."}],"message":"The requested action could not be performed, semantically incorrect, or failed business validation.","debug_id":"f8574efcf7ad9","links":[{"href":"https://developer.paypal.com/docs/api/orders/v2/#error-ORDER_ALREADY_CAPTURED","rel":"information_link","method":"GET"}]}
-            val orderAlreadyCaptured = capturePayment["details"]?.jsonObject?.get("issues")?.jsonArray
+            val orderAlreadyCaptured = capturePayment["details"]?.jsonArray
                 ?.all { it.jsonObject["issue"]?.jsonPrimitive?.content == "ORDER_ALREADY_CAPTURED" }
 
             logger.info { "Tried capturing PayPal payment, status: $status; order already captured? $orderAlreadyCaptured" }
