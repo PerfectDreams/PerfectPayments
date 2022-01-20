@@ -96,6 +96,15 @@ class FocusNFe(private val config: FocusNFeConfig) {
                 // 422 	nfe_nao_autorizada 	Foi feita alguma operação com a nota que só é aplicável se ela estiver autorizada (por exemplo a ação de cancelamento)
                 // 422 	nfe_autorizada 	Foi solicitado o processamento de uma nota já autorizada
                 // 422 	em_processamento 	Foi solicitado o processamento de uma nota que já está em processamento
+                // TODO: Parse and respect these
+                // {
+                //  "codigo": "nfe_autorizada",
+                //  "mensagem": "Nota fiscal já autorizada"
+                // }
+                // {
+                //  "codigo": "limite_excedido",
+                //  "mensagem": "Número máximo de requisições por minuto (100) excedido. Tente novamente em 43 segundos"
+                // }
                 result.status.isSuccess() || result.status == HttpStatusCode.UnprocessableEntity
             },
             { throwable, waitTime ->
