@@ -68,7 +68,9 @@ class PerfectPayments(
         val http = HttpClient {
             expectSuccess = false
             install(HttpTimeout) {
-                requestTimeoutMillis = 1000
+                // Because FocusNFe is kinda finicky ngl
+                // "Request timeout has expired [url=https://api.focusnfe.com.br/v2/nfse?ref=pp-prod-1507, request_timeout=1000 ms]"
+                requestTimeoutMillis = 15_000
             }
         }
         const val USER_AGENT = "PerfectPayments"

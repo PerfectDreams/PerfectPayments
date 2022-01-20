@@ -19,7 +19,9 @@ fun callbackWithBackoff(callback: suspend () -> (Boolean), failure: suspend (Thr
                 }
             } catch (e: Throwable) {
                 requestsMade++
-                val waitTime = requestsMade.toDouble()
+                val waitTime = if (e is BackoffWithCustomTimeException)
+                    e.waitTimeInMillis
+                else requestsMade.toDouble()
                     .pow(2)
                     .toLong() * 1000
 
@@ -30,3 +32,5 @@ fun callbackWithBackoff(callback: suspend () -> (Boolean), failure: suspend (Thr
         }
     }
 }
+
+class BackoffWithCustomTimeException(val waitTimeInMillis: Long) : RuntimeException()

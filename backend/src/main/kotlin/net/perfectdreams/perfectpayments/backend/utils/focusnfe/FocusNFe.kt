@@ -10,6 +10,7 @@ import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.config.FocusNFeConfig
+import net.perfectdreams.perfectpayments.backend.utils.BackoffWithCustomTimeException
 import net.perfectdreams.perfectpayments.backend.utils.callbackWithBackoff
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -83,7 +84,19 @@ class FocusNFe(private val config: FocusNFeConfig) {
 
                 println(result.readText())
 
-                result.status.isSuccess()
+                if (result.status == HttpStatusCode.TooManyRequests) {
+                    val ratelimitRetryAfter = result.headers["Rate-Limit-Reset"]
+                    val rlRetryAfter = ratelimitRetryAfter?.toLong()
+                    if (rlRetryAfter != null) {
+                        throw BackoffWithCustomTimeException(rlRetryAfter * 1000)
+                    }
+                }
+
+                // Unprocessable Entity =
+                // 422 	nfe_nao_autorizada 	Foi feita alguma operação com a nota que só é aplicável se ela estiver autorizada (por exemplo a ação de cancelamento)
+                // 422 	nfe_autorizada 	Foi solicitado o processamento de uma nota já autorizada
+                // 422 	em_processamento 	Foi solicitado o processamento de uma nota que já está em processamento
+                result.status.isSuccess() || result.status == HttpStatusCode.UnprocessableEntity
             },
             { throwable, waitTime ->
                 logger.warn(throwable) { "Something went wrong while trying to register a nota fiscal for $ref! Retrying again after ${waitTime}ms"}
