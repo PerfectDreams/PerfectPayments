@@ -10,7 +10,7 @@ import java.util.zip.ZipFile
 
 
 /**
- * Converts a SASS file to a CSS file and puts the converted file into `build/sass/style.css`
+ * Converts a SASS file to a CSS file and puts the converted file into `build/sass/[outputSass]`
  *
  * The Dart Sass implementation will be downloaded, based on your current operating system, after that, your SASS file will be converted to CSS.
  *
@@ -26,8 +26,8 @@ import java.util.zip.ZipFile
  *
  * @param inputSass the file that will be converted
  */
-fun Project.sassTask(inputSass: String): Task {
-    return task("sass") {
+fun Project.sassTask(inputSass: String, outputSass: String): Task {
+    return task("sass-${inputSass.replace("/", "-").replace(".", "-")}") {
         val operatingSystem = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.getCurrentOperatingSystem()
 
         val isWindows = operatingSystem.internalOs.isWindows
@@ -75,36 +75,31 @@ fun Project.sassTask(inputSass: String): Task {
             }
 
             // Execute SASS
+            val originalSassLocation = File(project.projectDir, "src/main/sass/$inputSass")
+            val buildSassFolder = File(project.projectDir, "build/sass/")
+            buildSassFolder.mkdirs()
+            val outputSassLocation = File(buildSassFolder, outputSass)
+
             when {
                 isWindows -> {
-                    val originalSassLocation = File(project.projectDir, "src/main/sass/$inputSass")
-                    val buildSassFolder = File(project.projectDir, "build/sass/")
-                    buildSassFolder.mkdirs()
-                    val outputSassLocation = File(buildSassFolder, "style.css")
-
                     val pb = ProcessBuilder("cmd.exe", "/C", "$dartSassOsTempFolder\\dart-sass\\sass.bat", originalSassLocation.toString(), outputSassLocation.toString())
                         .start()
 
                     val status = pb.waitFor()
 
                     println(pb.inputStream.readAllBytes().toString(Charsets.UTF_8))
+                    println(pb.errorStream.readAllBytes().toString(Charsets.UTF_8))
 
                     println("Process Status: $status")
                 }
                 isLinux -> {
-                    println("$dartSassOsTempFolder/dart-sass/sass")
-
-                    val originalSassLocation = File(project.projectDir, "src/main/sass/$inputSass")
-                    val buildSassFolder = File(project.projectDir, "build/sass/")
-                    buildSassFolder.mkdirs()
-                    val outputSassLocation = File(buildSassFolder, "style.css")
-
                     val pb = ProcessBuilder("$dartSassOsTempFolder/dart-sass/sass", originalSassLocation.toString(), outputSassLocation.toString())
                         .start()
 
                     val status = pb.waitFor()
 
                     println(pb.inputStream.readAllBytes().toString(Charsets.UTF_8))
+                    println(pb.errorStream.readAllBytes().toString(Charsets.UTF_8))
 
                     println("Process Status: $status")
                 }

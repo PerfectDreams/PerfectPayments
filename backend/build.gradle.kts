@@ -1,3 +1,5 @@
+// https://youtrack.jetbrains.com/issue/KTIJ-19369
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
@@ -79,7 +81,7 @@ jib {
 val jsBrowserProductionWebpack = tasks.getByPath(":frontend:jsBrowserProductionWebpack") as org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 
 tasks {
-    val sass = sassTask("style.scss")
+    val sass = sassTask("style.scss", "style.css")
 
     processResources {
         // We need to wait until the JS build finishes and the SASS files are generated
