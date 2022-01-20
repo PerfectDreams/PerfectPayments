@@ -57,7 +57,7 @@ fun ParentalWarning(m: PerfectPaymentsFrontend, i18nContext: I18nContext, partia
                 style { width(100.percent) }
 
                 onClick {
-                    window.location.replace("https://random.cat")
+                    window.location.href = "https://random.cat"
                 }
             }) {
                 Text(i18nContext.get(I18nKeysData.ParentalWarning.SorryLoriPleaseDontHurtMe))
