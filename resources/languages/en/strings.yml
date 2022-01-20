@@ -1,0 +1,89 @@
+header:
+  product: "Product"
+  value: "Value"
+
+selectPaymentGateway:
+  title: "Select your payment gateway" # Used in the payment header
+  accepts: "Accepts" # Example: "Accepts: PayPal Balance, Credit Card"
+
+paymentSuccess:
+  title: "Payment successfully made!"
+  description:
+    - "Thanks for the purchase! Your product will arrive shortly after payment is approved!"
+    - "If you have any issues with the product or you haven't received it after the payment has been approved, talk to our support staff! Because you know, sometimes things go wrong but we will try our best to help you!"
+
+paymentCancelled:
+  title: "Payment cancelled..."
+  description:
+    - "Look at that, trying to make me poor..."
+    - "If you cancelled it by mistake, create a new payment URL and try again!"
+
+missingPartialPayment:
+  title: "Payment URL expired!"
+  description:
+    - "Looks like the payment URL expired! Create a new payment URL by going back to the service you were before and try again."
+    - "Don't worry if you already paid! Just wait and relax, the payment is still being processed by the payment gateway you chose!"
+
+taxInvoice:
+  title: "Tax Invoice" # Used in the "Nota Fiscal" section, used for Brazil users
+  description:
+    - "When your payment is approved, we will issue a tax invoice of your purchase for tax collection purposes."
+    - "If you wish, we can include your personal information in the tax invoice and, when the payment is approved, you will receive a copy of the tax invoice via email."
+    - "If you live outside of Brazil and you don't have an CPF, you can choose to issue the tax invoice without your personal information!"
+  include: "Include my personal data in the tax invoice"
+  doNotInclude: "Do not include my personal data in the tax invoice"
+  fillYourPersonalData: "Fill your personal data"
+
+parentalWarning:
+  title: "Parental Warning"
+  description:
+    - "Don't use your parents' or acquaintances' credit cards without their permission! Using someone else's money without their permission is fraud, and that hurts us, you and even them!"
+    - "So if you don't have permission to use it, ask them first! If someone stole your money, you would hate them, right? So don't do it!"
+    - "If you continue... Loritta will find you, and you won't like what will happen to you..."
+  iHavePermission: "I have permission/It is my own money so I can do whatever I want!"
+  sorryLoriPleaseDontHurtMe: "Sorry Lori, please don't hurt me"
+
+gateways:
+  picpay:
+    name: "PicPay"
+    dataWarning: "Your information will be used by PicPay to process your payment. We won't save your personal details."
+  stripe:
+    name: "Stripe"
+  pagseguro:
+    name: "PagSeguro"
+  paypal:
+    name: "PayPal"
+  sandbox:
+    name: "Sandbox" # Used for debugging
+
+methods:
+  creditCard: "Credit Card"
+  picpayBalance: "PicPay Balance"
+  brazilBankTicket: "Brazilian Bank Ticket" # Only used in Brazil
+  googlePay: "Google Pay"
+  applePay: "Apple Pay"
+  paypalBalance: "PayPal Balance"
+  sandbox: "A cute sandbox where you can test payments" # Used for debugging
+  pix: "Pix" # Only used in Brazil
+
+personalData:
+  legalName: "Legal Name"
+  firstName: "First Name"
+  lastName: "Last Name"
+  phoneNumber: "Phone Number"
+  cpf: "CPF"
+  email: "Email"
+
+invalidPersonalData:
+  invalidLegalName: "Invalid Legal Name!"
+  invalidFirstName: "Invalid First Name!"
+  invalidLastName: "Invalid Last Name!"
+  invalidPhoneNumber: "Invalid Phone Number!"
+  invalidCPF: "Invalid CPF!"
+  invalidEmail: "Invalid Email!"
+
+continueToPayment: "Continue to Payment"
+
+footer:
+  text: "PerfectPayments is a experimental payment gateway integration service used by PerfectDreams, Loritta, SparklyPower and much more. If you have any issues with your purchase, {clickHere}." # Used in the website's footer
+  clickHere: "click here" # Used on the footer for the support URL

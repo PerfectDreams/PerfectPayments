@@ -1,0 +1,80 @@
+header:
+  product: "Produto"
+  value: "Valor"
+
+selectPaymentGateway:
+  title: "Selecione o meio de pagamento" # Used in the payment header
+  accepts: "Aceita" # Example: "Accepts: PayPal Balance, Credit Card"
+
+paymentSuccess:
+  title: "Pagamento realizado com sucesso!"
+  description:
+    - "Obrigada pela compra! Seu produto irá chegar em breve após o pagamento ser aprovado!"
+    - "Caso você tenha problemas com o produto ou não tenha recebido ele após o pagamento ter sido aprovado, fale com a nossa equipe de suporte! Sabe como é né, às vezes as coisas dão problemas mas a gente fará o máximo para te ajudar!"
+
+paymentCancelled:
+  title: "Pagamento cancelado..."
+  description:
+    - "Olha isso, tentando me deixar pobre..."
+    - "Caso você tenha cancelado sem querer, crie um novo link de pagamento e tente novamente!"
+
+missingPartialPayment:
+  title: "Link de Pagamento Expirado!"
+  description:
+    - "Parece que o link de pagamento expirou! Crie um novo pagamento voltando ao serviço que você estava e tente novamente."
+    - "Caso você já tenha pago, não se preocupe! Basta esperar e relaxar, já que o pagamento ainda está sendo processado pela plataforma de pagamento que você escolheu!"
+
+taxInvoice:
+  title: "Nota Fiscal" # Used in the "Nota Fiscal" section, used for Brazil users
+  description:
+    - "Quando o seu pagamento for aprovado, nós emitiremos uma nota fiscal da sua compra para arrecadação de impostos."
+    - "Se você desejar, nós poderemos incluir os seus dados pessoais na nota fiscal e, quando o pagamento for aprovado, você receberá uma cópia da nota fiscal via email."
+    - "Se você vive fora do Brasil e não possui um CPF, você pode escolher emitir a nota fiscal sem incluir seus dados!"
+  include: "Inclua meus dados pessoais na Nota Fiscal"
+  doNotInclude: "Não inclua meus dados pessoais na Nota Fiscal"
+  fillYourPersonalData: "Preencha seus dados pessoais"
+
+gateways:
+  picpay:
+    name: "PicPay"
+    dataWarning: "As suas informações pessoais serão utilizadas apenas pelo PicPay para o processamento de pagamentos. O PerfectDreams não irá salvar os seus dados pessoais."
+  stripe:
+    name: "Stripe"
+  pagseguro:
+    name: "PagSeguro"
+  paypal:
+    name: "PayPal"
+  sandbox:
+    name: "Sandbox" # Used for debugging
+
+methods:
+  creditCard: "Cartão de Crédito"
+  picpayBalance: "Saldo do PicPay"
+  brazilBankTicket: "Boleto"
+  googlePay: "Google Pay"
+  applePay: "Apple Pay"
+  paypalBalance: "Saldo do PayPal"
+  sandbox: "Uma caixa de areia fofa que permite você testar pagamentos" # Used for debugging
+  pix: "Pix" # Only used in Brazil
+
+personalData:
+  legalName: "Razão Social (Seu nome e sobrenome)"
+  firstName: "Nome"
+  lastName: "Sobrenome"
+  phoneNumber: "Número de Telefone"
+  cpf: "CPF"
+  email: "Email"
+
+invalidPersonalData:
+  invalidLegalName: "Razão Social Inválida!"
+  invalidFirstName: "Nome Inválido!"
+  invalidLastName: "Sobrenome Inválido!"
+  invalidPhoneNumber: "Número de Celular Inválido!"
+  invalidCPF: "CPF Inválido!"
+  invalidEmail: "Email Inválido!"
+
+continueToPayment: "Continuar ao Pagamento"
+
+footer:
+  text: "PerfectPayments é um serviço experimental de integração de plataforma de pagamentos utilizada pela Loritta, SparklyPower e muito mais. Caso você tenha problemas com o seu pagamento, {clickHere}." # Used in the website's footer
+  clickHere: "clique aqui" # Used on the footer for the support URL
