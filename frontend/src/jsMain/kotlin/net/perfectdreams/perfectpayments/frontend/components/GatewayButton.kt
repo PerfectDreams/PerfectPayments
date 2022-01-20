@@ -31,7 +31,7 @@ fun GatewayButton(
             onClick {
                 println("[DEBUG] Clicked a a gateway button!") // TODO: Remove later
 
-                m.delegatedScreenState = Screen.NotaFiscalRequest(gateway)
+                m.delegatedScreenState = Screen.ParentalWarningRequest(gateway)
             }
         },
     ) {

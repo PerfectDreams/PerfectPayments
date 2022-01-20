@@ -22,6 +22,7 @@ import net.perfectdreams.perfectpayments.common.payments.PaymentGateway
 import net.perfectdreams.perfectpayments.frontend.components.DataCollected
 import net.perfectdreams.perfectpayments.frontend.components.NotaFiscalDataCollectRequest
 import net.perfectdreams.perfectpayments.frontend.components.NotaFiscalRequest
+import net.perfectdreams.perfectpayments.frontend.components.ParentalWarning
 import net.perfectdreams.perfectpayments.frontend.components.PicPayDataCollectRequest
 import net.perfectdreams.perfectpayments.frontend.components.SelectGateway
 import net.perfectdreams.perfectpayments.frontend.screen.Screen
@@ -106,6 +107,10 @@ class PerfectPaymentsFrontend {
                 when (val screen = rememberedScreenState) {
                     is Screen.SelectGateway -> {
                         SelectGateway(this@PerfectPaymentsFrontend, i18nContext, partialPaymentData)
+                    }
+
+                    is Screen.ParentalWarningRequest -> {
+                        ParentalWarning(this@PerfectPaymentsFrontend, i18nContext, partialPaymentData, screen)
                     }
 
                     is Screen.NotaFiscalRequest -> {

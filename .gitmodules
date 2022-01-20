@@ -1,6 +1,3 @@
-[submodule "resources/languages"]
-	path = resources/languages
-	url = https://github.com/PerfectDreams/PerfectPaymentsLanguages.git
 [submodule "backend/src/main/sass/lovely-style"]
 	path = backend/src/main/sass/lovely-style
 	url = https://github.com/PerfectDreams/lovely-style

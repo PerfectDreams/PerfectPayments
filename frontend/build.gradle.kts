@@ -1,4 +1,5 @@
-// Add compose gradle plugin
+// https://youtrack.jetbrains.com/issue/KTIJ-19369
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose") version libs.versions.compose.get()
