@@ -11,15 +11,15 @@ import net.perfectdreams.perfectpayments.backend.utils.PartialPayment
 class PagSeguroPaymentCreator(val m: PerfectPayments) : PaymentCreator {
     override suspend fun createPayment(paymentId: Long, partialPayment: PartialPayment, data: JsonObject): CreatedPagSeguroPaymentInfo {
         val httpResponse = PerfectPayments.http.post<HttpResponse>("https://ws.pagseguro.uol.com.br/v2/checkout?email=${m.gateway.pagSeguro.email}&token=${m.gateway.pagSeguro.token}") {
-            // Yes, it is also in the parameters, not sure why
             body = FormDataContent(Parameters.build {
+                // Yes, it is also in the parameters, not sure why
                 append("email", m.gateway.pagSeguro.email)
                 append("token", m.gateway.pagSeguro.token)
 
                 append("currency", "BRL")
                 append("itemId1", "001")
                 append("itemDescription1", partialPayment.title)
-                append("itemAmount1", (partialPayment.amount.toDouble() / 100).toString())
+                append("itemAmount1", "%.2f".format(partialPayment.amount.toDouble() / 100))
                 append("itemQuantity1", "1")
                 append("reference", partialPayment.externalReference.format(paymentId))
                 append("shippingAddressRequired", "false")
