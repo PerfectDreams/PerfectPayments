@@ -19,12 +19,13 @@ import net.perfectdreams.i18nhelper.formatters.IntlMFFormatter
 import net.perfectdreams.perfectpayments.common.data.ClientSidePartialPayment
 import net.perfectdreams.perfectpayments.common.data.PartialPaymentURL
 import net.perfectdreams.perfectpayments.common.payments.PaymentGateway
+import net.perfectdreams.perfectpayments.common.payments.UserFacingPaymentMethodSelection
 import net.perfectdreams.perfectpayments.frontend.components.DataCollected
 import net.perfectdreams.perfectpayments.frontend.components.NotaFiscalDataCollectRequest
 import net.perfectdreams.perfectpayments.frontend.components.NotaFiscalRequest
 import net.perfectdreams.perfectpayments.frontend.components.ParentalWarning
 import net.perfectdreams.perfectpayments.frontend.components.PicPayDataCollectRequest
-import net.perfectdreams.perfectpayments.frontend.components.SelectGateway
+import net.perfectdreams.perfectpayments.frontend.components.SelectUserFacingPaymentMethod
 import net.perfectdreams.perfectpayments.frontend.screen.Screen
 import net.perfectdreams.perfectpayments.i18n.I18nKeys
 import org.jetbrains.compose.web.css.textAlign
@@ -40,8 +41,9 @@ class PerfectPaymentsFrontend {
         expectSuccess = false
     }
 
-    var screenState = mutableStateOf<Screen>(Screen.SelectGateway)
-    var delegatedScreenState by screenState
+    private var screenState = mutableStateOf<Screen>(Screen.SelectGateway)
+    private var delegatedScreenState by screenState
+    private var previousScreenState: Screen? = null
 
     var partialPaymentData by mutableStateOf<ClientSidePartialPayment?>(null)
     var i18nContext by mutableStateOf<I18nContext?>(null)
@@ -85,6 +87,15 @@ class PerfectPaymentsFrontend {
             availableGateways = Json.decodeFromString(result)
         }
 
+        // Handle back button, this is kinda hacky but it works
+        window.onpopstate = {
+            val previousScreenState = previousScreenState
+            if (previousScreenState != null) {
+                this@PerfectPaymentsFrontend.previousScreenState = delegatedScreenState
+                delegatedScreenState = previousScreenState
+            }
+        }
+
         renderComposableInBody {
             val partialPaymentData = partialPaymentData
             val i18nContext = i18nContext
@@ -106,7 +117,11 @@ class PerfectPaymentsFrontend {
 
                 when (val screen = rememberedScreenState) {
                     is Screen.SelectGateway -> {
-                        SelectGateway(this@PerfectPaymentsFrontend, i18nContext, partialPaymentData)
+                        SelectUserFacingPaymentMethod(this@PerfectPaymentsFrontend, i18nContext, partialPaymentData, UserFacingPaymentMethodSelection.selections)
+                    }
+
+                    is Screen.SelectSubGateway -> {
+                        SelectUserFacingPaymentMethod(this@PerfectPaymentsFrontend, i18nContext, partialPaymentData, screen.group.methods)
                     }
 
                     is Screen.ParentalWarningRequest -> {
@@ -146,7 +161,7 @@ class PerfectPaymentsFrontend {
                         // Workaround for now
                         val footerText = i18nContext.language.textBundle.strings[I18nKeys.Footer.Text.key]!!
                         val splitted = footerText.split("{clickHere}")
-                        
+
                         Text(splitted[0])
                         A(href = "https://loritta.website/support") {
                             Text(i18nContext.get(I18nKeys.Footer.ClickHere))
@@ -156,5 +171,12 @@ class PerfectPaymentsFrontend {
                 }
             }
         }
+    }
+
+    fun switch(screen: Screen) {
+        // yes this is a hack because I don't wanna implement custom page path, how could you tell?
+        window.history.pushState(window.location.pathname, "", window.location.pathname)
+        previousScreenState = delegatedScreenState
+        delegatedScreenState = screen
     }
 }

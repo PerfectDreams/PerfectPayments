@@ -10,6 +10,8 @@ import net.perfectdreams.perfectpayments.backend.utils.PartialPayment
 
 class PagSeguroPaymentCreator(val m: PerfectPayments) : PaymentCreator {
     override suspend fun createPayment(paymentId: Long, partialPayment: PartialPayment, data: JsonObject): CreatedPagSeguroPaymentInfo {
+        // I've tried using PagSeguro's JSON API, but it doesn't work, it always throws an error where the server wasn't able to accept your request, even if I copied the example from
+        // PagSeguro's website!
         val httpResponse = PerfectPayments.http.post<HttpResponse>("https://ws.pagseguro.uol.com.br/v2/checkout?email=${m.gateway.pagSeguro.email}&token=${m.gateway.pagSeguro.token}") {
             body = FormDataContent(Parameters.build {
                 // Yes, it is also in the parameters, not sure why

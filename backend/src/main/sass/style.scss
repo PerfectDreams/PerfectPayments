@@ -174,14 +174,59 @@ input {
 }
 
 #payment-methods {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    grid-gap: 2em;
     margin: auto;
     justify-content: center;
     width: 100%;
 
-    .payment-button {
+    #payment-method-list {
+        background-color: white;
+        border: 1px solid #00000017;
+        border-radius: 7px;
+        display: flex;
+        flex-direction: column;
+
+        .method-button {
+            display: flex;
+            flex-direction: row;
+            cursor: pointer;
+            gap: 1em;
+            padding: 1em;
+
+            .icon {
+                width: 5em;
+                height: 5em;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-shrink: 0;
+
+                img {
+                    width: 100%;
+                    height: auto;
+                }
+            }
+
+            .method-details {
+                display: flex;
+                flex-direction: column;
+
+
+
+                .method-title {
+                    font-size: 2em;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.25em;
+
+                    .only-available-notice {
+                        font-size: 0.4em;
+                    }
+                }
+            }
+        }
+    }
+
+    /* .payment-button {
         background-color: white;
         padding: 8px;
         border-radius: 10px;
@@ -193,7 +238,7 @@ input {
             box-shadow: 0 0 10px $primary-color;
             border-color: $primary-color;
         }
-    }
+    } */
 }
 
 form, button {

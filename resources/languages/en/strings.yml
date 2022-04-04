@@ -57,14 +57,34 @@ gateways:
     name: "Sandbox" # Used for debugging
 
 methods:
-  creditCard: "Credit Card"
-  picpayBalance: "PicPay Balance"
-  brazilBankTicket: "Brazilian Bank Ticket" # Only used in Brazil
-  googlePay: "Google Pay"
-  applePay: "Apple Pay"
-  paypalBalance: "PayPal Balance"
-  sandbox: "A cute sandbox where you can test payments" # Used for debugging
-  pix: "Pix" # Only used in Brazil
+  pix:
+    title: "Pix" #Only used in Brazil
+    description: "Pix is an instant payment platform created and managed by the Central Bank of Brazil. We recommend paying via Pix due to its practicality and versatility!"
+  creditCard:
+    title: "Credit Card"
+  creditCardPagSeguro:
+    title: "Credit Card (PagSeguro)"
+    description: "Credit Card payment handled by PagSeguro, we recommend paying using PagSeguro if you live in Brazil!"
+  creditCardPayPal:
+    title: "Credit Card (PayPal)"
+    description: "Credit Card payment handled by PayPal, we recommend paying using PayPal if you live outside of Brazil!"
+  debitCard:
+    title: "Debit Card"
+    description: "Debit Card payment handled by PayPal."
+  debitCardCaixa:
+    title: "Caixa Debit Card"
+    description: "Caixa Debit Card payment handled by PagSeguro."
+  brazilBankTicket:
+    title: "Brazilian Bank Ticket" #Only used in Brazil
+    description: "You can pay a bank ticket in a lottery house or online via your bank. However, we recommend paying via Pix or with a Credit/Debit card due to bank tickets taking one to three business days to be processed!"
+  sandbox:
+    title: "Sandbox"
+    description: "A cute sandbox where you can test payments"
+
+paymentWillBeProcessedWithinOneHour: "Payment will be processed within one hour"
+paymentWillBeProcessedWithinThreeBusinessDays: "Payment will be processed within three business days"
+paymentProcessedViaGateway: "Payment processed via {gateway}"
+onlyAvailableInBrazil: "Only Available in Brazil"
 
 personalData:
   legalName: "Legal Name"

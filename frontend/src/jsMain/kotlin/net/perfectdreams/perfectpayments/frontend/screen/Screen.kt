@@ -9,9 +9,11 @@ import kotlinx.coroutines.launch
 import net.perfectdreams.perfectpayments.common.data.PersonalData
 import net.perfectdreams.perfectpayments.common.data.PicPayPersonalData
 import net.perfectdreams.perfectpayments.common.payments.PaymentGateway
+import net.perfectdreams.perfectpayments.common.payments.UserFacingPaymentGroup
 
 sealed class Screen {
     object SelectGateway : Screen()
+    class SelectSubGateway(val group: UserFacingPaymentGroup) : Screen()
     class ParentalWarningRequest(val gateway: PaymentGateway) : Screen() {
         var countdown by mutableStateOf(7)
 

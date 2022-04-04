@@ -58,21 +58,25 @@ fun NotaFiscalDataCollectRequest(m: PerfectPaymentsFrontend, i18nContext: I18nCo
             onClick {
                 if (everythingIsFilled)
                     if (screen.gateway == PaymentGateway.PICPAY) {
-                        m.delegatedScreenState = Screen.PicPayDataCollectRequest(
-                            screen.gateway,
-                            PersonalData(
-                                document!!,
-                                name!!,
-                                email!!
+                        m.switch(
+                            Screen.PicPayDataCollectRequest(
+                                screen.gateway,
+                                PersonalData(
+                                    document!!,
+                                    name!!,
+                                    email!!
+                                )
                             )
                         )
                     } else {
-                        m.delegatedScreenState = Screen.DataCollected(
-                            screen.gateway,
-                            PersonalData(
-                                document!!,
-                                name!!,
-                                email!!
+                        m.switch(
+                            Screen.DataCollected(
+                                screen.gateway,
+                                PersonalData(
+                                    document!!,
+                                    name!!,
+                                    email!!
+                                )
                             )
                         )
                     }

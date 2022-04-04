@@ -55,14 +55,16 @@ fun NotaFiscalRequest(m: PerfectPaymentsFrontend, i18nContext: I18nContext, part
                 style { width(100.percent) }
 
                 onClick {
-                    m.delegatedScreenState = if (screen.gateway == PaymentGateway.PICPAY) {
-                        Screen.PicPayDataCollectRequest(
-                            screen.gateway,
-                            null
-                        )
-                    } else {
-                        Screen.DataCollected(screen.gateway, null)
-                    }
+                    m.switch(
+                        if (screen.gateway == PaymentGateway.PICPAY) {
+                            Screen.PicPayDataCollectRequest(
+                                screen.gateway,
+                                null
+                            )
+                        } else {
+                            Screen.DataCollected(screen.gateway, null)
+                        }
+                    )
                 }
             }) {
                 Text(i18nContext.get(I18nKeys.TaxInvoice.DoNotInclude))
@@ -73,7 +75,7 @@ fun NotaFiscalRequest(m: PerfectPaymentsFrontend, i18nContext: I18nContext, part
                 style { width(100.percent) }
 
                 onClick {
-                    m.delegatedScreenState = Screen.NotaFiscalDataCollectRequest(screen.gateway)
+                    m.switch(Screen.NotaFiscalDataCollectRequest(screen.gateway))
                 }
             }) {
                 Text(i18nContext.get(I18nKeys.TaxInvoice.Include))

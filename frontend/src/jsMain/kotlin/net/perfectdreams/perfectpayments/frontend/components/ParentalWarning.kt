@@ -71,7 +71,7 @@ fun ParentalWarning(m: PerfectPaymentsFrontend, i18nContext: I18nContext, partia
 
                 if (screen.countdown == 0)
                     onClick {
-                        m.delegatedScreenState = Screen.NotaFiscalRequest(screen.gateway)
+                        m.switch(Screen.NotaFiscalRequest(screen.gateway))
                     }
             }) {
                 if (screen.countdown == 0)

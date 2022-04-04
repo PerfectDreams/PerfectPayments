@@ -79,15 +79,17 @@ fun PicPayDataCollectRequest(
 
             onClick {
                 if (everythingIsFilled)
-                    m.delegatedScreenState = Screen.DataCollected(
-                        screen.gateway,
-                        screen.personalData,
-                        PicPayPersonalData(
-                            document!!,
-                            firstName!!,
-                            lastName!!,
-                            email!!,
-                            phoneNumber!!
+                    m.switch(
+                        Screen.DataCollected(
+                            screen.gateway,
+                            screen.personalData,
+                            PicPayPersonalData(
+                                document!!,
+                                firstName!!,
+                                lastName!!,
+                                email!!,
+                                phoneNumber!!
+                            )
                         )
                     )
             }
