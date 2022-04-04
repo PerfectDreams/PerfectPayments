@@ -50,14 +50,33 @@ gateways:
   sandbox:
     name: "Caixa de Areia" #Used for debugging
 methods:
-  creditCard: "Cartão de Crédito"
-  picpayBalance: "Saldo do PicPay"
-  brazilBankTicket: "Boleto" #Only used in Brazil
-  googlePay: "Google Pay"
-  applePay: "Apple Pay"
-  paypalBalance: "Saldo do PayPal"
-  sandbox: "Uma caixa de areia fofa que permite você testar pagamentos" #Used for debugging
-  pix: "Pix" #Only used in Brazil
+  pix:
+    title: "Pix" #Only used in Brazil
+    description: "Pix é um sistema de pagamento instantâneo criada e gerenciada pelo Banco Central do Brasil. Recomendamos pagar via Pix devido à sua praticabilidade e versatilidade!"
+  creditCard:
+    title: "Cartão de Crédito"
+  creditCardPagSeguro:
+    title: "Cartão de Crédito (PagSeguro)"
+    description: "Pagamento com cartão de crédito processado pelo PagSeguro, recomendamos pagar pelo PagSeguro se você mora no Brasil!"
+  creditCardPayPal:
+    title: "Cartão de Crédito (PayPal)"
+    description: "Pagamento com cartão de crédito processado pelo PayPal, recomendamos pagar pelo PayPal se você mora no Brasil!"
+  debitCard:
+    title: "Cartão de Débito"
+    description: "Pagamento de cartão de débito processado pelo PayPal."
+  debitCardCaixa:
+    title: "Cartão de Débito Caixa"
+    description: "Pagamento de cartão de débito da Caixa processado pelo PagSeguro."
+  brazilBankTicket:
+    title: "Boleto" #Only used in Brazil
+    description: "Você pode pagar um boleto na lotérica ou online através do seu banco. Entretanto, recomendamos pagar via Pix ou com um Cartão de Crédito/Débito pois boletos demoram de um até três dias úteis para serem processados!"
+  sandbox:
+    title: "Caixa de Areia"
+    description: "Uma caixa de areia fofa que permite você testar pagamentos"
+paymentWillBeProcessedWithinOneHour: "O pagamento será processado em até hora"
+paymentWillBeProcessedWithinThreeBusinessDays: "O pagamento será processado em até três dias úteis"
+paymentProcessedViaGateway: "Pagamento processado por {gateway}"
+onlyAvailableInBrazil: "Somente disponível no Brasil"
 personalData:
   legalName: "Razão Social (Seu nome e sobrenome)"
   firstName: "Nome"
