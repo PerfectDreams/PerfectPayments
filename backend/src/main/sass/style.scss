@@ -50,7 +50,7 @@ $min-reading-width: 1260px;
 $min-image-stacked-width: 800px;
 
 body {
-  @include lovely-body($hide-overflow-x: true);
+  @include lovely-body($background-color: #f6f9fc, $hide-overflow-x: true);
   display: flex; 
   flex-direction: column;
   height: 100vh;
@@ -225,20 +225,6 @@ input {
             }
         }
     }
-
-    /* .payment-button {
-        background-color: white;
-        padding: 8px;
-        border-radius: 10px;
-        cursor: pointer;
-        border: 1px solid #00000017;
-        transition: 0.5s;
-    
-        &:hover {
-            box-shadow: 0 0 10px $primary-color;
-            border-color: $primary-color;
-        }
-    } */
 }
 
 form, button {
