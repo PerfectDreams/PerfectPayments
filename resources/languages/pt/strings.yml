@@ -73,7 +73,7 @@ methods:
   sandbox:
     title: "Caixa de Areia"
     description: "Uma caixa de areia fofa que permite você testar pagamentos"
-paymentWillBeProcessedWithinOneHour: "O pagamento será processado em até hora"
+paymentWillBeProcessedWithinOneHour: "O pagamento será processado em até uma hora"
 paymentWillBeProcessedWithinThreeBusinessDays: "O pagamento será processado em até três dias úteis"
 paymentProcessedViaGateway: "Pagamento processado por {gateway}"
 onlyAvailableInBrazil: "Somente disponível no Brasil"
