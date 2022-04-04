@@ -52,7 +52,7 @@ gateways:
 methods:
   pix:
     title: "Pix" #Only used in Brazil
-    description: "Pix é um sistema de pagamento instantâneo criada e gerenciada pelo Banco Central do Brasil. Recomendamos pagar via Pix devido à sua praticabilidade e versatilidade!"
+    description: "Pix é um sistema de pagamento instantâneo criada e gerenciada pelo Banco Central do Brasil. Recomendamos pagar via Pix devido à sua praticidade e versatilidade!"
   creditCard:
     title: "Cartão de Crédito"
   creditCardPagSeguro:
