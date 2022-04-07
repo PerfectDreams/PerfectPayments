@@ -60,7 +60,7 @@ methods:
     description: "Pagamento com cartão de crédito processado pelo PagSeguro, recomendamos pagar pelo PagSeguro se você mora no Brasil!"
   creditCardPayPal:
     title: "Cartão de Crédito (PayPal)"
-    description: "Pagamento com cartão de crédito processado pelo PayPal, recomendamos pagar pelo PayPal se você mora no Brasil!"
+    description: "Pagamento com cartão de crédito processado pelo PayPal, recomendamos pagar pelo PayPal se você mora fora do Brasil!"
   debitCard:
     title: "Cartão de Débito"
     description: "Pagamento de cartão de débito processado pelo PayPal."
