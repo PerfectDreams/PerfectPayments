@@ -22,7 +22,7 @@ fun SelectUserFacingPaymentMethod(
     Div({ id("wrapper") }) {
         Div({ id("payment-methods") }) {
             Div({ id("payment-method-list") }) {
-                val availableSelections = selections.filter { selections is UserFacingPaymentMethod && selections.gateway in m.availableGateways!! }
+                val availableSelections = selections.filter { it is UserFacingPaymentMethod && it.gateway in m.availableGateways!! }
 
                 for ((index, userFacingPaymentSelection) in availableSelections.withIndex()) {
                     UserFacingPaymentButton(m, i18nContext, userFacingPaymentSelection)
