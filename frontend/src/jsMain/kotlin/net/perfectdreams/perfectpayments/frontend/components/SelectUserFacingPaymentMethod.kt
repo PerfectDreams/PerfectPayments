@@ -24,12 +24,9 @@ fun SelectUserFacingPaymentMethod(
             Div({ id("payment-method-list") }) {
                 val availableSelections = selections.filterNot { selections is UserFacingPaymentMethod && selections.gateway in m.availableGateways!! }
                 for ((index, userFacingPaymentSelection) in availableSelections.withIndex()) {
-                    if (userFacingPaymentSelection is UserFacingPaymentMethod && userFacingPaymentSelection.gateway !in m.availableGateways!!)
-                        continue
-
                     UserFacingPaymentButton(m, i18nContext, userFacingPaymentSelection)
 
-                    val isLast = index == selections.size - 1
+                    val isLast = index == availableSelections.size - 1
 
                     if (!isLast) {
                         // Needs to be in a div to not require width: 100%
