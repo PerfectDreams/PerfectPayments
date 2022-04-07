@@ -23,7 +23,7 @@ fun SelectUserFacingPaymentMethod(
         Div({ id("payment-methods") }) {
             Div({ id("payment-method-list") }) {
                 val availableSelections = selections.filter { selections is UserFacingPaymentMethod && selections.gateway !in m.availableGateways!! }
-                for ((index, userFacingPaymentSelection) in selections.withIndex()) {
+                for ((index, userFacingPaymentSelection) in availableSelections.withIndex()) {
                     UserFacingPaymentButton(m, i18nContext, userFacingPaymentSelection)
 
                     val isLast = index == availableSelections.size - 1
