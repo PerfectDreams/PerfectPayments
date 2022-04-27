@@ -36,6 +36,7 @@ import net.perfectdreams.perfectpayments.backend.routes.api.v1.callbacks.PostPic
 import net.perfectdreams.perfectpayments.backend.routes.api.v1.callbacks.PostStripeCallbackRoute
 import net.perfectdreams.perfectpayments.backend.routes.api.v1.payments.GetPartialPaymentInfoRoute
 import net.perfectdreams.perfectpayments.backend.routes.api.v1.payments.GetReissueNotaFiscalForPaymentRoute
+import net.perfectdreams.perfectpayments.backend.routes.api.v1.payments.GetRenotifyPaymentRoute
 import net.perfectdreams.perfectpayments.backend.routes.api.v1.payments.PatchChangePaymentStatusRoute
 import net.perfectdreams.perfectpayments.backend.routes.api.v1.payments.PostCreatePaymentRoute
 import net.perfectdreams.perfectpayments.backend.routes.api.v1.payments.PostFinishPartialPaymentRoute
@@ -123,7 +124,8 @@ class PerfectPayments(
         PostCreatePaymentRoute(this),
         PatchChangePaymentStatusRoute(this),
         PostFinishPartialPaymentRoute(this),
-        GetReissueNotaFiscalForPaymentRoute(this)
+        GetReissueNotaFiscalForPaymentRoute(this),
+        GetRenotifyPaymentRoute(this)
     ).also {
         // Only register routes if gateway is enabled
         if (focusNFeConfig != null)
