@@ -25,7 +25,7 @@ fun SelectUserFacingPaymentMethod(
                 val availableSelections = selections.filter {
                     if (it is UserFacingPaymentMethod)
                         return@filter it.gateway in m.availableGateways!!
-                    
+
                     return@filter true
                 }
 
