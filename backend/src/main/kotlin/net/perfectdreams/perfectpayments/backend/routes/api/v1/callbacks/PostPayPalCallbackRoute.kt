@@ -1,11 +1,11 @@
 package net.perfectdreams.perfectpayments.backend.routes.api.v1.callbacks
 
-import io.ktor.application.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.content.*
 import io.ktor.http.*
-import io.ktor.request.*
+import io.ktor.server.application.*
+import io.ktor.server.request.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.contentOrNull
@@ -42,25 +42,27 @@ class PostPayPalCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
         val webhookEvent = Json.parseToJsonElement(response)
             .jsonObject
 
-        val webhookVerificationResponse = PerfectPayments.http.post<HttpResponse>(m.gateway.payPal.getBaseUrl() + "/v1/notifications/verify-webhook-signature") {
+        val webhookVerificationResponse = PerfectPayments.http.post(m.gateway.payPal.getBaseUrl() + "/v1/notifications/verify-webhook-signature") {
             // contentType(ContentType.Application.Json)
             header("Authorization", "Basic ${Base64.getEncoder().encodeToString("${m.gateway.payPal.clientId}:${m.gateway.payPal.clientSecret}".toByteArray())}")
 
-            body = TextContent(
-                buildJsonObject {
-                    put("auth_algo", paypalAuthAlgo)
-                    put("cert_url", paypalCertUrl)
-                    put("transmission_id", paypalTransmissionId)
-                    put("transmission_sig", paypalTransmissionSignature)
-                    put("transmission_time", paypalTransmissionTime)
-                    put("webhook_id", m.gateway.payPal.webhookId)
-                    put("webhook_event", webhookEvent)
-                }.toString().also { println(it) },
-                ContentType.Application.Json
+            setBody(
+                TextContent(
+                    buildJsonObject {
+                        put("auth_algo", paypalAuthAlgo)
+                        put("cert_url", paypalCertUrl)
+                        put("transmission_id", paypalTransmissionId)
+                        put("transmission_sig", paypalTransmissionSignature)
+                        put("transmission_time", paypalTransmissionTime)
+                        put("webhook_id", m.gateway.payPal.webhookId)
+                        put("webhook_event", webhookEvent)
+                    }.toString().also { println(it) },
+                    ContentType.Application.Json
+                )
             )
         }
 
-        val webhookVerificationResponsePayload = Json.parseToJsonElement(webhookVerificationResponse.readText())
+        val webhookVerificationResponsePayload = Json.parseToJsonElement(webhookVerificationResponse.bodyAsText())
             .jsonObject
         val verificationStatus = webhookVerificationResponsePayload["verification_status"]?.jsonPrimitive?.content
 
@@ -121,19 +123,21 @@ class PostPayPalCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
                 return
             }
 
-            val capturePaymentResponse = PerfectPayments.http.post<HttpResponse>(link) {
+            val capturePaymentResponse = PerfectPayments.http.post(link) {
                 header("Authorization", "Basic ${Base64.getEncoder().encodeToString("${m.gateway.payPal.clientId}:${m.gateway.payPal.clientSecret}".toByteArray())}")
 
-                body = TextContent("", ContentType.Application.Json)
+                setBody(
+                    TextContent("", ContentType.Application.Json)
+                )
             }
 
-            val capturePaymentPayload = capturePaymentResponse.readText()
+            val capturePaymentPayload = capturePaymentResponse.bodyAsText()
 
             val capturePayment = Json.parseToJsonElement(capturePaymentPayload)
                 .jsonObject
 
             val status = capturePayment["status"]?.jsonPrimitive?.content
-            
+
             // {"name":"UNPROCESSABLE_ENTITY","details":[{"issue":"ORDER_ALREADY_CAPTURED","description":"Order already captured.If 'intent=CAPTURE' only one capture per order is allowed."}],"message":"The requested action could not be performed, semantically incorrect, or failed business validation.","debug_id":"f8574efcf7ad9","links":[{"href":"https://developer.paypal.com/docs/api/orders/v2/#error-ORDER_ALREADY_CAPTURED","rel":"information_link","method":"GET"}]}
             val orderAlreadyCaptured = capturePayment["details"]?.jsonArray
                 ?.all { it.jsonObject["issue"]?.jsonPrimitive?.content == "ORDER_ALREADY_CAPTURED" }

@@ -4,15 +4,18 @@ import club.minnced.discord.webhook.WebhookClient
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import io.ktor.application.*
 import io.ktor.client.*
-import io.ktor.client.features.*
-import io.ktor.features.*
+import io.ktor.client.plugins.*
 import io.ktor.http.*
 import io.ktor.http.content.*
-import io.ktor.routing.*
+import io.ktor.server.application.*
 import io.ktor.server.engine.*
+import io.ktor.server.http.content.*
 import io.ktor.server.netty.*
+import io.ktor.server.plugins.cachingheaders.*
+import io.ktor.server.plugins.compression.*
+import io.ktor.server.plugins.cors.routing.*
+import io.ktor.server.routing.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import mu.KotlinLogging
@@ -205,7 +208,7 @@ class PerfectPayments(
 
             // Enables caching for the specified types in the typesToCache list
             install(CachingHeaders) {
-                options { outgoingContent ->
+                options { call, outgoingContent ->
                     val contentType = outgoingContent.contentType
                     if (contentType != null) {
                         val contentTypeWithoutParameters = contentType.withoutParameters()

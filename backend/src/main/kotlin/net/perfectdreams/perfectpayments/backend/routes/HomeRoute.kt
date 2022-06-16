@@ -1,7 +1,7 @@
 package net.perfectdreams.perfectpayments.backend.routes
 
-import io.ktor.application.ApplicationCall
-import io.ktor.response.respondText
+import io.ktor.server.application.*
+import io.ktor.server.response.*
 import net.perfectdreams.sequins.ktor.BaseRoute
 
 class HomeRoute : BaseRoute("/") {

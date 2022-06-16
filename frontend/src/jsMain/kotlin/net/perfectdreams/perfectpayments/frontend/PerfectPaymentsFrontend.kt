@@ -61,7 +61,7 @@ class PerfectPaymentsFrontend {
         val partialPaymentId = partialPaymentURL.partialPaymentId
 
         GlobalScope.launch {
-            val result = http.get<HttpResponse>("${window.location.origin}/api/v1/partial-payments/$partialPaymentId") {}
+            val result = http.get("${window.location.origin}/api/v1/partial-payments/$partialPaymentId") {}
 
             if (result.status == HttpStatusCode.NotFound) {
                 // Whoops, partial payment does not exist!
@@ -69,22 +69,22 @@ class PerfectPaymentsFrontend {
                 return@launch
             }
 
-            partialPaymentData = Json.decodeFromString<ClientSidePartialPayment>(result.readText(Charsets.UTF_8))
+            partialPaymentData = Json.decodeFromString<ClientSidePartialPayment>(result.bodyAsText(Charsets.UTF_8))
         }
 
         GlobalScope.launch {
-            val result = http.get<String>("${window.location.origin}/api/v1/strings") {}
+            val result = http.get("${window.location.origin}/api/v1/strings") {}
 
             i18nContext = I18nContext(
                 IntlMFFormatter(),
-                Json.decodeFromString(result)
+                Json.decodeFromString(result.bodyAsText())
             )
         }
 
         GlobalScope.launch {
-            val result = http.get<String>("${window.location.origin}/api/v1/gateways") {}
+            val result = http.get("${window.location.origin}/api/v1/gateways") {}
 
-            availableGateways = Json.decodeFromString(result)
+            availableGateways = Json.decodeFromString(result.bodyAsText())
         }
 
         // Handle back button, this is kinda hacky but it works

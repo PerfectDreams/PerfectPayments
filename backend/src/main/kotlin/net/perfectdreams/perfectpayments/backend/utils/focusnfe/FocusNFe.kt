@@ -72,17 +72,19 @@ class FocusNFe(private val config: FocusNFeConfig) {
 
         callbackWithBackoff(
             {
-                val result = PerfectPayments.http.post<HttpResponse>("${config.url.removeSuffix("/")}/v2/nfse?ref=$ref") {
+                val result = PerfectPayments.http.post("${config.url.removeSuffix("/")}/v2/nfse?ref=$ref") {
                     val auth = Base64.getEncoder().encodeToString("${config.token}:".toByteArray(Charsets.UTF_8)) // The password is always empty
                     header("Authorization", "Basic $auth")
 
-                    body = TextContent(
-                        Json.encodeToString(request),
-                        ContentType.Application.Json
+                    setBody(
+                        TextContent(
+                            Json.encodeToString(request),
+                            ContentType.Application.Json
+                        )
                     )
                 }
 
-                println(result.readText())
+                println(result.bodyAsText())
 
                 if (result.status == HttpStatusCode.TooManyRequests) {
                     val ratelimitRetryAfter = result.headers["Rate-Limit-Reset"]
@@ -120,16 +122,18 @@ class FocusNFe(private val config: FocusNFeConfig) {
     ): NFSeCancellationResponse {
         val request = NFSeCancellationRequest(ref)
 
-        val result = PerfectPayments.http.delete<HttpResponse>("${config.url.removeSuffix("/")}/v2/nfse?ref=$ref") {
+        val result = PerfectPayments.http.delete("${config.url.removeSuffix("/")}/v2/nfse?ref=$ref") {
             val auth = Base64.getEncoder().encodeToString("${config.token}:".toByteArray(Charsets.UTF_8)) // The password is always empty
             header("Authorization", "Basic $auth")
 
-            body = TextContent(
-                Json.encodeToString(request),
-                ContentType.Application.Json
+            setBody(
+                TextContent(
+                    Json.encodeToString(request),
+                    ContentType.Application.Json
+                )
             )
         }
 
-        return json.decodeFromString(result.readText(Charsets.UTF_8))
+        return json.decodeFromString(result.bodyAsText(Charsets.UTF_8))
     }
 }

@@ -1,10 +1,10 @@
 package net.perfectdreams.perfectpayments.backend.routes.api.v1.callbacks
 
-import io.ktor.application.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.request.*
+import io.ktor.server.application.*
+import io.ktor.server.request.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
@@ -50,11 +50,11 @@ class PostPicPayCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
 
         logger.info { "Received PicPay callback: Reference ID: $referenceId; Authorization ID: $authorizationId" }
 
-        val httpResponse = PerfectPayments.http.get<HttpResponse>("https://appws.picpay.com/ecommerce/public/payments/$referenceId/status") {
+        val httpResponse = PerfectPayments.http.get("https://appws.picpay.com/ecommerce/public/payments/$referenceId/status") {
             header("x-picpay-token", m.gateway.picPay.token)
         }
 
-        val payloadAsString = httpResponse.readText()
+        val payloadAsString = httpResponse.bodyAsText()
 
         if (httpResponse.status.value != 200) {
             logger.warn { "Weird status code while checking for PicPay's payment info: ${httpResponse.status.value}; Payload: $payloadAsString" }

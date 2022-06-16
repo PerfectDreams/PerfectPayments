@@ -1,8 +1,8 @@
 package net.perfectdreams.perfectpayments.backend.routes.api.v1.callbacks
 
-import io.ktor.application.*
+import io.ktor.server.application.*
 import io.ktor.http.*
-import io.ktor.request.*
+import io.ktor.server.request.*
 import kotlinx.serialization.decodeFromString
 import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.backend.PerfectPayments

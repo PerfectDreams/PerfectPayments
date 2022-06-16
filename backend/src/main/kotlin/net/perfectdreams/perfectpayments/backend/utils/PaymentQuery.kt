@@ -3,7 +3,6 @@ package net.perfectdreams.perfectpayments.backend.utils
 import club.minnced.discord.webhook.send.WebhookEmbed
 import club.minnced.discord.webhook.send.WebhookEmbedBuilder
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.datetime.Clock
 import kotlinx.serialization.json.JsonObject
@@ -127,18 +126,20 @@ object PaymentQuery {
         callbackWithBackoff({
             logger.info { "Trying to notify \"${payment.callbackUrl}\" for payment ${payment.id.value}..." }
 
-            val response = PerfectPayments.http.post<HttpResponse>(payment.callbackUrl) {
+            val response = PerfectPayments.http.post(payment.callbackUrl) {
                 header("Authorization", m.config.notificationToken)
                 userAgent(PerfectPayments.USER_AGENT)
 
-                body = buildJsonObject {
-                    put("referenceId", payment.referenceId.toString())
-                    put("amount", payment.amount)
-                    put("status", payment.status.toString())
-                    put("gateway", payment.gateway.toString())
-                    put("paidAt", payment.paidAt?.toEpochMilliseconds())
-                    put("createdAt", payment.createdAt.toEpochMilliseconds())
-                }.toString()
+                setBody(
+                    buildJsonObject {
+                        put("referenceId", payment.referenceId.toString())
+                        put("amount", payment.amount)
+                        put("status", payment.status.toString())
+                        put("gateway", payment.gateway.toString())
+                        put("paidAt", payment.paidAt?.toEpochMilliseconds())
+                        put("createdAt", payment.createdAt.toEpochMilliseconds())
+                    }.toString()
+                )
             }
 
             response.status.isSuccess()

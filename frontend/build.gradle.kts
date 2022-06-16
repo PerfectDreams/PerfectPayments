@@ -3,6 +3,7 @@
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose") version libs.versions.compose.get()
+    id("io.github.turansky.kfc.latest-webpack")
 }
 
 // Add maven repositories
@@ -33,13 +34,5 @@ kotlin {
                 implementation("net.perfectdreams.i18nhelper.formatters:intl-messageformat-js:${libs.versions.i18nhelper.get()}")
             }
         }
-    }
-}
-
-// Reduces Kotlin/JS bundle size
-// https://youtrack.jetbrains.com/issue/KTOR-1084
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile> {
-    kotlinOptions {
-        freeCompilerArgs += listOf("-Xir-per-module", "-Xir-property-lazy-initialization")
     }
 }

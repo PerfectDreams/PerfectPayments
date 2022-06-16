@@ -52,15 +52,17 @@ dependencies {
     implementation(libs.kotlin.logging)
 
     // Sequins
-    api("net.perfectdreams.sequins.ktor:base-route:1.0.2")
+    api("net.perfectdreams.sequins.ktor:base-route:1.0.4")
 
     // Ktor
     implementation("io.ktor:ktor-client-core:${libs.versions.ktor.get()}")
 
     // We use "Apache" because "CIO", for some reason, has issues with PayPal's API
     implementation("io.ktor:ktor-client-apache:${libs.versions.ktor.get()}")
-    implementation("io.ktor:ktor-server-core:${libs.versions.ktor.get()}")
     implementation("io.ktor:ktor-server-netty:${libs.versions.ktor.get()}")
+    implementation("io.ktor:ktor-server-cors:${libs.versions.ktor.get()}")
+    implementation("io.ktor:ktor-server-compression:${libs.versions.ktor.get()}")
+    implementation("io.ktor:ktor-server-caching-headers:${libs.versions.ktor.get()}")
 }
 
 jib {

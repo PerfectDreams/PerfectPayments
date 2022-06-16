@@ -1,10 +1,10 @@
 package net.perfectdreams.perfectpayments.backend.routes.api.v1.callbacks
 
-import io.ktor.application.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.request.*
+import io.ktor.server.application.*
+import io.ktor.server.request.*
 import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.dao.Payment
@@ -57,9 +57,9 @@ class PostPagSeguroCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/ca
 
         if (notificationType == "transaction") {
             val httpResponse =
-                PerfectPayments.http.get<HttpResponse>("https://ws.pagseguro.uol.com.br/v3/transactions/notifications/$notificationCode?email=${m.gateway.pagSeguro.email}&token=${m.gateway.pagSeguro.token}")
+                PerfectPayments.http.get("https://ws.pagseguro.uol.com.br/v3/transactions/notifications/$notificationCode?email=${m.gateway.pagSeguro.email}&token=${m.gateway.pagSeguro.token}")
 
-            val payloadAsString = httpResponse.readText()
+            val payloadAsString = httpResponse.bodyAsText()
 
             if (httpResponse.status.value != 200) {
                 logger.warn { "Weird status code while checking for PagSeguro's payment info: ${httpResponse.status.value}; Payload: $payloadAsString" }

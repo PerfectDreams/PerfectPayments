@@ -3,9 +3,9 @@ package net.perfectdreams.perfectpayments.backend.routes.api.v1.callbacks
 import com.stripe.model.Dispute
 import com.stripe.model.PaymentIntent
 import com.stripe.net.Webhook
-import io.ktor.application.*
+import io.ktor.server.application.*
 import io.ktor.http.*
-import io.ktor.request.*
+import io.ktor.server.request.*
 import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.dao.Payment

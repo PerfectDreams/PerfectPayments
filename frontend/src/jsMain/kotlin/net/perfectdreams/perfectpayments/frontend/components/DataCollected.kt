@@ -2,6 +2,7 @@ package net.perfectdreams.perfectpayments.frontend.components
 
 import androidx.compose.runtime.Composable
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import kotlinx.browser.window
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -23,17 +24,19 @@ fun DataCollected(m: PerfectPaymentsFrontend, i18nContext: I18nContext, partialP
     }
 
     GlobalScope.launch {
-        val result = m.http.post<String>("${window.location.origin}/api/v1/partial-payments/$partialPaymentId/finish") {
-            body = Json.encodeToString(
-                FilledPartialPayment(
-                    screen.gateway,
-                    screen.personalData,
-                    screen.picPayPersonalData
+        val result = m.http.post("${window.location.origin}/api/v1/partial-payments/$partialPaymentId/finish") {
+            setBody(
+                Json.encodeToString(
+                    FilledPartialPayment(
+                        screen.gateway,
+                        screen.personalData,
+                        screen.picPayPersonalData
+                    )
                 )
             )
         }
 
-        val fromJson = Json.decodeFromString<PaymentCreatedResponse>(result)
+        val fromJson = Json.decodeFromString<PaymentCreatedResponse>(result.bodyAsText())
         window.location.replace(fromJson.url)
     }
 }

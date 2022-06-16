@@ -1,6 +1,6 @@
 package net.perfectdreams.perfectpayments.backend.routes.api.v1.payments
 
-import io.ktor.application.*
+import io.ktor.server.application.*
 import kotlinx.datetime.Clock
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json

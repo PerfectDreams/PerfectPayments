@@ -1,6 +1,6 @@
 package net.perfectdreams.perfectpayments.backend.routes.api.v1.payments
 
-import io.ktor.application.*
+import io.ktor.server.application.*
 import io.ktor.http.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement

@@ -38,14 +38,14 @@ class PicPayPaymentCreator(val m: PerfectPayments) : PaymentCreator {
 
         println(jsonOwo)
 
-        val httpResponse = PerfectPayments.http.post<HttpResponse>("https://appws.picpay.com/ecommerce/public/payments") {
+        val httpResponse = PerfectPayments.http.post("https://appws.picpay.com/ecommerce/public/payments") {
             contentType(ContentType.Application.Json)
             header("x-picpay-token", m.gateway.picPay.token)
 
-            body = jsonOwo
+            setBody(jsonOwo)
         }
 
-        val payload = httpResponse.readText()
+        val payload = httpResponse.bodyAsText()
 
         println(payload)
 
