@@ -50,7 +50,7 @@ fun UserFacingPaymentButton(
             classes("icon")
         }) {
             Img(
-                src = "${window.location.origin}/${userFacingPaymentMethod.imageUrl}",
+                src = "${window.location.origin}${userFacingPaymentMethod.imageUrl}",
                 // alt = i18nContext.get("gateways.${gateway.name.lowercase()}.name")
             )
         }
