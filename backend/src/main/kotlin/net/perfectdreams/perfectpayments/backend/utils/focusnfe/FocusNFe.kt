@@ -1,5 +1,7 @@
 package net.perfectdreams.perfectpayments.backend.utils.focusnfe
 
+import io.ktor.client.*
+import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.content.*
@@ -20,6 +22,16 @@ class FocusNFe(private val config: FocusNFeConfig) {
         private val logger = KotlinLogging.logger {}
         private val json = Json {
             ignoreUnknownKeys = true
+        }
+        private val http = HttpClient {
+            expectSuccess = false
+            install(HttpTimeout) {
+                // Because FocusNFe is sometimes kinda finicky ngl
+                // "Request timeout has expired [url=https://api.focusnfe.com.br/v2/nfse?ref=pp-prod-1507, request_timeout=1000 ms]"
+                requestTimeoutMillis = 60_000
+                connectTimeoutMillis = 60_000
+                socketTimeoutMillis = 60_000
+            }
         }
 
         /**
@@ -70,7 +82,7 @@ class FocusNFe(private val config: FocusNFeConfig) {
         )
 
         while (true) {
-            val result = PerfectPayments.http.post("${config.url.removeSuffix("/")}/v2/nfse?ref=$ref") {
+            val result = http.post("${config.url.removeSuffix("/")}/v2/nfse?ref=$ref") {
                 val auth = Base64.getEncoder().encodeToString("${config.token}:".toByteArray(Charsets.UTF_8)) // The password is always empty
                 header("Authorization", "Basic $auth")
 
@@ -118,7 +130,7 @@ class FocusNFe(private val config: FocusNFeConfig) {
     ): NFSeCancellationResponse {
         val request = NFSeCancellationRequest(ref)
 
-        val result = PerfectPayments.http.delete("${config.url.removeSuffix("/")}/v2/nfse?ref=$ref") {
+        val result = http.delete("${config.url.removeSuffix("/")}/v2/nfse?ref=$ref") {
             val auth = Base64.getEncoder().encodeToString("${config.token}:".toByteArray(Charsets.UTF_8)) // The password is always empty
             header("Authorization", "Basic $auth")
 

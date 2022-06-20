@@ -33,29 +33,4 @@ fun callbackWithBackoff(callback: suspend () -> (Boolean), failure: suspend (Thr
     }
 }
 
-fun callbackWithRetryBackoff(callback: suspend () -> (Boolean), failure: suspend (Throwable, Long) -> (Unit), afterSuccess: suspend () -> (Unit) = {}) {
-    GlobalScope.launch {
-        while (true) {
-            try {
-                val success = callback.invoke()
-
-                if (success) {
-                    afterSuccess.invoke()
-                    break
-                }
-            } catch (e: Throwable) {
-                if (e is BackoffWithCustomTimeException) {
-                    val waitTime = e.waitTimeInMillis
-
-                    failure.invoke(e, waitTime)
-
-                    delay(waitTime)
-                } else {
-                    throw e
-                }
-            }
-        }
-    }
-}
-
 class BackoffWithCustomTimeException(val waitTimeInMillis: Long) : RuntimeException()
