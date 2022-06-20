@@ -7,6 +7,7 @@ class FocusNFeConfig(
     val url: String,
     val token: String,
     val prestador: PrestadorConfig,
+    val percentualTotalTributos: Double,
     val referencePrefix: String,
     val callbackAuthorization: String
 ) {

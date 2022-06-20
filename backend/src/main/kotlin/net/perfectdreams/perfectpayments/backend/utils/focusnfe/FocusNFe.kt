@@ -65,7 +65,7 @@ class FocusNFe(private val config: FocusNFeConfig) {
                 "0105", // Precisa retirar os pontos do número, de https://conube.com.br/blog/tabela-iss-sp/
                 value,
                 "6202300",
-                0.155,
+                config.percentualTotalTributos,
                 "SEBRAE"
             )
         )
