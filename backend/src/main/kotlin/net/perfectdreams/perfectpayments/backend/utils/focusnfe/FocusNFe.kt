@@ -11,7 +11,7 @@ import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.config.FocusNFeConfig
 import net.perfectdreams.perfectpayments.backend.utils.BackoffWithCustomTimeException
-import net.perfectdreams.perfectpayments.backend.utils.callbackWithBackoff
+import net.perfectdreams.perfectpayments.backend.utils.callbackWithRetryBackoff
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -70,7 +70,7 @@ class FocusNFe(private val config: FocusNFeConfig) {
             )
         )
 
-        callbackWithBackoff(
+        callbackWithRetryBackoff(
             {
                 val result = PerfectPayments.http.post("${config.url.removeSuffix("/")}/v2/nfse?ref=$ref") {
                     val auth = Base64.getEncoder().encodeToString("${config.token}:".toByteArray(Charsets.UTF_8)) // The password is always empty
