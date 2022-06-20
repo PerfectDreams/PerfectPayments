@@ -4,14 +4,13 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.content.*
 import io.ktor.http.*
+import kotlinx.coroutines.delay
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.config.FocusNFeConfig
-import net.perfectdreams.perfectpayments.backend.utils.BackoffWithCustomTimeException
-import net.perfectdreams.perfectpayments.backend.utils.callbackWithRetryBackoff
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -70,51 +69,48 @@ class FocusNFe(private val config: FocusNFeConfig) {
             )
         )
 
-        callbackWithRetryBackoff(
-            {
-                val result = PerfectPayments.http.post("${config.url.removeSuffix("/")}/v2/nfse?ref=$ref") {
-                    val auth = Base64.getEncoder().encodeToString("${config.token}:".toByteArray(Charsets.UTF_8)) // The password is always empty
-                    header("Authorization", "Basic $auth")
+        while (true) {
+            val result = PerfectPayments.http.post("${config.url.removeSuffix("/")}/v2/nfse?ref=$ref") {
+                val auth = Base64.getEncoder().encodeToString("${config.token}:".toByteArray(Charsets.UTF_8)) // The password is always empty
+                header("Authorization", "Basic $auth")
 
-                    setBody(
-                        TextContent(
-                            Json.encodeToString(request),
-                            ContentType.Application.Json
-                        )
+                setBody(
+                    TextContent(
+                        Json.encodeToString(request),
+                        ContentType.Application.Json
                     )
-                }
-
-                println(result.bodyAsText())
-
-                if (result.status == HttpStatusCode.TooManyRequests) {
-                    val ratelimitRetryAfter = result.headers["Rate-Limit-Reset"]
-                    val rlRetryAfter = ratelimitRetryAfter?.toLong()
-                    if (rlRetryAfter != null) {
-                        throw BackoffWithCustomTimeException(rlRetryAfter * 1000)
-                    }
-                }
-
-                // Unprocessable Entity =
-                // 422 	nfe_nao_autorizada 	Foi feita alguma operação com a nota que só é aplicável se ela estiver autorizada (por exemplo a ação de cancelamento)
-                // 422 	nfe_autorizada 	Foi solicitado o processamento de uma nota já autorizada
-                // 422 	em_processamento 	Foi solicitado o processamento de uma nota que já está em processamento
-                // TODO: Parse and respect these
-                // {
-                //  "codigo": "nfe_autorizada",
-                //  "mensagem": "Nota fiscal já autorizada"
-                // }
-                // {
-                //  "codigo": "limite_excedido",
-                //  "mensagem": "Número máximo de requisições por minuto (100) excedido. Tente novamente em 43 segundos"
-                // }
-                result.status.isSuccess() || result.status == HttpStatusCode.UnprocessableEntity
-            },
-            { throwable, waitTime ->
-                logger.warn(throwable) { "Something went wrong while trying to register a nota fiscal for $ref! Retrying again after ${waitTime}ms"}
+                )
             }
-        ) {
-            logger.info { "Successfully registered a nota fiscal for $ref!" }
+
+            println(result.bodyAsText())
+
+            if (result.status == HttpStatusCode.TooManyRequests) {
+                val ratelimitRetryAfter = result.headers["Rate-Limit-Reset"]
+                val rlRetryAfter = ratelimitRetryAfter?.toLong()
+                if (rlRetryAfter != null) {
+                    logger.warn { "Request is rate limited! Waiting ${rlRetryAfter}s before retrying..." }
+                    delay(rlRetryAfter * 1000)
+                }
+            }
+
+            // Unprocessable Entity =
+            // 422 	nfe_nao_autorizada 	Foi feita alguma operação com a nota que só é aplicável se ela estiver autorizada (por exemplo a ação de cancelamento)
+            // 422 	nfe_autorizada 	Foi solicitado o processamento de uma nota já autorizada
+            // 422 	em_processamento 	Foi solicitado o processamento de uma nota que já está em processamento
+            // TODO: Parse and respect these
+            // {
+            //  "codigo": "nfe_autorizada",
+            //  "mensagem": "Nota fiscal já autorizada"
+            // }
+            // {
+            //  "codigo": "limite_excedido",
+            //  "mensagem": "Número máximo de requisições por minuto (100) excedido. Tente novamente em 43 segundos"
+            // }
+            // result.status.isSuccess() || result.status == HttpStatusCode.UnprocessableEntity
+            break
         }
+
+        logger.info { "Successfully registered a nota fiscal for $ref!" }
     }
 
     suspend fun cancelNFSe(
