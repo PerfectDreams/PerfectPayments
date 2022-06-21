@@ -34,7 +34,7 @@ sealed class NFSeCancellationResponse {
     }
 
     @Serializable
-    sealed class UnknownError(
+    data class UnknownError(
         override val codigo: String,
         override val mensagem: String
     ) : GenericError()
@@ -44,8 +44,9 @@ sealed class NFSeCancellationResponse {
             val responseCode = element.jsonObject["codigo"]
 
             return if (responseCode != null) {
+                println("a")
                 when (responseCode.jsonPrimitive.content) {
-                    else -> GenericError.serializer()
+                    else -> UnknownError.serializer()
                 }
             } else {
                 val status = element.jsonObject["status"]!!.jsonPrimitive.content

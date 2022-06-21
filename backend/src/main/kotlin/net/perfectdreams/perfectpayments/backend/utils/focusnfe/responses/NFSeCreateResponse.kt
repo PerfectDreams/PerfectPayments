@@ -25,19 +25,19 @@ sealed class NFSeCreateResponse {
     }
 
     @Serializable
-    class AlreadyBeingProcessed(
+    data class AlreadyBeingProcessed(
         override val codigo: String,
         override val mensagem: String
     ) : Error()
 
     @Serializable
-    class RateLimited(
+    data class RateLimited(
         override val codigo: String,
         override val mensagem: String
     ) : Error()
 
     @Serializable
-    class UnknownError(
+    data class UnknownError(
         override val codigo: String,
         override val mensagem: String
     ) : Error()
