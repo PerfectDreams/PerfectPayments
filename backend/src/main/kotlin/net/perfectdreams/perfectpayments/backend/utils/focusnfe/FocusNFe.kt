@@ -91,7 +91,18 @@ class FocusNFe(private val config: FocusNFeConfig) {
             )
         }
 
-        logger.info { "Successfully registered a nota fiscal for $ref!" }
+        when (Json.decodeFromString<NFSeCreateResponse>(result.bodyAsText())) {
+            is NFSeCreateResponse.AlreadyBeingProcessed -> {
+                logger.warn { "Tried to create a nota fiscal for $ref, but it is already being processed!" }
+            }
+            is NFSeCreateResponse.RateLimited -> {
+                // This should never happen here, because we already check if it was rate limited beforehand
+                error("This should never happen!")
+            }
+            is NFSeCreateResponse.Success -> {
+                logger.info { "Successfully registered a nota fiscal for $ref!" }
+            }
+        }
     }
 
     suspend fun cancelNFSe(
@@ -134,21 +145,6 @@ class FocusNFe(private val config: FocusNFeConfig) {
                 return executeFocusNFeRequest(path, httpRequestBuilder)
             }
         }
-
-        // Unprocessable Entity =
-        // 422 	nfe_nao_autorizada 	Foi feita alguma operação com a nota que só é aplicável se ela estiver autorizada (por exemplo a ação de cancelamento)
-        // 422 	nfe_autorizada 	Foi solicitado o processamento de uma nota já autorizada
-        // 422 	em_processamento 	Foi solicitado o processamento de uma nota que já está em processamento
-        // TODO: Parse and respect these
-        // {
-        //  "codigo": "nfe_autorizada",
-        //  "mensagem": "Nota fiscal já autorizada"
-        // }
-        // {
-        //  "codigo": "limite_excedido",
-        //  "mensagem": "Número máximo de requisições por minuto (100) excedido. Tente novamente em 43 segundos"
-        // }
-        // result.status.isSuccess() || result.status == HttpStatusCode.UnprocessableEntity
 
         return result
     }
