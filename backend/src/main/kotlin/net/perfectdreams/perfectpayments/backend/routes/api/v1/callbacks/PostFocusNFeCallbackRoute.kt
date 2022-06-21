@@ -1,18 +1,22 @@
 package net.perfectdreams.perfectpayments.backend.routes.api.v1.callbacks
 
-import io.ktor.server.application.*
 import io.ktor.http.*
+import io.ktor.server.application.*
 import io.ktor.server.request.*
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.encodeToJsonElement
 import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.config.FocusNFeConfig
 import net.perfectdreams.perfectpayments.backend.dao.NotaFiscal
 import net.perfectdreams.perfectpayments.backend.notafiscais.NotaFiscalStatus
 import net.perfectdreams.perfectpayments.backend.tables.FocusNFeEvents
+import net.perfectdreams.perfectpayments.backend.utils.APIError
 import net.perfectdreams.perfectpayments.backend.utils.Constants
 import net.perfectdreams.perfectpayments.backend.utils.extensions.receiveTextUTF8
 import net.perfectdreams.perfectpayments.backend.utils.extensions.respondEmptyJson
+import net.perfectdreams.perfectpayments.backend.utils.extensions.respondJson
 import net.perfectdreams.perfectpayments.backend.utils.focusnfe.NFSeCallbackResponse
 import net.perfectdreams.sequins.ktor.BaseRoute
 import org.jetbrains.exposed.sql.insert
@@ -40,11 +44,11 @@ class PostFocusNFeCallbackRoute(val m: PerfectPayments, val focusNFeConfig: Focu
         logger.info { "Received Nota Fiscal Update for Reference ID ${nfseCallbackResponse.ref}" }
 
         val theRealId = nfseCallbackResponse.ref.substringAfterLast("-")
-            .toLongOrNull() ?: error("I wasn't able to process the Nota Fiscal because the reference can't be converted to a Long value!")
+            .toLongOrNull() ?: respondAndThrow(call, HttpStatusCode.UnprocessableEntity, "I wasn't able to process the Nota Fiscal because the reference can't be converted to a Long value!")
 
         val notaFiscal = m.newSuspendedTransaction {
             NotaFiscal.findById(theRealId)
-        } ?: error("I wasn't able to find a Nota Fiscal with ID $theRealId!")
+        } ?: respondAndThrow(call, HttpStatusCode.NotFound, "I wasn't able to find a Nota Fiscal with ID $theRealId!")
 
         val newStatus = when (nfseCallbackResponse.status) {
             "processando_autorizacao" -> NotaFiscalStatus.PROCESSING_AUTHORIZATION
@@ -74,5 +78,10 @@ class PostFocusNFeCallbackRoute(val m: PerfectPayments, val focusNFeConfig: Focu
         }
 
         call.respondEmptyJson()
+    }
+
+    private suspend fun respondAndThrow(call: ApplicationCall, statusCode: HttpStatusCode, message: String): Nothing {
+        call.respondJson(Json.encodeToJsonElement(APIError(message)), status = statusCode)
+        error(message)
     }
 }

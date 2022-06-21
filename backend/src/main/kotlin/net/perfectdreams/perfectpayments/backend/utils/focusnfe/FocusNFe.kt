@@ -7,7 +7,7 @@ import io.ktor.client.statement.*
 import io.ktor.content.*
 import io.ktor.http.*
 import kotlinx.coroutines.delay
-import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
@@ -50,7 +50,7 @@ class FocusNFe(val config: FocusNFeConfig) {
         value: Double,
         description: String,
         tomador: NFSeCreateRequest.Tomador?
-    ) {
+    ): NFSeCreateResponse {
         val request = NFSeCreateRequest(
             date.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
             // 1: Microempresa municipal;
@@ -80,7 +80,7 @@ class FocusNFe(val config: FocusNFeConfig) {
             )
         )
 
-        val result = executeFocusNFeRequest("/v2/nfse?ref=$ref") {
+        val result = executeFocusNFeRequest(NFSeCreateResponse.serializer(), "/v2/nfse?ref=$ref") {
             method = HttpMethod.Post
 
             setBody(
@@ -91,18 +91,7 @@ class FocusNFe(val config: FocusNFeConfig) {
             )
         }
 
-        when (Json.decodeFromString<NFSeCreateResponse>(result.bodyAsText())) {
-            is NFSeCreateResponse.AlreadyBeingProcessed -> {
-                logger.warn { "Tried to create a nota fiscal for $ref, but it is already being processed!" }
-            }
-            is NFSeCreateResponse.RateLimited -> {
-                // This should never happen here, because we already check if it was rate limited beforehand
-                error("This should never happen!")
-            }
-            is NFSeCreateResponse.Success -> {
-                logger.info { "Successfully registered a nota fiscal for $ref!" }
-            }
-        }
+        return result
     }
 
     suspend fun cancelNFSe(
@@ -110,7 +99,7 @@ class FocusNFe(val config: FocusNFeConfig) {
     ): NFSeCancellationResponse {
         val request = NFSeCancellationRequest(ref)
 
-        val result = executeFocusNFeRequest("/v2/nfse?ref=$ref") {
+        val result = executeFocusNFeRequest(NFSeCancellationResponse.serializer(), "/v2/nfse?ref=$ref") {
             method = HttpMethod.Delete
 
             setBody(
@@ -121,10 +110,10 @@ class FocusNFe(val config: FocusNFeConfig) {
             )
         }
 
-        return json.decodeFromString(result.bodyAsText(Charsets.UTF_8))
+        return result
     }
 
-    private suspend fun executeFocusNFeRequest(path: String, httpRequestBuilder: HttpRequestBuilder.() -> (Unit)): HttpResponse {
+    private suspend fun <T> executeFocusNFeRequest(deserializationStrategy: DeserializationStrategy<T>, path: String, httpRequestBuilder: HttpRequestBuilder.() -> (Unit)): T {
         logger.info { "Executing FocusNFe request to $path" }
 
         val result = http.request("${config.url.removeSuffix("/")}$path") {
@@ -134,7 +123,8 @@ class FocusNFe(val config: FocusNFeConfig) {
             httpRequestBuilder.invoke(this)
         }
 
-        logger.info { "FocusNFe request result: ${result.status}" }
+        val body = result.bodyAsText()
+        logger.info { "FocusNFe request result: ${result.status} - $body" }
 
         if (result.status == HttpStatusCode.TooManyRequests) {
             val ratelimitRetryAfter = result.headers["Rate-Limit-Reset"]
@@ -142,10 +132,10 @@ class FocusNFe(val config: FocusNFeConfig) {
             if (rlRetryAfter != null) {
                 logger.warn { "Request is rate limited! Waiting ${rlRetryAfter}s before retrying..." }
                 delay(rlRetryAfter * 1000)
-                return executeFocusNFeRequest(path, httpRequestBuilder)
+                return executeFocusNFeRequest(deserializationStrategy, path, httpRequestBuilder)
             }
         }
 
-        return result
+        return Json.decodeFromString(deserializationStrategy, body)
     }
 }

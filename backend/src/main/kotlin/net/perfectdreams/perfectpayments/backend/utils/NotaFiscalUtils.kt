@@ -10,6 +10,8 @@ import net.perfectdreams.perfectpayments.backend.tables.NotaFiscais
 import net.perfectdreams.perfectpayments.backend.tables.PaymentPersonalInfos
 import net.perfectdreams.perfectpayments.backend.utils.focusnfe.FocusNFe
 import net.perfectdreams.perfectpayments.backend.utils.focusnfe.NFSeCreateRequest
+import net.perfectdreams.perfectpayments.backend.utils.focusnfe.NFSeCreateResponse
+import sun.jvm.hotspot.oops.CellTypeState.ref
 import java.time.ZonedDateTime
 
 class NotaFiscalUtils(val m: PerfectPayments, val focusNFe: FocusNFe, val referencePrefix: String) {
@@ -57,13 +59,26 @@ class NotaFiscalUtils(val m: PerfectPayments, val focusNFe: FocusNFe, val refere
         }
 
         // Nota Fiscal criada!
-        focusNFe.createNFSe(
+        val result = focusNFe.createNFSe(
             "${referencePrefix}${notaFiscal.id}",
             ZonedDateTime.now(Constants.ZONE_ID),
             (payment.amount.toDouble() / 100),
             "Liberação de serviço \"${payment.title}\" para o usuário",
             tomador
         )
+
+        when (result) {
+            is NFSeCreateResponse.AlreadyBeingProcessed -> {
+                logger.warn { "Tried to create a nota fiscal for $ref, but it is already being processed!" }
+            }
+            is NFSeCreateResponse.RateLimited -> {
+                // This should never happen here, because we already check if it was rate limited beforehand
+                error("This should never happen!")
+            }
+            is NFSeCreateResponse.Success -> {
+                logger.info { "Successfully registered a nota fiscal for $ref!" }
+            }
+        }
     }
 
     suspend fun cancelNotaFiscais(payment: Payment) {
