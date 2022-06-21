@@ -81,6 +81,8 @@ class FocusNFe(private val config: FocusNFeConfig) {
         )
 
         val result = executeFocusNFeRequest("/v2/nfse?ref=$ref") {
+            method = HttpMethod.Post
+
             setBody(
                 TextContent(
                     Json.encodeToString(request),
@@ -98,6 +100,8 @@ class FocusNFe(private val config: FocusNFeConfig) {
         val request = NFSeCancellationRequest(ref)
 
         val result = executeFocusNFeRequest("/v2/nfse?ref=$ref") {
+            method = HttpMethod.Delete
+
             setBody(
                 TextContent(
                     Json.encodeToString(request),
@@ -110,12 +114,16 @@ class FocusNFe(private val config: FocusNFeConfig) {
     }
 
     private suspend fun executeFocusNFeRequest(path: String, httpRequestBuilder: HttpRequestBuilder.() -> (Unit)): HttpResponse {
+        logger.info { "Executing FocusNFe request to $path" }
+
         val result = http.request("${config.url.removeSuffix("/")}$path") {
             val auth = Base64.getEncoder().encodeToString("${config.token}:".toByteArray(Charsets.UTF_8)) // The password is always empty
             header("Authorization", "Basic $auth")
 
             httpRequestBuilder.invoke(this)
         }
+
+        logger.info { "FocusNFe request result: ${result.status}" }
 
         if (result.status == HttpStatusCode.TooManyRequests) {
             val ratelimitRetryAfter = result.headers["Rate-Limit-Reset"]
