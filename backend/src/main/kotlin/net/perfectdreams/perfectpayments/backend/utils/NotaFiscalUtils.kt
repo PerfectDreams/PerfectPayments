@@ -11,7 +11,6 @@ import net.perfectdreams.perfectpayments.backend.tables.PaymentPersonalInfos
 import net.perfectdreams.perfectpayments.backend.utils.focusnfe.FocusNFe
 import net.perfectdreams.perfectpayments.backend.utils.focusnfe.NFSeCreateRequest
 import net.perfectdreams.perfectpayments.backend.utils.focusnfe.NFSeCreateResponse
-import sun.jvm.hotspot.oops.CellTypeState.ref
 import java.time.ZonedDateTime
 
 class NotaFiscalUtils(val m: PerfectPayments, val focusNFe: FocusNFe, val referencePrefix: String) {
@@ -59,8 +58,9 @@ class NotaFiscalUtils(val m: PerfectPayments, val focusNFe: FocusNFe, val refere
         }
 
         // Nota Fiscal criada!
+        val ref = "${referencePrefix}${notaFiscal.id}"
         val result = focusNFe.createNFSe(
-            "${referencePrefix}${notaFiscal.id}",
+            ref,
             ZonedDateTime.now(Constants.ZONE_ID),
             (payment.amount.toDouble() / 100),
             "Liberação de serviço \"${payment.title}\" para o usuário",
