@@ -16,7 +16,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-class FocusNFe(private val config: FocusNFeConfig) {
+class FocusNFe(val config: FocusNFeConfig) {
     companion object {
         private val logger = KotlinLogging.logger {}
         private val json = Json {

@@ -18,6 +18,11 @@ class NotaFiscalUtils(val m: PerfectPayments, val focusNFe: FocusNFe, val refere
     }
 
     suspend fun generateNotaFiscal(payment: Payment) {
+        if (!focusNFe.config.enabled) {
+            logger.warn { "We don't generate a Nota Fiscal for ${payment.id} because it is disabled on the configuration!" }
+            return
+        }
+
         logger.info { "Getting Nota Fiscal information for ${payment.id}..." }
 
         val personalInfo = m.newSuspendedTransaction {

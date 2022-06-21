@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class FocusNFeConfig(
+    val enabled: Boolean,
     val url: String,
     val token: String,
     val prestador: PrestadorConfig,
