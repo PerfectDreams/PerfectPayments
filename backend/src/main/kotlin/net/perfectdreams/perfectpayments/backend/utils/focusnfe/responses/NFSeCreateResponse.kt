@@ -1,4 +1,4 @@
-package net.perfectdreams.perfectpayments.backend.utils.focusnfe
+package net.perfectdreams.perfectpayments.backend.utils.focusnfe.responses
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
@@ -20,21 +20,25 @@ sealed class NFSeCreateResponse {
 
     @Serializable
     sealed class Error : NFSeCreateResponse() {
-        abstract val code: String
+        abstract val codigo: String
         abstract val mensagem: String
     }
 
     @Serializable
     class AlreadyBeingProcessed(
-        @SerialName("codigo")
-        override val code: String,
+        override val codigo: String,
         override val mensagem: String
     ) : Error()
 
     @Serializable
     class RateLimited(
-        @SerialName("codigo")
-        override val code: String,
+        override val codigo: String,
+        override val mensagem: String
+    ) : Error()
+
+    @Serializable
+    class UnknownError(
+        override val codigo: String,
         override val mensagem: String
     ) : Error()
 
@@ -46,7 +50,7 @@ sealed class NFSeCreateResponse {
                 when (responseCode.jsonPrimitive.content) {
                     "limite_excedido" -> RateLimited.serializer()
                     "em_processamento" -> AlreadyBeingProcessed.serializer()
-                    else -> Error.serializer()
+                    else -> UnknownError.serializer()
                 }
             } else {
                 Success.serializer()

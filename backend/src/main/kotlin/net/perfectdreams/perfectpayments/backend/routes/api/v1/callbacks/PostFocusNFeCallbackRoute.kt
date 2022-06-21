@@ -17,7 +17,7 @@ import net.perfectdreams.perfectpayments.backend.utils.Constants
 import net.perfectdreams.perfectpayments.backend.utils.extensions.receiveTextUTF8
 import net.perfectdreams.perfectpayments.backend.utils.extensions.respondEmptyJson
 import net.perfectdreams.perfectpayments.backend.utils.extensions.respondJson
-import net.perfectdreams.perfectpayments.backend.utils.focusnfe.NFSeCallbackResponse
+import net.perfectdreams.perfectpayments.backend.utils.focusnfe.responses.NFSeCallbackResponse
 import net.perfectdreams.sequins.ktor.BaseRoute
 import org.jetbrains.exposed.sql.insert
 

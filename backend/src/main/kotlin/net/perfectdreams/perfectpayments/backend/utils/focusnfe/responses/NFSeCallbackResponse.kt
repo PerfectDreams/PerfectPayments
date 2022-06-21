@@ -1,4 +1,4 @@
-package net.perfectdreams.perfectpayments.backend.utils.focusnfe
+package net.perfectdreams.perfectpayments.backend.utils.focusnfe.responses
 
 import kotlinx.serialization.Serializable
 

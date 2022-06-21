@@ -9,8 +9,9 @@ import net.perfectdreams.perfectpayments.backend.notafiscais.NotaFiscalStatus
 import net.perfectdreams.perfectpayments.backend.tables.NotaFiscais
 import net.perfectdreams.perfectpayments.backend.tables.PaymentPersonalInfos
 import net.perfectdreams.perfectpayments.backend.utils.focusnfe.FocusNFe
-import net.perfectdreams.perfectpayments.backend.utils.focusnfe.NFSeCreateRequest
-import net.perfectdreams.perfectpayments.backend.utils.focusnfe.NFSeCreateResponse
+import net.perfectdreams.perfectpayments.backend.utils.focusnfe.requests.NFSeCreateRequest
+import net.perfectdreams.perfectpayments.backend.utils.focusnfe.responses.NFSeCancellationResponse
+import net.perfectdreams.perfectpayments.backend.utils.focusnfe.responses.NFSeCreateResponse
 import java.time.ZonedDateTime
 
 class NotaFiscalUtils(val m: PerfectPayments, val focusNFe: FocusNFe, val referencePrefix: String) {
@@ -78,6 +79,7 @@ class NotaFiscalUtils(val m: PerfectPayments, val focusNFe: FocusNFe, val refere
             is NFSeCreateResponse.Success -> {
                 logger.info { "Successfully registered a nota fiscal for $ref!" }
             }
+            is NFSeCreateResponse.UnknownError -> error("Unknown Error while trying to create a NFSe! $result")
         }
     }
 
@@ -96,7 +98,17 @@ class NotaFiscalUtils(val m: PerfectPayments, val focusNFe: FocusNFe, val refere
         generatedNotasFiscais.forEach {
             logger.info { "Cancelling Nota Fiscal ${referencePrefix}${it.id}..." }
             val result = focusNFe.cancelNFSe("${referencePrefix}${it.id}", reason)
-            logger.info { "Nota Fiscal ${referencePrefix}${it.id} cancellation result: ${result.status} ${result.erros}" }
+            when (result) {
+                is NFSeCancellationResponse.ErrorWhileCancelling -> {
+                    logger.warn { "Something went wrong while trying to cancel Nota Fiscal ${referencePrefix}${it.id}! ${result.status} ${result.erros}" }
+                }
+                is NFSeCancellationResponse.Success -> {
+                    logger.info { "Nota Fiscal ${referencePrefix}${it.id} cancellation result: ${result.status}" }
+                }
+                is NFSeCancellationResponse.GenericError -> {
+                    logger.warn { "Something went wrong while trying to cancel Nota Fiscal ${referencePrefix}${it.id}! ${result.codigo} ${result.mensagem}" }
+                }
+            }
         }
     }
 }

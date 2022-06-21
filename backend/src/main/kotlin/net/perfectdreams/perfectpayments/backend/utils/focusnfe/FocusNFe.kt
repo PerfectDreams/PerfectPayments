@@ -12,6 +12,10 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.backend.config.FocusNFeConfig
+import net.perfectdreams.perfectpayments.backend.utils.focusnfe.requests.NFSeCancellationRequest
+import net.perfectdreams.perfectpayments.backend.utils.focusnfe.requests.NFSeCreateRequest
+import net.perfectdreams.perfectpayments.backend.utils.focusnfe.responses.NFSeCancellationResponse
+import net.perfectdreams.perfectpayments.backend.utils.focusnfe.responses.NFSeCreateResponse
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
