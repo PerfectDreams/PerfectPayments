@@ -1,7 +1,7 @@
 package net.perfectdreams.perfectpayments.backend.routes.api.v1.payments
 
-import io.ktor.server.application.*
 import io.ktor.http.*
+import io.ktor.server.application.*
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
@@ -32,7 +32,10 @@ class GetReissueNotaFiscalForPaymentRoute(m: PerfectPayments) : RequiresAPIAuthe
             return
         }
 
-        // Issue notas fiscais if the payment was approved
+        // First, we will cancel all notas fiscais issued for this payment, if they exist
+        m.notaFiscais?.cancelNotaFiscais(internalPayment)
+
+        // And then we will reissue notas fiscais if the payment was approved
         m.notaFiscais?.generateNotaFiscal(internalPayment)
 
         call.respondEmptyJson(HttpStatusCode.OK)
