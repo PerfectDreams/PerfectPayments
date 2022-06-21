@@ -11,7 +11,6 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
-import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.config.FocusNFeConfig
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -81,45 +80,13 @@ class FocusNFe(private val config: FocusNFeConfig) {
             )
         )
 
-        while (true) {
-            val result = http.post("${config.url.removeSuffix("/")}/v2/nfse?ref=$ref") {
-                val auth = Base64.getEncoder().encodeToString("${config.token}:".toByteArray(Charsets.UTF_8)) // The password is always empty
-                header("Authorization", "Basic $auth")
-
-                setBody(
-                    TextContent(
-                        Json.encodeToString(request),
-                        ContentType.Application.Json
-                    )
+        val result = executeFocusNFeRequest("/v2/nfse?ref=$ref") {
+            setBody(
+                TextContent(
+                    Json.encodeToString(request),
+                    ContentType.Application.Json
                 )
-            }
-
-            println(result.bodyAsText())
-
-            if (result.status == HttpStatusCode.TooManyRequests) {
-                val ratelimitRetryAfter = result.headers["Rate-Limit-Reset"]
-                val rlRetryAfter = ratelimitRetryAfter?.toLong()
-                if (rlRetryAfter != null) {
-                    logger.warn { "Request is rate limited! Waiting ${rlRetryAfter}s before retrying..." }
-                    delay(rlRetryAfter * 1000)
-                }
-            }
-
-            // Unprocessable Entity =
-            // 422 	nfe_nao_autorizada 	Foi feita alguma operação com a nota que só é aplicável se ela estiver autorizada (por exemplo a ação de cancelamento)
-            // 422 	nfe_autorizada 	Foi solicitado o processamento de uma nota já autorizada
-            // 422 	em_processamento 	Foi solicitado o processamento de uma nota que já está em processamento
-            // TODO: Parse and respect these
-            // {
-            //  "codigo": "nfe_autorizada",
-            //  "mensagem": "Nota fiscal já autorizada"
-            // }
-            // {
-            //  "codigo": "limite_excedido",
-            //  "mensagem": "Número máximo de requisições por minuto (100) excedido. Tente novamente em 43 segundos"
-            // }
-            // result.status.isSuccess() || result.status == HttpStatusCode.UnprocessableEntity
-            break
+            )
         }
 
         logger.info { "Successfully registered a nota fiscal for $ref!" }
@@ -130,10 +97,7 @@ class FocusNFe(private val config: FocusNFeConfig) {
     ): NFSeCancellationResponse {
         val request = NFSeCancellationRequest(ref)
 
-        val result = http.delete("${config.url.removeSuffix("/")}/v2/nfse?ref=$ref") {
-            val auth = Base64.getEncoder().encodeToString("${config.token}:".toByteArray(Charsets.UTF_8)) // The password is always empty
-            header("Authorization", "Basic $auth")
-
+        val result = executeFocusNFeRequest("/v2/nfse?ref=$ref") {
             setBody(
                 TextContent(
                     Json.encodeToString(request),
@@ -143,5 +107,41 @@ class FocusNFe(private val config: FocusNFeConfig) {
         }
 
         return json.decodeFromString(result.bodyAsText(Charsets.UTF_8))
+    }
+
+    private suspend fun executeFocusNFeRequest(path: String, httpRequestBuilder: HttpRequestBuilder.() -> (Unit)): HttpResponse {
+        val result = http.request("${config.url.removeSuffix("/")}$path") {
+            val auth = Base64.getEncoder().encodeToString("${config.token}:".toByteArray(Charsets.UTF_8)) // The password is always empty
+            header("Authorization", "Basic $auth")
+
+            httpRequestBuilder.invoke(this)
+        }
+
+        if (result.status == HttpStatusCode.TooManyRequests) {
+            val ratelimitRetryAfter = result.headers["Rate-Limit-Reset"]
+            val rlRetryAfter = ratelimitRetryAfter?.toLong()
+            if (rlRetryAfter != null) {
+                logger.warn { "Request is rate limited! Waiting ${rlRetryAfter}s before retrying..." }
+                delay(rlRetryAfter * 1000)
+                return executeFocusNFeRequest(path, httpRequestBuilder)
+            }
+        }
+
+        // Unprocessable Entity =
+        // 422 	nfe_nao_autorizada 	Foi feita alguma operação com a nota que só é aplicável se ela estiver autorizada (por exemplo a ação de cancelamento)
+        // 422 	nfe_autorizada 	Foi solicitado o processamento de uma nota já autorizada
+        // 422 	em_processamento 	Foi solicitado o processamento de uma nota que já está em processamento
+        // TODO: Parse and respect these
+        // {
+        //  "codigo": "nfe_autorizada",
+        //  "mensagem": "Nota fiscal já autorizada"
+        // }
+        // {
+        //  "codigo": "limite_excedido",
+        //  "mensagem": "Número máximo de requisições por minuto (100) excedido. Tente novamente em 43 segundos"
+        // }
+        // result.status.isSuccess() || result.status == HttpStatusCode.UnprocessableEntity
+
+        return result
     }
 }
