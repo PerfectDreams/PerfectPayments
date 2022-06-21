@@ -85,7 +85,7 @@ class FocusNFe(val config: FocusNFeConfig) {
 
             setBody(
                 TextContent(
-                    Json.encodeToString(request),
+                    json.encodeToString(request),
                     ContentType.Application.Json
                 )
             )
@@ -104,7 +104,7 @@ class FocusNFe(val config: FocusNFeConfig) {
 
             setBody(
                 TextContent(
-                    Json.encodeToString(request),
+                    json.encodeToString(request),
                     ContentType.Application.Json
                 )
             )
@@ -136,6 +136,6 @@ class FocusNFe(val config: FocusNFeConfig) {
             }
         }
 
-        return Json.decodeFromString(deserializationStrategy, body)
+        return json.decodeFromString(deserializationStrategy, body)
     }
 }
