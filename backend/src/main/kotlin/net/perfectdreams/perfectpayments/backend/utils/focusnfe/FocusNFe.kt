@@ -85,7 +85,7 @@ class FocusNFe(val config: FocusNFeConfig) {
 
             setBody(
                 TextContent(
-                    json.encodeToString(request),
+                    json.encodeToString(request).also { logger.info { it } },
                     ContentType.Application.Json
                 )
             )
@@ -95,16 +95,18 @@ class FocusNFe(val config: FocusNFeConfig) {
     }
 
     suspend fun cancelNFSe(
-        ref: String
+        ref: String,
+        justificativa: String
     ): NFSeCancellationResponse {
-        val request = NFSeCancellationRequest(ref)
+        val request = NFSeCancellationRequest(justificativa)
 
-        val result = executeFocusNFeRequest(NFSeCancellationResponse.serializer(), "/v2/nfse?ref=$ref") {
+        // To delete a nota fiscal, we need to provide it as a URL parameter, not as a query parameter
+        val result = executeFocusNFeRequest(NFSeCancellationResponse.serializer(), "/v2/nfse/$ref") {
             method = HttpMethod.Delete
 
             setBody(
                 TextContent(
-                    json.encodeToString(request),
+                    json.encodeToString(request).also { logger.info { it } },
                     ContentType.Application.Json
                 )
             )

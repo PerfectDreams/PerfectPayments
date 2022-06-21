@@ -81,7 +81,7 @@ class NotaFiscalUtils(val m: PerfectPayments, val focusNFe: FocusNFe, val refere
         }
     }
 
-    suspend fun cancelNotaFiscais(payment: Payment) {
+    suspend fun cancelNotaFiscais(payment: Payment, reason: String) {
         logger.info { "Cancelling Nota Fiscal for ${payment.id}..." }
 
         val generatedNotasFiscais = m.newSuspendedTransaction {
@@ -95,7 +95,7 @@ class NotaFiscalUtils(val m: PerfectPayments, val focusNFe: FocusNFe, val refere
 
         generatedNotasFiscais.forEach {
             logger.info { "Cancelling Nota Fiscal ${referencePrefix}${it.id}..." }
-            val result = focusNFe.cancelNFSe("${referencePrefix}${it.id}")
+            val result = focusNFe.cancelNFSe("${referencePrefix}${it.id}", reason)
             logger.info { "Nota Fiscal ${referencePrefix}${it.id} cancellation result: ${result.status} ${result.erros}" }
         }
     }

@@ -41,7 +41,7 @@ object PaymentUtils {
             m.notaFiscais?.generateNotaFiscal(payment)
         } else if (payment.status == PaymentStatus.CHARGED_BACK) {
             // Cancel notas fiscais if the payment was charged back
-            m.notaFiscais?.cancelNotaFiscais(payment)
+            m.notaFiscais?.cancelNotaFiscais(payment, "Usuário solicitou reembolso do pagamento")
         }
     }
 }
