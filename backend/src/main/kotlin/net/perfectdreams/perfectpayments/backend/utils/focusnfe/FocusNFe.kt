@@ -1,6 +1,7 @@
 package net.perfectdreams.perfectpayments.backend.utils.focusnfe
 
 import io.ktor.client.*
+import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -26,7 +27,7 @@ class FocusNFe(val config: FocusNFeConfig) {
         private val json = Json {
             ignoreUnknownKeys = true
         }
-        private val http = HttpClient {
+        private val http = HttpClient(CIO) {
             expectSuccess = false
             install(HttpTimeout) {
                 // Because FocusNFe is sometimes kinda finicky ngl

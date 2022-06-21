@@ -59,6 +59,7 @@ dependencies {
 
     // We use "Apache" because "CIO", for some reason, has issues with PayPal's API
     implementation("io.ktor:ktor-client-apache:${libs.versions.ktor.get()}")
+    implementation("io.ktor:ktor-client-cio:${libs.versions.ktor.get()}")
     implementation("io.ktor:ktor-server-netty:${libs.versions.ktor.get()}")
     implementation("io.ktor:ktor-server-cors:${libs.versions.ktor.get()}")
     implementation("io.ktor:ktor-server-compression:${libs.versions.ktor.get()}")

@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.client.*
+import io.ktor.client.engine.apache.*
 import io.ktor.client.plugins.*
 import io.ktor.http.*
 import io.ktor.http.content.*
@@ -69,7 +70,7 @@ class PerfectPayments(
     gatewayConfigs: Map<PaymentGateway, Any>
 ) {
     companion object {
-        val http = HttpClient {
+        val http = HttpClient(Apache) {
             expectSuccess = false
             install(HttpTimeout) {
                 // Because FocusNFe is kinda finicky ngl
