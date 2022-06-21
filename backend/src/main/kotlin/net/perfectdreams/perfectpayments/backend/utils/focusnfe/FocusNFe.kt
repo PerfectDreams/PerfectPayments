@@ -31,9 +31,10 @@ class FocusNFe(val config: FocusNFeConfig) {
             install(HttpTimeout) {
                 // Because FocusNFe is sometimes kinda finicky ngl
                 // "Request timeout has expired [url=https://api.focusnfe.com.br/v2/nfse?ref=pp-prod-1507, request_timeout=1000 ms]"
-                requestTimeoutMillis = 60_000
-                connectTimeoutMillis = 60_000
-                socketTimeoutMillis = 60_000
+                // Also because, for some reason, some requests seems to be synchronous so it depends on the government to handle it fast
+                requestTimeoutMillis = 300_000
+                connectTimeoutMillis = 300_000
+                socketTimeoutMillis = 300_000
             }
         }
 

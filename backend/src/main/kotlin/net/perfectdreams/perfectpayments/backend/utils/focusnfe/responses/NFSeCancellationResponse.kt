@@ -44,7 +44,6 @@ sealed class NFSeCancellationResponse {
             val responseCode = element.jsonObject["codigo"]
 
             return if (responseCode != null) {
-                println("a")
                 when (responseCode.jsonPrimitive.content) {
                     else -> UnknownError.serializer()
                 }
@@ -52,7 +51,7 @@ sealed class NFSeCancellationResponse {
                 val status = element.jsonObject["status"]!!.jsonPrimitive.content
 
                 return when (status) {
-                    "cancelada" -> Success.serializer()
+                    "cancelado" -> Success.serializer()
                     "erro_cancelamento" -> ErrorWhileCancelling.serializer()
                     else -> error("I don't know how to handle $status!")
                 }

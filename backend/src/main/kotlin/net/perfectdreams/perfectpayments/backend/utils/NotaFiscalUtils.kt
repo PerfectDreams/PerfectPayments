@@ -97,13 +97,12 @@ class NotaFiscalUtils(val m: PerfectPayments, val focusNFe: FocusNFe, val refere
 
         generatedNotasFiscais.forEach {
             logger.info { "Cancelling Nota Fiscal ${referencePrefix}${it.id}..." }
-            val result = focusNFe.cancelNFSe("${referencePrefix}${it.id}", reason)
-            when (result) {
-                is NFSeCancellationResponse.ErrorWhileCancelling -> {
-                    logger.warn { "Something went wrong while trying to cancel Nota Fiscal ${referencePrefix}${it.id}! ${result.status} ${result.erros}" }
-                }
+            when (val result = focusNFe.cancelNFSe("${referencePrefix}${it.id}", reason)) {
                 is NFSeCancellationResponse.Success -> {
                     logger.info { "Nota Fiscal ${referencePrefix}${it.id} cancellation result: ${result.status}" }
+                }
+                is NFSeCancellationResponse.ErrorWhileCancelling -> {
+                    logger.warn { "Something went wrong while trying to cancel Nota Fiscal ${referencePrefix}${it.id}! ${result.status} ${result.erros}" }
                 }
                 is NFSeCancellationResponse.GenericError -> {
                     logger.warn { "Something went wrong while trying to cancel Nota Fiscal ${referencePrefix}${it.id}! ${result.codigo} ${result.mensagem}" }
