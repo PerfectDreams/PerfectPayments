@@ -25,6 +25,18 @@ class PostPagSeguroCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/ca
 
         val authorization = call.request.header("Authorization")
 
+        val parameters = call.receiveParameters()
+        val notificationCode = parameters["notificationCode"]
+        val notificationType = parameters["notificationType"]
+
+        if (notificationCode == null) {
+            logger.info { "Received notification without a notificationCode, notificationType is $notificationType" }
+            call.respondEmptyJson()
+            return
+        }
+
+        logger.info { "Received notification about \"$notificationCode\", notificationType is $notificationType" }
+        
         if (authorization == null || !authorization.startsWith("Basic ")) {
             logger.warn { "Request Authorization is different than what it is expected or null! Received Seller Token: $authorization"}
             call.respondEmptyJson(HttpStatusCode.Forbidden)
@@ -42,18 +54,6 @@ class PostPagSeguroCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/ca
             call.respondEmptyJson(HttpStatusCode.Forbidden)
             return
         }
-
-        val parameters = call.receiveParameters()
-        val notificationCode = parameters["notificationCode"]
-        val notificationType = parameters["notificationType"]
-
-        if (notificationCode == null) {
-            logger.info { "Received notification without a notificationCode, notificationType is $notificationType" }
-            call.respondEmptyJson()
-            return
-        }
-
-        logger.info { "Received notification about \"$notificationCode\", notificationType is $notificationType" }
 
         if (notificationType == "transaction") {
             val httpResponse =
