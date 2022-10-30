@@ -3,7 +3,7 @@
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
-    id("com.google.cloud.tools.jib") version "3.1.2"
+    id("com.google.cloud.tools.jib") version "3.2.1"
 }
 
 group = "net.perfectdreams.perfectpayments"
