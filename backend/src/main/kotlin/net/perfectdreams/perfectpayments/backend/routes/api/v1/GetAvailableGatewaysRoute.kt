@@ -9,6 +9,6 @@ import net.perfectdreams.sequins.ktor.BaseRoute
 
 class GetAvailableGatewaysRoute(val m: PerfectPayments) : BaseRoute("/api/v1/gateways") {
     override suspend fun onRequest(call: ApplicationCall) {
-        call.respondJson(Json.encodeToJsonElement(m.config.gateways))
+        call.respondJson(Json.encodeToJsonElement(m.config.gateways - m.config.softDisabledGateways))
     }
 }
