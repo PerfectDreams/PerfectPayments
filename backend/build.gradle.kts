@@ -77,7 +77,7 @@ jib {
     }
 
     from {
-        image = "openjdk:17-slim-buster"
+        image = "eclipse-temurin:18-focal"
     }
 }
 
