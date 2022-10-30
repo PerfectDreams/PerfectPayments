@@ -9,7 +9,8 @@ data class AppConfig(
     val notificationToken: String,
     val database: DatabaseConfig,
     val website: WebsiteConfig,
-    val gateways: List<PaymentGateway>,
+    val gateways: Set<PaymentGateway>,
+    val softDisabledGateways: Set<PaymentGateway>,
     val tokens: List<TokenConfig>,
     val discordNotificationsWebhook: String? = null
 )
