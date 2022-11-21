@@ -52,7 +52,9 @@ class PicPayPaymentCreator(val m: PerfectPayments) : PaymentCreator {
         val picPayJson = Json.parseToJsonElement(payload)
             .jsonObject
 
-        return TODO()
-        // return picPayJson["paymentUrl"]!!.jsonPrimitive.content
+        return CreatedPicPayPaymentInfo(
+            picPayJson["referenceId"]!!.jsonPrimitive.content,
+            picPayJson["paymentUrl"]!!.jsonPrimitive.content
+        )
     }
 }

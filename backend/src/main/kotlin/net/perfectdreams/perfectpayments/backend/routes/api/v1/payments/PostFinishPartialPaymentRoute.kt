@@ -3,9 +3,7 @@ package net.perfectdreams.perfectpayments.backend.routes.api.v1.payments
 import io.ktor.server.application.*
 import kotlinx.datetime.Clock
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.json.*
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.dao.Payment
 import net.perfectdreams.perfectpayments.backend.payments.PaymentStatus
@@ -68,10 +66,9 @@ class PostFinishPartialPaymentRoute(val m: PerfectPayments) : BaseRoute("/api/v1
                 )
             }
             PaymentGateway.PICPAY -> {
-                TODO()
-                /* val picPayPersonalData = filledPartialPayment.picPayPersonalData!!
+                val picPayPersonalData = filledPartialPayment.picPayPersonalData!!
 
-                val paymentUrl = PaymentQuery.startPayment(
+                val createdPaymentData = PaymentQuery.startPayment(
                     m,
                     partialPaymentId,
                     partialPayment,
@@ -88,9 +85,12 @@ class PostFinishPartialPaymentRoute(val m: PerfectPayments) : BaseRoute("/api/v1
                     }
                 )
 
+                if (createdPaymentData !is CreatedPaymentInfoWithUrl)
+                    error("I don't know how to handle $createdPaymentData!")
+
                 call.respondJson(
-                    Json.encodeToJsonElement(PaymentCreatedResponse(paymentUrl))
-                ) */
+                    Json.encodeToJsonElement(PaymentCreatedResponse(createdPaymentData.url))
+                )
             }
             else -> {
                 val createdPaymentData = PaymentQuery.startPayment(

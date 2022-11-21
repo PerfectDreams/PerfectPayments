@@ -77,6 +77,9 @@ methods:
   brazilBankTicket:
     title: "Brazilian Bank Ticket" #Only used in Brazil
     description: "You can pay a bank ticket in a lottery house or online via your bank. However, we recommend paying via Pix or with a Credit/Debit card due to bank tickets taking one to three business days to be processed!"
+  picpay:
+    title: "PicPay" #Only used in Brazil
+    description: "PicPay is an instant payment platform in Brazil."
   sandbox:
     title: "Sandbox"
     description: "A cute sandbox where you can test payments"

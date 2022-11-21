@@ -10,6 +10,7 @@ sealed class UserFacingPaymentMethodSelection {
             UserFacingPaymentGroup.CreditCard,
             UserFacingPaymentGroup.DebitCard,
             UserFacingPaymentMethod.BrazilBankTicket,
+            UserFacingPaymentMethod.PicPay,
             UserFacingPaymentMethod.Sandbox
         )
     }
@@ -73,6 +74,14 @@ sealed class UserFacingPaymentMethod(
         I18nKeysData.PaymentWillBeProcessedWithinOneHour,
         "/assets/img/methods/debit-card-caixa.svg",
         PaymentGateway.PAGSEGURO,
+        PaymentMethodCountry.BRAZIL
+    )
+    object PicPay : UserFacingPaymentMethod(
+        I18nKeysData.Methods.Picpay.Title,
+        I18nKeysData.Methods.Picpay.Description,
+        I18nKeysData.PaymentWillBeProcessedWithinOneHour,
+        "/assets/img/gateways/picpay.svg",
+        PaymentGateway.PICPAY,
         PaymentMethodCountry.BRAZIL
     )
     object Sandbox : UserFacingPaymentMethod(

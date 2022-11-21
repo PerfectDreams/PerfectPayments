@@ -19,6 +19,11 @@ class CreatedPagSeguroPaymentInfo(
     url: String
 ) : CreatedPaymentInfoWithUrl(id, url)
 
+class CreatedPicPayPaymentInfo(
+    id: String,
+    url: String
+) : CreatedPaymentInfoWithUrl(id, url)
+
 class CreatedSandboxPaymentInfo(
     id: String
 ) : CreatedPaymentInfo(id)
