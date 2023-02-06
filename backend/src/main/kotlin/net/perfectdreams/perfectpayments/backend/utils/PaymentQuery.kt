@@ -2,6 +2,7 @@ package net.perfectdreams.perfectpayments.backend.utils
 
 import club.minnced.discord.webhook.send.WebhookEmbed
 import club.minnced.discord.webhook.send.WebhookEmbedBuilder
+import club.minnced.discord.webhook.send.WebhookMessageBuilder
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.datetime.Clock
@@ -119,7 +120,16 @@ object PaymentQuery {
                 .setFooter(WebhookEmbed.EmbedFooter("Reference ID: ${payment.referenceId}", null))
                 .setTimestamp(Instant.now())
                 .build()
-            it.send(embed)
+
+            it.send(
+                WebhookMessageBuilder()
+                    .also {
+                        if (payment.status == PaymentStatus.CHARGED_BACK)
+                            it.setContent("<@&753676578013184183>")
+                    }
+                    .addEmbeds(embed)
+                    .build()
+            )
         }
 
 
