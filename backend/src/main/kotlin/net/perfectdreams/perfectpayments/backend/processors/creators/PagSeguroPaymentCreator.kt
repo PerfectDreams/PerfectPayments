@@ -7,6 +7,7 @@ import io.ktor.http.*
 import kotlinx.serialization.json.JsonObject
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.utils.PartialPayment
+import net.perfectdreams.perfectpayments.backend.utils.TextUtils
 
 class PagSeguroPaymentCreator(val m: PerfectPayments) : PaymentCreator {
     override suspend fun createPayment(paymentId: Long, partialPayment: PartialPayment, data: JsonObject): CreatedPagSeguroPaymentInfo {
@@ -21,7 +22,7 @@ class PagSeguroPaymentCreator(val m: PerfectPayments) : PaymentCreator {
 
                     append("currency", "BRL")
                     append("itemId1", "001")
-                    append("itemDescription1", partialPayment.title)
+                    append("itemDescription1", TextUtils.cleanTitle(partialPayment.title))
                     append("itemAmount1", "%.2f".format(partialPayment.amount.toDouble() / 100))
                     append("itemQuantity1", "1")
                     append("reference", partialPayment.externalReference.format(paymentId))
