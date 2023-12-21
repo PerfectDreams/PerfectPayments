@@ -17,7 +17,9 @@ import io.ktor.server.plugins.cachingheaders.*
 import io.ktor.server.plugins.compression.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.routing.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.backend.config.AppConfig
@@ -49,11 +51,7 @@ import net.perfectdreams.perfectpayments.backend.tables.FocusNFeEvents
 import net.perfectdreams.perfectpayments.backend.tables.NotaFiscais
 import net.perfectdreams.perfectpayments.backend.tables.PaymentPersonalInfos
 import net.perfectdreams.perfectpayments.backend.tables.Payments
-import net.perfectdreams.perfectpayments.backend.utils.GatewayConfigs
-import net.perfectdreams.perfectpayments.backend.utils.LanguageManager
-import net.perfectdreams.perfectpayments.backend.utils.NotaFiscalUtils
-import net.perfectdreams.perfectpayments.backend.utils.PartialPayment
-import net.perfectdreams.perfectpayments.backend.utils.WebsiteAssetsHashManager
+import net.perfectdreams.perfectpayments.backend.utils.*
 import net.perfectdreams.perfectpayments.backend.utils.focusnfe.FocusNFe
 import net.perfectdreams.perfectpayments.common.payments.PaymentGateway
 import org.jetbrains.exposed.sql.Database
@@ -63,6 +61,7 @@ import java.io.File
 import java.sql.Connection
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.minutes
 
 class PerfectPayments(
     val config: AppConfig,
@@ -88,6 +87,7 @@ class PerfectPayments(
     val discordWebhook = config.discordNotificationsWebhook?.let {
         WebhookClient.withUrl(it)
     }
+    val tasksScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
     /**
      * Partial payment cache, this will is used when the payment does not have any gateway payment bound
@@ -197,6 +197,10 @@ class PerfectPayments(
                 NotaFiscais,
                 FocusNFeEvents
             )
+        }
+
+        if (config.gateways.contains(PaymentGateway.PAGSEGURO)) {
+            scheduleCoroutineAtFixedRate(UpdatePagSeguroPaymentsTask::class.simpleName!!, tasksScope, 1.minutes, action = UpdatePagSeguroPaymentsTask(this))
         }
 
         val server = embeddedServer(Netty, host = config.website.host, port = config.website.port) {

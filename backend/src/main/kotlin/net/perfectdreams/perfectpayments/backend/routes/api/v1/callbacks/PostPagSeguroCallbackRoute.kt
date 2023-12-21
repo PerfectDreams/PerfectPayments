@@ -9,6 +9,7 @@ import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.dao.Payment
 import net.perfectdreams.perfectpayments.backend.payments.PaymentStatus
+import net.perfectdreams.perfectpayments.backend.utils.PagSeguroUtils
 import net.perfectdreams.perfectpayments.backend.utils.PaymentUtils
 import net.perfectdreams.perfectpayments.backend.utils.extensions.respondEmptyJson
 import net.perfectdreams.sequins.ktor.BaseRoute
@@ -56,8 +57,7 @@ class PostPagSeguroCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/ca
         }
 
         if (notificationType == "transaction") {
-            val httpResponse =
-                PerfectPayments.http.get("https://ws.pagseguro.uol.com.br/v3/transactions/notifications/$notificationCode?email=${m.gateway.pagSeguro.email}&token=${m.gateway.pagSeguro.token}")
+            val httpResponse = PerfectPayments.http.get("https://ws.pagseguro.uol.com.br/v3/transactions/notifications/$notificationCode?email=${m.gateway.pagSeguro.email}&token=${m.gateway.pagSeguro.token}")
 
             val payloadAsString = httpResponse.bodyAsText()
 
@@ -88,11 +88,7 @@ class PostPagSeguroCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/ca
 
             val intStatus = status.toInt()
 
-            val paymentStatus = when (intStatus) {
-                3, 4 -> PaymentStatus.APPROVED
-                5, 9 -> PaymentStatus.CHARGED_BACK
-                else -> null
-            }
+            val paymentStatus = PagSeguroUtils.getPaymentStatusFromPagSeguroPaymentStatus(intStatus)
 
             logger.info { "PagSeguro payment $reference status is $paymentStatus" }
 
