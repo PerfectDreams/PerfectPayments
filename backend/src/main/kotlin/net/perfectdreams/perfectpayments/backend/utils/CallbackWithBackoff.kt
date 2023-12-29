@@ -21,9 +21,7 @@ fun callbackWithBackoff(callback: suspend () -> (Boolean), failure: suspend (Thr
                 requestsMade++
                 val waitTime = if (e is BackoffWithCustomTimeException)
                     e.waitTimeInMillis
-                else requestsMade.toDouble()
-                    .pow(2)
-                    .toLong() * 1000
+                else (requestsMade.toDouble().pow(2).toLong() * 1000).coerceAtMost((60 * 5) * 1_000) // at most 5 minutes
 
                 failure.invoke(e, waitTime)
 

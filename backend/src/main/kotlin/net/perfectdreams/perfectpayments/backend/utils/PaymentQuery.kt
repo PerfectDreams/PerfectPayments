@@ -157,8 +157,9 @@ object PaymentQuery {
             val isSuccess = status.isSuccess()
             if (!isSuccess) {
                 val body = response.bodyAsText()
-                logger.warn { "Notification for callback \"${payment.callbackUrl}\" for payment ${payment.id.value} failed with status code $status! Response body: $body" }
+                error("Notification for callback \"${payment.callbackUrl}\" for payment ${payment.id.value} failed with status code $status! Response body: $body")
             }
+
             status.isSuccess()
         }, { throwable, waitTime ->
             logger.warn(throwable) { "Something went wrong while trying to send a notification about payment ${payment.id.value} to \"${payment.callbackUrl}\"! Retrying again after ${waitTime}ms"}
