@@ -4,6 +4,7 @@ import club.minnced.discord.webhook.send.WebhookEmbed
 import club.minnced.discord.webhook.send.WebhookEmbedBuilder
 import club.minnced.discord.webhook.send.WebhookMessageBuilder
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.datetime.Clock
 import kotlinx.serialization.json.JsonObject
@@ -152,7 +153,13 @@ object PaymentQuery {
                 )
             }
 
-            response.status.isSuccess()
+            val status = response.status
+            val isSuccess = status.isSuccess()
+            if (!isSuccess) {
+                val body = response.bodyAsText()
+                logger.warn { "Notification for callback \"${payment.callbackUrl}\" for payment ${payment.id.value} failed with status code $status! Response body: $body" }
+            }
+            status.isSuccess()
         }, { throwable, waitTime ->
             logger.warn(throwable) { "Something went wrong while trying to send a notification about payment ${payment.id.value} to \"${payment.callbackUrl}\"! Retrying again after ${waitTime}ms"}
         }) {
