@@ -44,4 +44,12 @@ enum class PaymentGateway(val imageUrl: String, val methods: List<PaymentMethod>
             PaymentMethod.SANDBOX
         )
     ),
+    MERCADOPAGO(
+        "/assets/img/gateways/mercadopago.svg",
+        listOf(
+            PaymentMethod.BRAZIL_BANK_TICKET,
+            PaymentMethod.CREDIT_CARD,
+            PaymentMethod.PIX
+        )
+    ),
 }

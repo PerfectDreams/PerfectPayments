@@ -33,7 +33,8 @@ sealed class UserFacingPaymentMethod(
         I18nKeysData.Methods.Pix.Description,
         I18nKeysData.PaymentWillBeProcessedWithinOneHour,
         "/assets/img/methods/pix.svg",
-        PaymentGateway.PAGSEGURO,
+        // PaymentGateway.PAGSEGURO,
+        PaymentGateway.MERCADOPAGO,
         PaymentMethodCountry.BRAZIL
     )
     object BrazilBankTicket : UserFacingPaymentMethod(
@@ -41,7 +42,8 @@ sealed class UserFacingPaymentMethod(
         I18nKeysData.Methods.BrazilBankTicket.Description,
         I18nKeysData.PaymentWillBeProcessedWithinThreeBusinessDays,
         "/assets/img/methods/boleto.svg",
-        PaymentGateway.PAGSEGURO,
+        // PaymentGateway.PAGSEGURO,
+        PaymentGateway.MERCADOPAGO,
         PaymentMethodCountry.BRAZIL
     )
     object CreditCardPagSeguro : UserFacingPaymentMethod(
@@ -49,7 +51,8 @@ sealed class UserFacingPaymentMethod(
         I18nKeysData.Methods.CreditCardPagSeguro.Description,
         I18nKeysData.PaymentWillBeProcessedWithinOneHour,
         "/assets/img/methods/credit-card.svg",
-        PaymentGateway.PAGSEGURO,
+        // PaymentGateway.PAGSEGURO,
+        PaymentGateway.MERCADOPAGO,
         PaymentMethodCountry.GLOBAL
     )
     object CreditCardPayPal : UserFacingPaymentMethod(
@@ -73,7 +76,8 @@ sealed class UserFacingPaymentMethod(
         I18nKeysData.Methods.DebitCardCaixa.Description,
         I18nKeysData.PaymentWillBeProcessedWithinOneHour,
         "/assets/img/methods/debit-card-caixa.svg",
-        PaymentGateway.PAGSEGURO,
+        // PaymentGateway.PAGSEGURO,
+        PaymentGateway.MERCADOPAGO,
         PaymentMethodCountry.BRAZIL
     )
     object PicPay : UserFacingPaymentMethod(

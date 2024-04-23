@@ -2,6 +2,7 @@ package net.perfectdreams.perfectpayments.backend
 
 import club.minnced.discord.webhook.WebhookClient
 import com.github.benmanes.caffeine.cache.Caffeine
+import com.mercadopago.MercadoPagoConfig
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.client.*
@@ -24,22 +25,14 @@ import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.backend.config.AppConfig
 import net.perfectdreams.perfectpayments.backend.config.FocusNFeConfig
-import net.perfectdreams.perfectpayments.backend.processors.creators.PagSeguroPaymentCreator
-import net.perfectdreams.perfectpayments.backend.processors.creators.PayPalPaymentCreator
-import net.perfectdreams.perfectpayments.backend.processors.creators.PicPayPaymentCreator
-import net.perfectdreams.perfectpayments.backend.processors.creators.SandboxPaymentCreator
-import net.perfectdreams.perfectpayments.backend.processors.creators.StripePaymentCreator
+import net.perfectdreams.perfectpayments.backend.processors.creators.*
 import net.perfectdreams.perfectpayments.backend.routes.CancelledRoute
 import net.perfectdreams.perfectpayments.backend.routes.HomeRoute
 import net.perfectdreams.perfectpayments.backend.routes.MissingPartialPaymentRoute
 import net.perfectdreams.perfectpayments.backend.routes.SuccessRoute
 import net.perfectdreams.perfectpayments.backend.routes.api.v1.GetAvailableGatewaysRoute
 import net.perfectdreams.perfectpayments.backend.routes.api.v1.GetStringsRoute
-import net.perfectdreams.perfectpayments.backend.routes.api.v1.callbacks.PostFocusNFeCallbackRoute
-import net.perfectdreams.perfectpayments.backend.routes.api.v1.callbacks.PostPagSeguroCallbackRoute
-import net.perfectdreams.perfectpayments.backend.routes.api.v1.callbacks.PostPayPalCallbackRoute
-import net.perfectdreams.perfectpayments.backend.routes.api.v1.callbacks.PostPicPayCallbackRoute
-import net.perfectdreams.perfectpayments.backend.routes.api.v1.callbacks.PostStripeCallbackRoute
+import net.perfectdreams.perfectpayments.backend.routes.api.v1.callbacks.*
 import net.perfectdreams.perfectpayments.backend.routes.api.v1.payments.GetPartialPaymentInfoRoute
 import net.perfectdreams.perfectpayments.backend.routes.api.v1.payments.GetReissueNotaFiscalForPaymentRoute
 import net.perfectdreams.perfectpayments.backend.routes.api.v1.payments.GetRenotifyPaymentRoute
@@ -103,7 +96,8 @@ class PerfectPayments(
         PaymentGateway.PAGSEGURO to PagSeguroPaymentCreator(this),
         PaymentGateway.STRIPE to StripePaymentCreator(this),
         PaymentGateway.PAYPAL to PayPalPaymentCreator(this),
-        PaymentGateway.SANDBOX to SandboxPaymentCreator(this)
+        PaymentGateway.SANDBOX to SandboxPaymentCreator(this),
+        PaymentGateway.MERCADOPAGO to MercadoPagoPaymentCreator(this)
     )
 
     val focusNFe = focusNFeConfig?.let {
@@ -149,6 +143,10 @@ class PerfectPayments(
 
         if (config.gateways.contains(PaymentGateway.PAYPAL)) {
             it.add(PostPayPalCallbackRoute(this))
+        }
+
+        if (config.gateways.contains(PaymentGateway.MERCADOPAGO)) {
+            it.add(PostMercadoPagoCallbackRoute(this))
         }
 
         /* if (config.gateways.contains(PaymentGateway.SANDBOX))
@@ -201,6 +199,10 @@ class PerfectPayments(
 
         if (config.gateways.contains(PaymentGateway.PAGSEGURO)) {
             scheduleCoroutineAtFixedRate(UpdatePagSeguroPaymentsTask::class.simpleName!!, tasksScope, 1.minutes, action = UpdatePagSeguroPaymentsTask(this))
+        }
+
+        if (config.gateways.contains(PaymentGateway.MERCADOPAGO)) {
+            MercadoPagoConfig.setAccessToken(gateway.mercadoPago.accessToken) // Nasty!!
         }
 
         val server = embeddedServer(Netty, host = config.website.host, port = config.website.port) {

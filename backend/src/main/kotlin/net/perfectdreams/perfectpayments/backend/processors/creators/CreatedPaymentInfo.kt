@@ -27,3 +27,8 @@ class CreatedPicPayPaymentInfo(
 class CreatedSandboxPaymentInfo(
     id: String
 ) : CreatedPaymentInfo(id)
+
+class CreatedMercadoPagoPaymentInfo(
+    id: String,
+    url: String
+) : CreatedPaymentInfoWithUrl(id, url)

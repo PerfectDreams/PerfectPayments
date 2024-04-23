@@ -47,6 +47,7 @@ dependencies {
     implementation("org.jsoup:jsoup:1.14.3")
     implementation("com.stripe:stripe-java:20.3.0")
     implementation("com.paypal.sdk:checkout-sdk:1.0.5")
+    implementation("com.mercadopago:sdk-java:2.1.22")
     implementation("club.minnced:discord-webhooks:0.7.5")
 
     implementation(libs.kotlin.logging)

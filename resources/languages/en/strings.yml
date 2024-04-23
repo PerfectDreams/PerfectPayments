@@ -51,6 +51,8 @@ gateways:
     name: "Stripe"
   pagseguro:
     name: "PagSeguro"
+  mercadoPago:
+    name: "MercadoPago"
   paypal:
     name: "PayPal"
   sandbox:
