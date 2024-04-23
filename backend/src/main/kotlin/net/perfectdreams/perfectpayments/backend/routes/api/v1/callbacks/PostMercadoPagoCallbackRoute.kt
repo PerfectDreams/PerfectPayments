@@ -126,6 +126,7 @@ class PostMercadoPagoCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/
         // Generate the manifest string
         val manifest = String.format("id:%s;request-id:%s;ts:%s;", dataID, xRequestId, ts)
 
+        logger.info { "MercadoPago request manifest: $manifest; TS: $ts; Hash: $hash" }
         val mac = Mac.getInstance("HmacSHA256")
 
         val signingKey = SecretKeySpec(m.gateway.mercadoPago.webhookSecretSignature.toByteArray(Charsets.UTF_8), "HmacSHA256")
