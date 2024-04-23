@@ -100,7 +100,7 @@ class PostMercadoPagoCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/
         call.respondEmptyJson()
     }
 
-    fun validate(dataID: String?, xSignature: String, xRequestId: String): Boolean {
+    private fun validate(dataID: String?, xSignature: String, xRequestId: String): Boolean {
         // Separating the x-signature into parts
         val parts = xSignature.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
@@ -131,8 +131,12 @@ class PostMercadoPagoCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/
         val signingKey = SecretKeySpec(m.gateway.mercadoPago.webhookSecretSignature.toByteArray(Charsets.UTF_8), "HmacSHA256")
         mac.init(signingKey)
         val doneFinal = mac.doFinal(manifest.toByteArray(Charsets.UTF_8))
+        val doneFinalAsHex = doneFinal.bytesToHex()
 
-        return hash == doneFinal.bytesToHex()
+        logger.info { "MercadoPago's request signature hash: $hash" }
+        logger.info { "Our generated request signature hash: $doneFinalAsHex" }
+
+        return hash == doneFinalAsHex
     }
 
     /**
