@@ -34,6 +34,9 @@ class PostMercadoPagoCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/
         val xSignature = call.request.header("x-signature")
         val xRequestId = call.request.header("x-request-id")
 
+        logger.info { "MercadoPago x-signature header: $xSignature" }
+        logger.info { "MercadoPago x-request-id header: $xRequestId" }
+
         if (xSignature == null) {
             logger.warn { "MercadoPago request is missing the x-signature header!" }
             call.respondEmptyJson(HttpStatusCode.Forbidden)
@@ -124,7 +127,16 @@ class PostMercadoPagoCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/
         }
 
         // Generate the manifest string
-        val manifest = String.format("id:%s;request-id:%s;ts:%s;", dataID, xRequestId, ts)
+        val manifest = buildString {
+            // "Caso algum dos valores apresentados no template acima não esteja presente em sua notificação, você deverá removê-los do template."
+            // https://www.mercadopago.com.br/developers/pt/docs/your-integrations/notifications/webhooks
+            if (dataID != null) {
+                append("id:$dataID;")
+            }
+
+            append("request-id:$xRequestId;")
+            append("ts:$ts;")
+        }
 
         logger.info { "MercadoPago request manifest: $manifest; TS: $ts; Hash: $hash" }
         val mac = Mac.getInstance("HmacSHA256")
