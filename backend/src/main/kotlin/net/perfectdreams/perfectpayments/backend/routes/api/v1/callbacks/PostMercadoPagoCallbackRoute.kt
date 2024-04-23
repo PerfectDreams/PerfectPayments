@@ -32,7 +32,7 @@ class PostMercadoPagoCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/
         logger.info { "MercadoPago type: $type, params: ${parameters.entries()}; body: $body" }
 
         val topic = parameters["topic"]
-        if (type != null) {
+        if (type == null) {
             logger.warn { "Ignoring MercadoPago request with type missing because maybe that's a IPN notification and we only care about webhooks..." }
             call.respondEmptyJson(HttpStatusCode.Forbidden)
             return
