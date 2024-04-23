@@ -24,7 +24,9 @@ class MercadoPagoPaymentCreator(val m: PerfectPayments) : PaymentCreator {
         items.add(itemRequest)
         val preferenceRequest = PreferenceRequest.builder()
             .externalReference(partialPayment.externalReference.format(paymentId))
-            .notificationUrl(m.gateway.mercadoPago.callbackUrl)
+            // No need for this, the URL is configured in the MercadoPago's dashboard (also, this setups webhooks AND IPNs, if we only want webhooks, we need
+            // to set "?source_news=webhook")
+            // .notificationUrl(m.gateway.mercadoPago.callbackUrl)
             .items(items)
             .build()
         val preference = client.create(preferenceRequest)
