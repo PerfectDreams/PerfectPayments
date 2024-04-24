@@ -203,6 +203,7 @@ class PerfectPayments(
 
         if (config.gateways.contains(PaymentGateway.MERCADOPAGO)) {
             MercadoPagoConfig.setAccessToken(gateway.mercadoPago.accessToken) // Nasty!!
+            scheduleCoroutineAtFixedRate(UpdateMercadoPagoPaymentsTask::class.simpleName!!, tasksScope, 1.minutes, action = UpdateMercadoPagoPaymentsTask(this))
         }
 
         val server = embeddedServer(Netty, host = config.website.host, port = config.website.port) {

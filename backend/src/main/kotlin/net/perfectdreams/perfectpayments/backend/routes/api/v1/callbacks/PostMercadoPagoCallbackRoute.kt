@@ -8,6 +8,7 @@ import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.dao.Payment
 import net.perfectdreams.perfectpayments.backend.payments.PaymentStatus
+import net.perfectdreams.perfectpayments.backend.utils.MercadoPagoUtils
 import net.perfectdreams.perfectpayments.backend.utils.PaymentUtils
 import net.perfectdreams.perfectpayments.backend.utils.extensions.respondEmptyJson
 import net.perfectdreams.sequins.ktor.BaseRoute
@@ -81,28 +82,13 @@ class PostMercadoPagoCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/
                     return
                 }
 
-                when (payment.status) {
-                    "approved" -> {
-                        PaymentUtils.updatePaymentStatus(
-                            m,
-                            internalPayment,
-                            PaymentStatus.APPROVED
-                        )
-                    }
-                    "in_mediation" -> {
-                        PaymentUtils.updatePaymentStatus(
-                            m,
-                            internalPayment,
-                            PaymentStatus.CHARGED_BACK
-                        )
-                    }
-                    "charged_back" -> {
-                        PaymentUtils.updatePaymentStatus(
-                            m,
-                            internalPayment,
-                            PaymentStatus.CHARGED_BACK
-                        )
-                    }
+                val paymentStatus = MercadoPagoUtils.getPaymentStatusFromMercadoPagoPaymentStatus(payment.status)
+                if (paymentStatus != null) {
+                    PaymentUtils.updatePaymentStatus(
+                        m,
+                        internalPayment,
+                        paymentStatus
+                    )
                 }
             }
         }
