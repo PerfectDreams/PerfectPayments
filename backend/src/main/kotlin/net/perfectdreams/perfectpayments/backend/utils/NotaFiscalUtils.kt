@@ -1,18 +1,24 @@
 package net.perfectdreams.perfectpayments.backend.utils
 
+import club.minnced.discord.webhook.send.WebhookEmbed
+import club.minnced.discord.webhook.send.WebhookEmbedBuilder
+import club.minnced.discord.webhook.send.WebhookMessageBuilder
 import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.dao.NotaFiscal
 import net.perfectdreams.perfectpayments.backend.dao.Payment
 import net.perfectdreams.perfectpayments.backend.dao.PaymentPersonalInfo
 import net.perfectdreams.perfectpayments.backend.notafiscais.NotaFiscalStatus
+import net.perfectdreams.perfectpayments.backend.payments.PaymentStatus
 import net.perfectdreams.perfectpayments.backend.tables.NotaFiscais
 import net.perfectdreams.perfectpayments.backend.tables.PaymentPersonalInfos
 import net.perfectdreams.perfectpayments.backend.utils.focusnfe.FocusNFe
 import net.perfectdreams.perfectpayments.backend.utils.focusnfe.requests.NFSeCreateRequest
 import net.perfectdreams.perfectpayments.backend.utils.focusnfe.responses.NFSeCancellationResponse
 import net.perfectdreams.perfectpayments.backend.utils.focusnfe.responses.NFSeCreateResponse
+import java.awt.Color
 import java.math.BigDecimal
+import java.time.Instant
 import java.time.ZonedDateTime
 
 class NotaFiscalUtils(val m: PerfectPayments, val focusNFe: FocusNFe, val referencePrefix: String) {
@@ -71,6 +77,46 @@ class NotaFiscalUtils(val m: PerfectPayments, val focusNFe: FocusNFe, val refere
             "Liberação de serviço \"${payment.title}\" para o usuário",
             tomador
         )
+
+        m.discordWebhook?.let {
+            val embedBuilder = WebhookEmbedBuilder()
+                .setTitle(WebhookEmbed.EmbedTitle("\uD83D\uDCC4 Nota Fiscal for Payment ${payment.id.value}", null))
+                .addField(
+                    WebhookEmbed.EmbedField(
+                        true,
+                        "\uD83C\uDFF7 Title",
+                        "`${payment.title}`"
+                    )
+                )
+                .addField(
+                    WebhookEmbed.EmbedField(
+                        true,
+                        "\uD83D\uDCB8 Amount",
+                        "`${payment.amount} ${payment.currencyId}`"
+                    )
+                )
+
+            if (nfsePaymentValue != null) {
+                embedBuilder.addField(
+                    WebhookEmbed.EmbedField(
+                        true,
+                        "\uD83D\uDCB8 Amount (Overriden!)",
+                        "`${nfsePaymentValue}`"
+                    )
+                )
+            }
+
+            val embed = embedBuilder
+                .setFooter(WebhookEmbed.EmbedFooter("Reference ID: ${payment.referenceId}", null))
+                .setTimestamp(Instant.now())
+                .build()
+
+            it.send(
+                WebhookMessageBuilder()
+                    .addEmbeds(embed)
+                    .build()
+            )
+        }
 
         when (result) {
             is NFSeCreateResponse.AlreadyBeingProcessed -> {
