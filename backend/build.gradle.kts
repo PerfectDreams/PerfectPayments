@@ -65,6 +65,9 @@ dependencies {
     implementation("io.ktor:ktor-server-cors:${libs.versions.ktor.get()}")
     implementation("io.ktor:ktor-server-compression:${libs.versions.ktor.get()}")
     implementation("io.ktor:ktor-server-caching-headers:${libs.versions.ktor.get()}")
+
+    // Used for logs - MojangStyleFileAppenderAndRollover
+    implementation("com.github.luben:zstd-jni:1.5.5-6")
 }
 
 jib {
