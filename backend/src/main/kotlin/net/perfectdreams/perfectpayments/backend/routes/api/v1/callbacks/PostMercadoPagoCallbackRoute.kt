@@ -87,7 +87,8 @@ class PostMercadoPagoCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/
                     PaymentUtils.updatePaymentStatus(
                         m,
                         internalPayment,
-                        paymentStatus
+                        paymentStatus,
+                        payment.transactionDetails.totalPaidAmount
                     )
                 }
             }

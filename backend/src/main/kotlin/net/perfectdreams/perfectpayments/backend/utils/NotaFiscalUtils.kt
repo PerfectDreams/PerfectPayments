@@ -12,6 +12,7 @@ import net.perfectdreams.perfectpayments.backend.utils.focusnfe.FocusNFe
 import net.perfectdreams.perfectpayments.backend.utils.focusnfe.requests.NFSeCreateRequest
 import net.perfectdreams.perfectpayments.backend.utils.focusnfe.responses.NFSeCancellationResponse
 import net.perfectdreams.perfectpayments.backend.utils.focusnfe.responses.NFSeCreateResponse
+import java.math.BigDecimal
 import java.time.ZonedDateTime
 
 class NotaFiscalUtils(val m: PerfectPayments, val focusNFe: FocusNFe, val referencePrefix: String) {
@@ -19,7 +20,10 @@ class NotaFiscalUtils(val m: PerfectPayments, val focusNFe: FocusNFe, val refere
         private val logger = KotlinLogging.logger {}
     }
 
-    suspend fun generateNotaFiscal(payment: Payment) {
+    suspend fun generateNotaFiscal(
+        payment: Payment,
+        nfsePaymentValue: BigDecimal?
+    ) {
         if (!focusNFe.config.enabled) {
             logger.warn { "We won't generate a Nota Fiscal for ${payment.id} because it is disabled on the configuration!" }
             return
@@ -63,7 +67,7 @@ class NotaFiscalUtils(val m: PerfectPayments, val focusNFe: FocusNFe, val refere
         val result = focusNFe.createNFSe(
             ref,
             ZonedDateTime.now(Constants.ZONE_ID),
-            (payment.amount.toDouble() / 100),
+            nfsePaymentValue?.toDouble() ?: (payment.amount.toDouble() / 100),
             "Liberação de serviço \"${payment.title}\" para o usuário",
             tomador
         )

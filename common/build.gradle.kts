@@ -22,9 +22,6 @@ val generateI18nKeys = tasks.register<net.perfectdreams.i18nhelper.plugin.Genera
 
 kotlin {
     jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = "1.8"
-        }
         withJava()
     }
 
@@ -41,7 +38,7 @@ kotlin {
                 api(kotlin("stdlib-common"))
                 implementation("net.perfectdreams.i18nhelper:core:${libs.versions.i18nhelper.get()}")
                 api("org.jetbrains.kotlinx:kotlinx-serialization-json:${libs.versions.kotlinx.serialization.get()}")
-                api(libs.kotlin.logging)
+                api("io.github.microutils:kotlin-logging:2.1.23")
             }
         }
     }

@@ -2,8 +2,9 @@
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     kotlin("multiplatform")
-    id("org.jetbrains.compose") version libs.versions.compose.get()
     id("io.github.turansky.kfc.latest-webpack")
+    id("org.jetbrains.compose") version libs.versions.compose.get()
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
 }
 
 // Add maven repositories
@@ -30,7 +31,7 @@ kotlin {
     sourceSets {
         val jsMain by getting {
             dependencies {
-                implementation(compose.web.core)
+                implementation(compose.html.core)
                 implementation(compose.runtime)
                 implementation(project(":common"))
                 implementation("io.ktor:ktor-client-js:${libs.versions.ktor.get()}")

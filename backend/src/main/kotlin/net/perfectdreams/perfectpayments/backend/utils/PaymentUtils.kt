@@ -5,6 +5,7 @@ import mu.KotlinLogging
 import net.perfectdreams.perfectpayments.backend.PerfectPayments
 import net.perfectdreams.perfectpayments.backend.dao.Payment
 import net.perfectdreams.perfectpayments.backend.payments.PaymentStatus
+import java.math.BigDecimal
 
 object PaymentUtils {
     private val logger = KotlinLogging.logger {}
@@ -17,8 +18,14 @@ object PaymentUtils {
      * @param m       the PerfectPayments instance
      * @param payment the payment
      * @param status  the new status
+     * @param nfsePaymentValue overrides the NFS-e payment value, used for MercadoPago stuff
      */
-    suspend fun updatePaymentStatus(m: PerfectPayments, payment: Payment, status: PaymentStatus) {
+    suspend fun updatePaymentStatus(
+        m: PerfectPayments,
+        payment: Payment,
+        status: PaymentStatus,
+        nfsePaymentValue: BigDecimal? = null
+    ) {
         if (payment.status == status) { // Same status as before, no need to update it
             logger.warn { "Payment ${payment.id} already has the status $status, so we aren't going to update it..." }
             return
@@ -38,7 +45,7 @@ object PaymentUtils {
 
         if (payment.status == PaymentStatus.APPROVED) {
             // Issue notas fiscais if the payment was approved
-            m.notaFiscais?.generateNotaFiscal(payment)
+            m.notaFiscais?.generateNotaFiscal(payment, nfsePaymentValue)
         } else if (payment.status == PaymentStatus.CHARGED_BACK) {
             // Cancel notas fiscais if the payment was charged back
             m.notaFiscais?.cancelNotaFiscais(payment, "Usuário solicitou reembolso do pagamento")

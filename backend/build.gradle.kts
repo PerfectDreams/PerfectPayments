@@ -50,7 +50,7 @@ dependencies {
     implementation("com.mercadopago:sdk-java:2.1.22")
     implementation("club.minnced:discord-webhooks:0.7.5")
 
-    implementation(libs.kotlin.logging)
+    implementation("io.github.microutils:kotlin-logging:2.1.23")
 
     // Sequins
     api("net.perfectdreams.sequins.ktor:base-route:1.0.4")
@@ -103,14 +103,5 @@ tasks {
         from(File(buildDir, "sass")) {
             into("static/assets/css/")
         }
-    }
-}
-
-tasks {
-    compileKotlin {
-        kotlinOptions.jvmTarget = "1.8"
-    }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = "1.8"
     }
 }
