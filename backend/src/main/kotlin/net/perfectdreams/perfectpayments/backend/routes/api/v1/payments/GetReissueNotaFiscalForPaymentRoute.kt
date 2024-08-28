@@ -36,7 +36,7 @@ class GetReissueNotaFiscalForPaymentRoute(m: PerfectPayments) : RequiresAPIAuthe
         m.notaFiscais?.cancelNotaFiscais(internalPayment, "Criando nova Nota Fiscal")
 
         // And then we will reissue notas fiscais if the payment was approved
-        m.notaFiscais?.generateNotaFiscal(internalPayment)
+        m.notaFiscais?.generateNotaFiscal(internalPayment, null)
 
         call.respondEmptyJson(HttpStatusCode.OK)
     }

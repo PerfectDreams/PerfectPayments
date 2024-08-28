@@ -58,7 +58,7 @@ class PostFinishPartialPaymentRoute(val m: PerfectPayments) : BaseRoute("/api/v1
                 PaymentQuery.sendPaymentNotification(m, internalPayment)
 
                 // Generate nota fiscal
-                m.notaFiscais?.generateNotaFiscal(internalPayment)
+                m.notaFiscais?.generateNotaFiscal(internalPayment, null)
 
                 // Success!
                 call.respondJson(
