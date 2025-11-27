@@ -27,7 +27,7 @@ class PatchChangePaymentStatusRoute(m: PerfectPayments) : RequiresAPIAuthenticat
         val body = Json.parseToJsonElement(paymentPayload)
             .jsonObject
 
-        val status = PaymentStatus.valueOf(body["status"]!!.jsonPrimitive.content.toUpperCase())
+        val status = PaymentStatus.valueOf(body["status"]!!.jsonPrimitive.content.uppercase())
 
         logger.info { "Received request to change payment $internalTransactionId status to $status" }
 

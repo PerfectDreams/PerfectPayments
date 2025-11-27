@@ -1,10 +1,7 @@
-// https://youtrack.jetbrains.com/issue/KTIJ-19369
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     kotlin("multiplatform")
-    id("io.github.turansky.kfc.latest-webpack")
     id("org.jetbrains.compose") version libs.versions.compose.get()
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
+    id("org.jetbrains.kotlin.plugin.compose") version libs.versions.kotlin.get()
 }
 
 // Add maven repositories
@@ -12,13 +9,6 @@ repositories {
     mavenCentral()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     google()
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile> {
-    kotlinOptions {
-        // Jetpack Compose doesn't support Kotlin 1.7.10 yet, but the latest version seems to compile just fine under Kotlin 1.7.10
-        freeCompilerArgs += listOf("-P", "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true")
-    }
 }
 
 // Enable JS(IR) target and add dependencies

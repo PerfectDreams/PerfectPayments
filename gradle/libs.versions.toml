@@ -1,0 +1,25 @@
+[versions]
+kotlin = "2.2.21"
+kotlinx-serialization = "1.9.0"
+kotlinx-coroutines = "1.10.2"
+ktor = "3.3.2"
+kotlinWrappers = "2025.11.3"
+i18nhelper = "0.0.5-SNAPSHOT"
+compose = "1.10.0-beta01"
+
+[libraries]
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-jdk8 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-debug = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-debug", version.ref = "kotlinx-coroutines" }
+
+kotlin-logging = { module = "io.github.microutils:kotlin-logging", version = "2.1.23" }
+
+kotlinWrappers-browser = { module = "org.jetbrains.kotlin-wrappers:kotlin-browser", version = "kotlinWrappers" }
+kotlinWrappers-js = { module = "org.jetbrains.kotlin-wrappers:kotlin-js", version = "kotlinWrappers" }
+
+kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kotlinx-serialization-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf", version.ref = "kotlinx-serialization" }
+kotlinx-serialization-hocon = { module = "org.jetbrains.kotlinx:kotlinx-serialization-hocon", version.ref = "kotlinx-serialization" }
+kotlinx-serialization-cbor = { module = "org.jetbrains.kotlinx:kotlinx-serialization-cbor", version.ref = "kotlinx-serialization" }

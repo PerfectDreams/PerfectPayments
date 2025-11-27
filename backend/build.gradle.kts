@@ -52,9 +52,6 @@ dependencies {
 
     implementation("io.github.microutils:kotlin-logging:2.1.23")
 
-    // Sequins
-    api("net.perfectdreams.sequins.ktor:base-route:1.0.4")
-
     // Ktor
     implementation("io.ktor:ktor-client-core:${libs.versions.ktor.get()}")
 
@@ -98,7 +95,7 @@ tasks {
         from("../resources/") // Include folders from the resources root folder
 
         // Copy the output from the frontend task to the backend resources
-        from(jsBrowserProductionWebpack.destinationDirectory) {
+        from(jsBrowserProductionWebpack.outputDirectory) {
             into("static/assets/js/")
         }
 

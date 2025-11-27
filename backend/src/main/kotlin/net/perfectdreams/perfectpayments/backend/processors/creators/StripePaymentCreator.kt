@@ -25,7 +25,7 @@ class StripePaymentCreator(val m: PerfectPayments) : PaymentCreator {
                     .setQuantity(1L)
                     .setPriceData(
                         SessionCreateParams.LineItem.PriceData.builder()
-                            .setCurrency(partialPayment.currencyId.toLowerCase())
+                            .setCurrency(partialPayment.currencyId.lowercase())
                             .setUnitAmount(partialPayment.amount)
                             .setProductData(
                                 SessionCreateParams.LineItem.PriceData.ProductData.builder()
