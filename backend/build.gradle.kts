@@ -78,7 +78,7 @@ jib {
     }
 
     from {
-        image = "eclipse-temurin:18-focal"
+        image = "eclipse-temurin:25-noble"
     }
 }
 
