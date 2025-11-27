@@ -20,24 +20,30 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-      with: 
-        submodules: recursive
-
-    - name: Setup Java JDK
-      uses: actions/setup-java@v1.4.3
       with:
-        java-version: 17
+        submodules: recursive
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@v2
+    - name: Setup Java JDK
+      uses: actions/setup-java@v4
       with:
-        arguments: build
+        distribution: "temurin"
+        java-version: "21"
+        cache: "gradle"
 
-    - name: Publish to Docker
-      if: github.ref == 'refs/heads/main'
-      uses: gradle/gradle-build-action@v2
-      with:
-        arguments: ":backend:jib"
+    - name: Build and Publish with Gradle
+      env:
+        # GitHub Actions has 7GBs of available RAM for workers, so let's bump it a bit up!
+        GRADLE_OPTS: -Xmx4096m -Xms4096m
+        ORG_GRADLE_PROJECT_PerfectDreamsUsername: ${{ secrets.PERFECTDREAMS_REPO_USERNAME }}
+        ORG_GRADLE_PROJECT_PerfectDreamsPassword: ${{ secrets.PERFECTDREAMS_REPO_PASSWORD }}
+      run: ./gradlew build :backend:jibDockerBuild --no-daemon
+
+    - name: Login and publish Docker images
+      run: |
+        docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD ghcr.io
+        docker push ghcr.io/perfectdreams/perfectpayments-backend:latest &
+
+        wait  # Wait for all background processes to finish
