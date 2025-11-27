@@ -14,19 +14,7 @@ import net.perfectdreams.perfectpayments.common.payments.UserFacingPaymentGroup
 sealed class Screen {
     object SelectGateway : Screen()
     class SelectSubGateway(val group: UserFacingPaymentGroup) : Screen()
-    class ParentalWarningRequest(val gateway: PaymentGateway) : Screen() {
-        var countdown by mutableStateOf(7)
-
-        // TODO: This is super hacky omg
-        init {
-            GlobalScope.launch {
-                while (countdown != 0) {
-                    delay(1_000)
-                    countdown--
-                }
-            }
-        }
-    }
+    class ParentalWarningRequest(val gateway: PaymentGateway) : Screen()
 
     class NotaFiscalRequest(val gateway: PaymentGateway) : Screen()
     class NotaFiscalDataCollectRequest(val gateway: PaymentGateway) : Screen()
