@@ -52,6 +52,7 @@ class PostFinishPartialPaymentRoute(val m: PerfectPayments) : BaseRoute("/api/v1
                     // Pagamento aprovado!
                     internalPayment.paidAt = Clock.System.now()
                     internalPayment.status = PaymentStatus.APPROVED
+                    internalPayment.netReceivedAmount = internalPayment.amount
                 }
 
                 // Send a update to the callback URL

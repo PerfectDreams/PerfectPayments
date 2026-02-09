@@ -24,7 +24,8 @@ object PaymentUtils {
         m: PerfectPayments,
         payment: Payment,
         status: PaymentStatus,
-        nfsePaymentValue: BigDecimal? = null
+        nfsePaymentValue: BigDecimal? = null,
+        netReceivedAmount: Long? = null
     ) {
         if (payment.status == status) { // Same status as before, no need to update it
             logger.warn { "Payment ${payment.id} already has the status $status, so we aren't going to update it..." }
@@ -35,8 +36,11 @@ object PaymentUtils {
 
         m.newSuspendedTransaction {
             // Update the status
-            if (status == PaymentStatus.APPROVED)
+            if (status == PaymentStatus.APPROVED) {
                 payment.paidAt = Clock.System.now()
+                if (netReceivedAmount != null)
+                    payment.netReceivedAmount = netReceivedAmount
+            }
             payment.status = status
         }
 

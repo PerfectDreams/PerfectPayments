@@ -82,7 +82,10 @@ class UpdateMercadoPagoPaymentsTask(val m: PerfectPayments) : RunnableCoroutine 
                 PaymentUtils.updatePaymentStatus(
                     m,
                     internalPayment,
-                    paymentStatus
+                    paymentStatus,
+                    nfsePaymentValue = it.transactionDetails?.totalPaidAmount,
+                    netReceivedAmount = it.transactionDetails?.netReceivedAmount
+                        ?.multiply(java.math.BigDecimal(100))?.toLong()
                 )
             }
         }

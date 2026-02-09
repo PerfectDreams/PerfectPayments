@@ -21,6 +21,7 @@ import net.perfectdreams.perfectpayments.backend.utils.PaymentUtils
 import net.perfectdreams.perfectpayments.backend.utils.extensions.receiveTextUTF8
 import net.perfectdreams.perfectpayments.backend.utils.extensions.respondEmptyJson
 import net.perfectdreams.sequins.ktor.BaseRoute
+import java.math.BigDecimal
 import java.util.*
 
 class PostPayPalCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callbacks/paypal") {
@@ -175,12 +176,19 @@ class PostPayPalCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/callb
                                 continue
                             }
 
+                            val netAmountCents = capture.jsonObject["seller_receivable_breakdown"]
+                                ?.jsonObject?.get("net_amount")
+                                ?.jsonObject?.get("value")
+                                ?.jsonPrimitive?.contentOrNull
+                                ?.let { BigDecimal(it).multiply(BigDecimal(100)).toLong() }
+
                             logger.info { "Setting Payment ${internalPayment.id} ($captureId) as paid! (via PayPal payment $paymentId)" }
 
                             PaymentUtils.updatePaymentStatus(
                                 m,
                                 internalPayment,
-                                PaymentStatus.APPROVED
+                                PaymentStatus.APPROVED,
+                                netReceivedAmount = netAmountCents
                             )
                         }
                     }

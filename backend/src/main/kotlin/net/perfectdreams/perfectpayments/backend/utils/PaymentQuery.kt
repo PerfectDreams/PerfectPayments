@@ -149,6 +149,7 @@ object PaymentQuery {
                         put("gateway", payment.gateway.toString())
                         put("paidAt", payment.paidAt?.toEpochMilliseconds())
                         put("createdAt", payment.createdAt.toEpochMilliseconds())
+                        put("netReceivedAmount", payment.netReceivedAmount)
                     }.toString()
                 )
             }

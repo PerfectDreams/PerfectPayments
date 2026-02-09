@@ -16,4 +16,5 @@ object Payments : LongIdTable() {
     val createdAt = timestamp("created_at")
     val paidAt = timestamp("paid_at").nullable()
     val externalReferenceFormat = text("external_reference").nullable()
+    val netReceivedAmount = long("net_received_amount").nullable()
 }

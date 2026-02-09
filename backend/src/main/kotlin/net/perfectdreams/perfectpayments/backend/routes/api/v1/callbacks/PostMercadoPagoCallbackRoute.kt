@@ -88,7 +88,9 @@ class PostMercadoPagoCallbackRoute(val m: PerfectPayments) : BaseRoute("/api/v1/
                         m,
                         internalPayment,
                         paymentStatus,
-                        payment.transactionDetails.totalPaidAmount
+                        payment.transactionDetails.totalPaidAmount,
+                        netReceivedAmount = payment.transactionDetails.netReceivedAmount
+                            ?.multiply(java.math.BigDecimal(100))?.toLong()
                     )
                 }
             }
